@@ -62,15 +62,15 @@
     {
       "part1": {
         "solved": false,
-        "result": null,
+        "result": "FCVRLMVQP",
         "attempts": [],
-        "time": null
+        "time": 1.620917
       },
       "part2": {
         "solved": false,
-        "result": null,
+        "result": "RWLWGJGFD",
         "attempts": [],
-        "time": null
+        "time": 1.202333
       }
     },
     {
