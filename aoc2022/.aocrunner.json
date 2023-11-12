@@ -300,15 +300,15 @@
     {
       "part1": {
         "solved": false,
-        "result": null,
+        "result": "60362",
         "attempts": [],
-        "time": null
+        "time": 29.098375
       },
       "part2": {
         "solved": false,
-        "result": null,
+        "result": "60362",
         "attempts": [],
-        "time": null
+        "time": 25.583416
       }
     },
     {
