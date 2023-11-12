@@ -14,13 +14,15 @@ const part2 = (rawInput: string) => {
   return
 }
 
+export const exampleInput = ``
+
 run({
   part1: {
     tests: [
-      // {
-      //   input: ``,
-      //   expected: "",
-      // },
+      {
+        input: exampleInput,
+        expected: "",
+      },
     ],
     solution: part1,
   },

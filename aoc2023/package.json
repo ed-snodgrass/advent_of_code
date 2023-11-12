@@ -4,6 +4,7 @@
   "description": "Advent of Code 2023 - solutions",
   "type": "module",
   "scripts": {
+    "test": "jest",
     "start": "aocrunner day",
     "build": "aocrunner build",
     "format": "prettier -w src",
@@ -15,11 +16,13 @@
   "author": "Ed Snodgrass",
   "license": "ISC",
   "devDependencies": {
+    "@babel/preset-env": "^7.23.3",
+    "@babel/preset-typescript": "^7.23.3",
     "@types/node": "^16.11.6",
     "aocrunner": "^1.9.6",
+    "jest": "^29.7.0",
     "prettier": "^2.8.0"
   },
-  "dependencies": {},
   "engines": {
     "node": ">=16.13.0"
   }
