@@ -130,12 +130,7 @@ const part1 = (rawInput) => {
   return getSumOfAllBalloons(input)
 }
 
-
-run({
-  part1: {
-    tests: [
-      {
-        input: `1=-0-2
+export const day25Example = `1=-0-2
 12111
 2=0=
 21
@@ -147,7 +142,13 @@ run({
 1-12
 12
 1=
-122`,
+122`
+
+run({
+  part1: {
+    tests: [
+      {
+        input: day25Example,
         expected: '2=-1=0',
       },
     ],
