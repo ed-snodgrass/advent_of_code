@@ -14,20 +14,28 @@ const part2 = (rawInput) => {
   return
 }
 
+const testInput = `#.#####
+#.....#
+#>....#
+#.....#
+#...v.#
+#.....#
+#####.#`
+
 run({
   part1: {
     tests: [
-      // {
-      //   input: ``,
-      //   expected: "",
-      // },
+      {
+        input: testInput,
+        expected: 18,
+      },
     ],
     solution: part1,
   },
   part2: {
     tests: [
       // {
-      //   input: ``,
+      //   input: testInput,
       //   expected: "",
       // },
     ],
