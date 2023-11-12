@@ -232,7 +232,7 @@
         "solved": false,
         "result": "3090",
         "attempts": [],
-        "time": 95.689125
+        "time": 90.789959
       },
       "part2": {
         "solved": false,
@@ -244,9 +244,9 @@
     {
       "part1": {
         "solved": false,
-        "result": null,
+        "result": "4636",
         "attempts": [],
-        "time": null
+        "time": 115.126292
       },
       "part2": {
         "solved": false,
