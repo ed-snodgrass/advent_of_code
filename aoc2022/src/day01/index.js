@@ -2,9 +2,8 @@ import run from "aocrunner"
 
 const parseInput = (rawInput) => rawInput
 
-const part1 = (rawInput) => {
-  const input = parseInput(rawInput)
-  const elves = input.split('\n\n').map(elfString => elfString.split('\n').map(caloriesString => Number.parseInt(caloriesString)))
+const computeTotals = parsedInput => {
+  const elves = parsedInput.split('\n\n').map(elfString => elfString.split('\n').map(caloriesString => Number.parseInt(caloriesString)))
   const totals = []
   elves.forEach(elf => {
     const elfSum = elf.reduce((accumulator, currentValue) => {
@@ -16,23 +15,18 @@ const part1 = (rawInput) => {
   totals.sort((a,b) => {
     return b - a
   })
+  return totals
+}
+
+const part1 = (rawInput) => {
+  const input = parseInput(rawInput)
+  const totals = computeTotals(input)
   return totals[0];
 }
 
 const part2 = (rawInput) => {
   const input = parseInput(rawInput)
-  const elves = input.split('\n\n').map(elfString => elfString.split('\n').map(caloriesString => Number.parseInt(caloriesString)))
-  const totals = []
-  elves.forEach(elf => {
-    const elfSum = elf.reduce((accumulator, currentValue) => {
-
-      return +accumulator + +currentValue
-    }, 0)
-    totals.push( elfSum)
-  })
-  totals.sort((a,b) => {
-    return b - a
-  })
+  const totals = computeTotals(input)
   return totals[0] + totals[1] + totals[2];
 }
 
