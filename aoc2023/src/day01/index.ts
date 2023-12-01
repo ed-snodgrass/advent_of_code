@@ -17,14 +17,14 @@ const part1 = (rawInput: string) => {
   return total
 }
 const singles = {
-  'one': 1,
-  'two': 2,
+  'one': '1ne',
+  'two': '2wo',
   'three': 3,
   'four': 4,
   'five': 5,
   'six': 6,
   'seven': 7,
-  'eight': 8,
+  'eight': '8ight',
   'nine': 9,
 };
 
@@ -40,13 +40,8 @@ const replaceFirstWord = (line) => {
     }
   })
   if (lowestIndexKey) {
-    // console.log(lowestIndex)
-    // console.log(lowestIndexKey)
-    // console.log(newLine.substring(0, lowestIndex))
     newLine = newLine.substring(0, lowestIndex) + singles[lowestIndexKey] + newLine.substring(lowestIndex + lowestIndexKey.length)
-
   }
-  // console.log(newLine)
   return newLine
 }
 const replaceLastWord = (line: string) => {
@@ -61,13 +56,8 @@ const replaceLastWord = (line: string) => {
     }
   })
   if (greatestIndexKey) {
-    // console.log(greatestIndex)
-    // console.log(greatestIndexKey)
-    // console.log(newLine.substring(0, greatestIndex))
     newLine = newLine.substring(0, greatestIndex) + singles[greatestIndexKey] + newLine.substring(greatestIndex + greatestIndexKey.length)
-
   }
-  // console.log(newLine)
   return newLine
 }
 
@@ -84,26 +74,10 @@ export const part2 = (rawInput: string) => {
       for (let i = 0; i < keys.length && !shouldContinue; i++) {
         if (newLine.includes(keys[i])) {
           shouldContinue = true
-          // newLine = replaceLastWord(newLine)
           newLine = replaceLastWord(newLine)
-
         }
       }
     }
-    // console.log(newLine)
-    // Object.keys(singles).forEach(key => {
-    //
-    // })
-    // let keyIsFound = false
-    //   do {
-    //     Object.keys(singles).forEach(key => {
-    //       if (newLine.includes(key)) {
-    //         keyIsFound = true
-    //         newLine = replaceFirstWord(newLine)
-    //       }
-    //     })
-    //   } while (keyIsFound)
-    // newLine = replaceLastWord(newLine)
     return newLine
   })
 
