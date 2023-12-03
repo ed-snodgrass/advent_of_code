@@ -1,5 +1,5 @@
 import fs from "fs"
-import {exampleInput} from './index.ts'
+import {part2} from './index.ts'
 
 const input = fs.readFileSync(`${__dirname}/input.txt`, 'utf-8');
 
@@ -9,12 +9,12 @@ describe('day1 tests', () => {
     inputData = undefined
     actual = undefined
   })
-  describe('example input', () => {
+  describe('input', () => {
     beforeEach(() => {
-      inputData = input
+      actual = part2(input)
     })
-    it('should be true', () => {
-      expect(true).toBe(true)
+    it('should be 55413', () => {
+      expect(actual).toBe(55413)
     })
   })
 })
