@@ -1,5 +1,5 @@
 import fs from "fs"
-import {exampleInput, parseInput, getGames, getPossibleGames, part1} from './index.ts'
+import {exampleInput, parseInput, getGames, getPossibleGames, part1, getGamePowers, part2} from './index.ts'
 
 const input = fs.readFileSync(`${__dirname}/input.txt`, 'utf-8');
 
@@ -34,6 +34,28 @@ describe('day2 tests', () => {
     describe('real data', () => {
       it('should be less than 3121', () => {
         expect(part1(input)).toBe(3099)
+      })
+    })
+  })
+  describe('part2 tests', () => {
+    describe('example data', () => {
+      it('should have a power of 48 for game 1', () => {
+        expect(getGamePowers(exampleInput)[0]).toBe(48)
+      })
+      it('should have a power of 12 for game 2', () => {
+
+        expect(getGamePowers(exampleInput)[1]).toBe(12)
+        expect(getGamePowers(exampleInput)[2]).toBe(1560)
+        expect(getGamePowers(exampleInput)[3]).toBe(630)
+        expect(getGamePowers(exampleInput)[4]).toBe(36)
+      })
+      it('should return 2286', () => {
+        expect(part2(exampleInput)).toBe(2286)
+      })
+    })
+    describe('real data', () => {
+      it('should return 72970', () => {
+        expect(part2(input)).toBe(72970)
       })
     })
   })

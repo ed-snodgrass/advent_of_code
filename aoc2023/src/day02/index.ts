@@ -43,10 +43,26 @@ export const part1 = (rawInput: string) => {
   }, 0)
 }
 
-export const part2 = (rawInput: string) => {
-  const input = parseInput(rawInput)
+export const getGamePowers = (rawInput: string) => {
+  return getGames(rawInput).map(game => {
+    let blue = 0;
+    let green = 0;
+    let red = 0;
+    game.showings.forEach(showing => {
+      green = showing.greens > green ? showing.greens : green
+      red = showing.reds > red ? showing.reds : red
+      blue = showing.blues > blue ? showing.blues : blue
+    })
+    return blue * green * red
+  })
+}
 
-  return
+export const part2 = (rawInput: string) => {
+  const gamePowers = getGamePowers(rawInput)
+
+  return gamePowers.reduce((accumulator, value) => {
+    return accumulator + value
+  }, 0)
 }
 
 export const exampleInput = `Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green
@@ -67,10 +83,10 @@ run({
   },
   part2: {
     tests: [
-      // {
-      //   input: exampleInput,
-      //   expected: "",
-      // },
+      {
+        input: exampleInput,
+        expected: 2286,
+      },
     ],
     solution: part2,
   },
