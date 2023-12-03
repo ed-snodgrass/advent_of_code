@@ -27,7 +27,7 @@ describe('day2 tests', () => {
       it('should there to be 3 possible games', () => {
         expect(getPossibleGames(exampleInput).length).toBe(3)
       })
-      it('should there to be 3 possible games', () => {
+      it('part1 should be 8', () => {
         expect(part1(exampleInput)).toBe(8)
       })
     })
