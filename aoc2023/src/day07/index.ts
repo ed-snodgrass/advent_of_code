@@ -3,22 +3,6 @@ import run from "aocrunner"
 export const parseInput = (rawInput: string) => rawInput.split('\n')
 
 const cards = ['2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A']
-const types = ['high_card', 'one_pair', 'two_pair', 'three_of_a_kind', 'full_house', 'four_of_a_kind', 'five_of_a_kind']
-export const compareHandsOfType = (hand1: string, hand2: string, useJokers: boolean = false) => {
-  let winner: string
-
-  for (let i = 0; i < 5 && !winner; i++) {
-
-    if (cards.indexOf(hand1[i]) === cards.indexOf(hand2[i])) continue
-    if (cards.indexOf(hand1[i]) > cards.indexOf(hand2[i])) {
-      winner = hand1
-      break
-    } else if (cards.indexOf(hand1[i]) < cards.indexOf(hand2[i])) {
-      winner = hand2
-    }
-  }
-  return winner
-}
 
 export const getType = (hand: string, useJokers: boolean = false): number => {
   const cardArray = hand.split('')

@@ -1,5 +1,5 @@
 import fs from "fs"
-import {parseInput, part1, part2, exampleInput, compareHandsOfType, getHands, rankHands, getType} from './index.ts'
+import {parseInput, part1, part2, exampleInput, getHands, rankHands, getType} from './index.ts'
 
 const input = fs.readFileSync(`${__dirname}/input.txt`, 'utf-8');
 
@@ -9,14 +9,6 @@ describe('day07Test tests', () => {
     parsedInput = null
   })
   describe('part1', () => {
-    describe('when hands are the same type', () => {
-      it('should rank 33332 over 2AAAA', () => {
-        expect(compareHandsOfType('33332', '2AAAA')).toBe('33332')
-      })
-      it('should rank 77888 over 77788', () => {
-        expect(compareHandsOfType('77888', '77788')).toBe('77888')
-      })
-    })
     describe('example input', () => {
       beforeEach(() => {
         parsedInput = parseInput(exampleInput)
@@ -31,8 +23,6 @@ describe('day07Test tests', () => {
           expect(getType('AA987')).toBe(1)
           expect(getType('AJ987')).toBe(0)
 
-          // console.log(getHands(parsedInput)[0].hand)
-          // console.log(getType(getHands(parsedInput)[0].hand))
           expect(getType(getHands(parsedInput)[0].hand)).toBe(1)
           expect(getType(getHands(parsedInput)[1].hand)).toBe(3)
           expect(getType(getHands(parsedInput)[2].hand)).toBe(2)
