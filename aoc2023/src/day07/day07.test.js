@@ -30,7 +30,6 @@ describe('day07Test tests', () => {
           expect(getType('AA989')).toBe(2)
           expect(getType('AA987')).toBe(1)
           expect(getType('AJ987')).toBe(0)
-          expect(getType('AJ987')).toBe(0)
 
           // console.log(getHands(parsedInput)[0].hand)
           // console.log(getType(getHands(parsedInput)[0].hand))
@@ -73,7 +72,25 @@ describe('day07Test tests', () => {
       beforeEach(() => {
         parsedInput = parseInput(exampleInput)
       })
-      it.skip('part2 should be...', () => {
+      describe('when using jokers for type comparison', () => {
+        it('should return ', () => {
+          expect(getType('AAAAA', true)).toBe(6)
+          expect(getType('AAJAA', true)).toBe(6)
+          expect(getType('AAJJA', true)).toBe(6)
+          expect(getType('AJJJA', true)).toBe(6)
+          expect(getType('AJATA', true)).toBe(5)
+          expect(getType('AAATA', true)).toBe(5)
+          expect(getType('AJJJT', true)).toBe(5)
+          expect(getType('TTJJ2', true)).toBe(5)
+          expect(getType('TTJ22', true)).toBe(4)
+          expect(getType('TTJQ2', true)).toBe(3)
+          expect(getType('AJ987', true)).toBe(1)
+          expect(getType('AJ997', true)).toBe(3)
+          expect(getType('AJ99A', true)).toBe(4)
+
+        })
+      })
+      it('part2 should be...', () => {
         expect(part2(exampleInput)).toBe(5905)
       })
     })
@@ -81,8 +98,8 @@ describe('day07Test tests', () => {
       beforeEach(() => {
         parsedInput = parseInput(input)
       })
-      it.skip('part2 should be...', () => {
-        expect(part2(input)).toBe()
+      it('part2 should be...', () => {
+        expect(part2(input)).toBe(252113488)
       })
     })
   })
