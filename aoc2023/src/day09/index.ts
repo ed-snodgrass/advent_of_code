@@ -19,7 +19,22 @@ export const extrapolate = (sequences: number[][]) => {
   return nextValue
 }
 
-export const predictNextValue = (history: number[]) => {
+export const extrapolateBackwards = (sequences: number[][]) => {
+  let nextValue: number
+  const reversedSequences = sequences.reverse()
+  reversedSequences.forEach((sequence, index) => {
+    if (index === 0) {
+      sequence.unshift(0)
+    } else {
+      nextValue = sequence[0] - reversedSequences[index - 1][0]
+      sequence.unshift(nextValue)
+    }
+  })
+
+  return nextValue
+}
+
+export const findSequences = (history: number[]) => {
   const sequences = [history]
   const determineNextSequence = (sequence: number[]) => {
     const currentSequence = []
@@ -36,19 +51,20 @@ export const predictNextValue = (history: number[]) => {
     }
   }
   determineNextSequence(sequences[sequences.length - 1])
-  // console.log(sequences);
-  return extrapolate(sequences)
+  return sequences
 }
 
 export const part1 = (rawInput: string) => {
   const input = parseInput(rawInput)
-  const nextValues = input.map(predictNextValue)
+  const sequences = input.map(findSequences)
+  const nextValues = sequences.map(extrapolate)
   return nextValues.reduce((acc, value) => acc + value)
 }
 
 export const part2 = (rawInput: string) => {
   const input = parseInput(rawInput)
-  const nextValues = input.map(predictNextValue)
+  const sequences = input.map(findSequences)
+  const nextValues = sequences.map(extrapolateBackwards)
   return nextValues.reduce((acc, value) => acc + value)
 }
 
@@ -70,7 +86,7 @@ run({
     tests: [
       {
         input: exampleInput,
-        expected: "",
+        expected: 2,
       },
     ],
     solution: part2,

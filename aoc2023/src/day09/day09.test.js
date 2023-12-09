@@ -1,5 +1,5 @@
 import fs from "fs"
-import {parseInput, part1, part2, exampleInput, predictNextValue, extrapolate} from './index.ts'
+import {parseInput, part1, part2, exampleInput, findSequences, extrapolate} from './index.ts'
 
 const input = fs.readFileSync(`${__dirname}/input.txt`, 'utf-8');
 
@@ -21,7 +21,7 @@ describe('Day09Test tests', () => {
       })
       describe('when predicting next value', () => {
         it('should be 18 for 0 3 6 9 12 15', () => {
-          expect(predictNextValue(parsedInput[0])).toBe(18)
+          expect(findSequences(parsedInput[0])).toEqual([[0, 3, 6, 9, 12, 15], [3, 3, 3, 3, 3], [0, 0, 0, 0]])
         })
       })
       it('should find 3 lines', () => {
@@ -53,8 +53,8 @@ describe('Day09Test tests', () => {
       beforeEach(() => {
         parsedInput = parseInput(input)
       })
-      it.skip('part2 should be...', () => {
-        expect(part2(input)).toBe()
+      it('part2 should be...', () => {
+        expect(part2(input)).toBe(1136)
       })
     })
   })
