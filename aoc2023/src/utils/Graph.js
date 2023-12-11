@@ -1,6 +1,10 @@
 import Queue from "./Queue.js";
 
+const node = (x, y, v) => {
+  return {x, y, v}
+}
 export default class Graph {
+
   constructor() {
     this.nodes = []
     this.adjacencyList = new Map()
@@ -28,7 +32,7 @@ export default class Graph {
         queue.clear()
       } else {
 
-        graph.adjacencyList.get(value.label).forEach(edge => {
+        this.adjacencyList.get(value.label).forEach(edge => {
           if (!explored.find(someNode => someNode.label === edge.node) && keepOn) {
             explored.push({label: edge.node, parent: value.label})
             if (edge.node === end) {
@@ -47,4 +51,20 @@ export default class Graph {
     }
     return shortestPath.length - 1
   }
+
+  buildGraph(grid, findEdgeNodes, processEdgeNode) {
+    const graph = new Graph(grid.length * grid[0].length)
+
+    for (let rowIndex = 0; rowIndex < grid.length; rowIndex++) {
+      for (let columnIndex = 0; columnIndex < grid[rowIndex].length; columnIndex++) {
+        const vertex = node(columnIndex, rowIndex, grid[rowIndex][columnIndex])
+        graph.addNode(vertex)
+        const edgeNodes = findEdgeNodes(grid, columnIndex, rowIndex)
+        edgeNodes.forEach(processEdgeNode)
+      }
+    }
+
+    return graph
+  }
+
 }
