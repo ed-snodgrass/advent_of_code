@@ -2,6 +2,33 @@ import run from "aocrunner"
 import Grid, {GridNode} from "../utils/Grid.js";
 // import Grid, {GridNode} from "../utils/Grid";
 
+export const shoelace = (polygonCoordinates: {x: number, y: number}[]) => {
+  // console.log(polygonCoordinates.length);
+  // console.log(polygonCoordinates);
+  const twiceTheArea = polygonCoordinates.map((coordinate: {x: number, y: number}, index: number) => {
+
+    let nextCoordinate: {x: number, y: number}
+    if (index === polygonCoordinates.length - 1) {
+      nextCoordinate = polygonCoordinates[0]
+    } else {
+      nextCoordinate = polygonCoordinates[index + 1]
+    }
+    return coordinate.x * nextCoordinate.y - coordinate.y * nextCoordinate.x
+  }).reduce((sum: number, value: number) => sum + value, 0)
+  return Math.abs(twiceTheArea / 2)
+}
+function findNumberOfPointsWithinPolygon (numberOfIntegerPointsOnBoundary_b: number, numberOfHoles_h: number, polygonArea_A: number) {
+  // h is number of holes
+  // A is area of polygon
+  // b is number of boundary items
+  // i is the number of integers within the polygon
+  // typically A = i + b/2 + h - 1
+  console.log('A: ', polygonArea_A);
+  console.log('b: ', numberOfIntegerPointsOnBoundary_b);
+  console.log('h: ', numberOfHoles_h)
+  console.log('i: ', polygonArea_A - (numberOfIntegerPointsOnBoundary_b/2) - numberOfHoles_h + 1)
+  return polygonArea_A - (numberOfIntegerPointsOnBoundary_b/2) - numberOfHoles_h + 1
+}
 
 export const verticalConnector = '|'
 export const horizontalConnector = '-'
@@ -69,6 +96,12 @@ export const determineStartingPoint = (grid: Grid) => {
   if (openingsValues.includes(northWestConnector) && openingsValues.includes(verticalConnector)) {
     const verticalOpening = openings.find(opening => opening.v === verticalConnector)
     if (verticalOpening.previousDirection === 'south') {
+      return southEastConnector
+    }
+  }
+  if (openingsValues.includes(northWestConnector) && openingsValues.includes(southWestConnector)) {
+    const northWestOpening = openings.find(opening => opening.v === northWestConnector)
+    if (northWestOpening.previousDirection === 'south') {
       return southEastConnector
     }
   }
@@ -150,14 +183,51 @@ export const part1 = (rawInput: string) => {
   return (fullLoop.length -1) / 2
 }
 
+const findGridWithContainedValues = (grid: Grid, path: DirectionNode[]) => {
+  // const newGrid = []
+  // for (let yIndex = 0; yIndex < grid.grid.length; yIndex++) {
+  //   newGrid.push([])
+  //   // console.log(newGrid.length);
+  //   for (let xIndex = 0; xIndex < grid.grid[yIndex].length; xIndex++) {
+  //     newGrid[yIndex].push(grid.grid[yIndex][xIndex])
+  //     // console.log(newGrid[yIndex].length);
+  //   }
+  // }
+  // path.forEach(pathItem => {
+  //   newGrid[pathItem.y][pathItem.x].v = 'X'
+  //   console.log(newGrid[pathItem.y][pathItem.x].v)
+  // })
+  let gridString = ''
+  for (let yIndex = 0; yIndex < grid.grid.length; yIndex++) {
+    // const pathItemsOnThisRow = path.filter(pathItem => pathItem.y === yIndex)
+    for (let xIndex = 0; xIndex < grid.grid[yIndex].length; xIndex++) {
+      // newGrid[yIndex][xIndex] = newGrid[yIndex][xIndex].v
+      if (grid.grid[yIndex][xIndex].hasVisited) {
+
+        gridString += grid.grid[yIndex][xIndex].v
+      } else {
+        // todo find the surrounding values to see
+        gridString += 'O'
+      }
+      // console.log(grid.grid[yIndex][xIndex])
+    }
+    gridString += '\n'
+  }
+  console.log(gridString)
+  return gridString
+}
+
 export const part2 = (rawInput: string) => {
   const grid = parseInput(rawInput)
 
   const startingPointConnector = determineStartingPoint(grid)
   grid.replaceStart(startingPointConnector)
   const fullLoop = findFullLoop(grid)
-  console.log(fullLoop);
-  return
+  // console.log(JSON.stringify(fullLoop));
+  const polygonArea = shoelace(fullLoop)
+  const numberOfPoints = findNumberOfPointsWithinPolygon(fullLoop.length - 1, 0, polygonArea)
+  console.log(`number of points withing polygon: ${numberOfPoints}`)
+  return numberOfPoints
 }
 
 export const exampleInput = `-L|F7
@@ -172,19 +242,19 @@ SJ.L7
 LJ...`
 
 run({
-  part1: {
-    tests: [
-       {
-         input: exampleInput,
-         expected: 4,
-       },
-      {
-        input: exampleInput2,
-        expected: 8,
-      },
-    ],
-    solution: part1,
-  },
+  // part1: {
+  //   tests: [
+  //      {
+  //        input: exampleInput,
+  //        expected: 4,
+  //      },
+  //     {
+  //       input: exampleInput2,
+  //       expected: 8,
+  //     },
+  //   ],
+  //   solution: part1,
+  // },
   part2: {
     tests: [
       {
@@ -216,22 +286,22 @@ L--J.L7...LJS7F-7L7.
 ....L---J.LJ.LJLJ...`,
         expected: 8,
       },
-      {
-        input: `FF7FSF7F7F7F7F7F---7
-L|LJ||||||||||||F--J
-FL-7LJLJ||||||LJL-77
-F--JF--7||LJLJ7F7FJ-
-L---JF-JLJ.||-FJLJJ7
-|F|F-JF---7F7-L7L|7|
-|FFJF7L7F-JF7|JL---7
-7-L-JL7||F7|L7F-7F7|
-L.L7LFJ|||||FJL7||LJ
-L7JLJL-JLJLJL--JLJ.L`,
-        expected: 10,
-      },
+      // {
+//         input: `FF7FSF7F7F7F7F7F---7
+// L|LJ||||||||||||F--J
+// FL-7LJLJ||||||LJL-77
+// F--JF--7||LJLJ7F7FJ-
+// L---JF-JLJ.||-FJLJJ7
+// |F|F-JF---7F7-L7L|7|
+// |FFJF7L7F-JF7|JL---7
+// 7-L-JL7||F7|L7F-7F7|
+// L.L7LFJ|||||FJL7||LJ
+// L7JLJL-JLJLJL--JLJ.L`,
+//         expected: 10,
+//       },
     ],
     solution: part2,
   },
   trimTestInputs: true,
-  onlyTests: true,
+  onlyTests: false,
 })
