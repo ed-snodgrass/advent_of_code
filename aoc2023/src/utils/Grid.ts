@@ -41,7 +41,7 @@ export default class Grid {
     let gridString = ''
     for (let yIndex = 0; yIndex < this.grid.length; yIndex++) {
       for (let xIndex = 0; xIndex < this.grid[yIndex].length; xIndex++) {
-        gridString += this.grid[yIndex][xIndex]
+        gridString += this.grid[yIndex][xIndex].v
       }
       gridString += '\n'
     }
