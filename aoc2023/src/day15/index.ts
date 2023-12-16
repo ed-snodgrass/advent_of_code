@@ -55,7 +55,7 @@ export const part2 = (rawInput: string) => {
       boxes[boxNumber] = existingBoxItems.filter((boxMapItem) => boxMapItem.label !== label)
     }
   })
-  console.log(boxes.filter(boxLenses => !!boxLenses.length));
+  // console.log(boxes.filter(boxLenses => !!boxLenses.length));
   return calculateFocusingPower(boxes)
 }
 
