@@ -29,15 +29,15 @@ describe('Day16Test tests', () => {
       })
     })
   })
-  describe.skip('part2', () => {
+  describe('part2', () => {
     describe('example input', () => {
-      it.skip('part2 should be...', () => {
-        expect(part2(exampleInput)).toBe()
+      it('part2 should find the maximum count of 51', () => {
+        expect(part2(exampleInput)).toBe(51)
       })
     })
     describe('real input', () => {
-      it.skip('part2 should be...', () => {
-        expect(part2(input)).toBe()
+      it('part2 should be 9064', () => {
+        expect(part2(input)).toBeGreaterThan(9064)
       })
     })
   })

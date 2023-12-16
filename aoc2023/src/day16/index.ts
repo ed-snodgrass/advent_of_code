@@ -1,4 +1,5 @@
 import run from "aocrunner"
+import {southEastConnector} from "../day10";
 
 export const parseInput = (rawInput: string) => rawInput.split('\n').map(line => line.split('').map(char => char as Tile))
 
@@ -9,7 +10,11 @@ export const countEnergizedTiles = (input: string[][]) => {
   }, 0)
 }
 
-export const plotEnergizedTiles = (grid: string[][], energizedTiles: { y: number, x: number }[]) => {
+export const plotEnergizedTiles = (input: string[][], energizedTiles: { y: number, x: number }[]) => {
+  const grid = []
+  for (let i = 0; i < input.length; i++) {
+    grid.push([...input[i].map(_ => '')])
+  }
   energizedTiles.forEach(tile => {
     grid[tile.y][tile.x] = '#'
   })
@@ -243,22 +248,11 @@ export const visualize = (energizedTiles, input) => {
   console.log(newGrid.map(row => row.join('')).join('\n'))
 }
 
-export const part1 = (rawInput: string) => {
-  // console.log(rawInput);
-  const input = parseInput(rawInput)
-  // console.log(input);
-  // console.log(input.map(row => row.join('')).join('\n'));
-  let direction = Direction.RIGHT
-  let yIndex = 0
-  let xIndex = -1
-  const energizedTiles = []
-  const startingPosition = {
-    y: yIndex,
-    x: xIndex,
-    direction,
-    currentTile: input[yIndex][xIndex],
-    nextTile: getNextTile(input, xIndex, yIndex, direction)
+const processFromStartingPoint = (input: Tile[][], startingPosition: {y: number, x: number, currentTile: string, nextTile: string, direction: Direction}) => {
+  if (startingPosition.x === input[0].length && startingPosition.y === input.length - 1) {
+    console.log('here')
   }
+  const energizedTiles = []
   let nextDirections = [startingPosition]
   while (nextDirections.length > 0) {
     const currentDirection = nextDirections.pop()
@@ -270,14 +264,61 @@ export const part1 = (rawInput: string) => {
     }
   }
   // console.log(energizedTiles);
-  visualize(energizedTiles, input)
+  // visualize(energizedTiles, input)
   return countEnergizedTiles(plotEnergizedTiles(input, energizedTiles))
 }
 
+export const part1 = (rawInput: string) => {
+  // console.log(rawInput);
+  const input = parseInput(rawInput)
+  // console.log(input);
+  // console.log(input.map(row => row.join('')).join('\n'));
+  let direction = Direction.RIGHT
+  let yIndex = 0
+  let xIndex = -1
+  const startingPosition = {
+    y: yIndex,
+    x: xIndex,
+    direction,
+    currentTile: input[yIndex][xIndex],
+    nextTile: getNextTile(input, xIndex, yIndex, direction)
+  }
+  return processFromStartingPoint(input, startingPosition)
+}
+
+export const captureAllStartingPositions = (input: Tile[][]) => {
+  const startingPositions = []
+  startingPositions.push(...input[0].map((tile, tileIndex) => ({x: tileIndex, y: -1, nextTile: tile, direction: Direction.DOWN})))
+  startingPositions.push(...input[input.length - 1].map((tile, tileIndex) => ({x: tileIndex, y: input.length - 2, nextTile: tile, direction: Direction.UP})))
+
+  const firstColumn = []
+  const lastColumn = []
+
+  input.forEach((row, yIndex) => {
+    firstColumn.push({x: -1, y: yIndex, nextTile: input[yIndex][0], direction: Direction.RIGHT})
+    lastColumn.push({x: input[yIndex].length, y: yIndex, nextTile: input[yIndex][input[yIndex].length - 1], direction: Direction.LEFT})
+  })
+  startingPositions.push(...firstColumn)
+  startingPositions.push(...lastColumn)
+  return startingPositions
+}
+type StartingPosition = {
+  x: number, y: number, direction: Direction, nextTile: {}
+}
 export const part2 = (rawInput: string) => {
   const input = parseInput(rawInput)
+  const startingPositions: StartingPosition[] = captureAllStartingPositions(input)
 
-  return
+  // console.log(startingPositions[startingPositions.length - 1]);
+  // const count = processFromStartingPoint(input, {...startingPositions[startingPositions.length - 1], currentTile: ''})
+  // return count
+  return Math.max(...startingPositions.map((startingPosition, index) => {
+    const startTime = Date.now()
+    // @ts-ignore
+    const count = processFromStartingPoint(input, {...startingPosition, currentTile: ''})
+    // console.log(`startingPosition: ${JSON.stringify(startingPosition)}, iteration: ${index} took ${Date.now() - startTime}ms with count of: ${count}`)
+    return count
+  }))
 }
 
 export const exampleInput = `.|...\\....
@@ -305,7 +346,7 @@ run({
     tests: [
       {
         input: exampleInput,
-        expected: "",
+        expected: 51,
       },
     ],
     solution: part2,

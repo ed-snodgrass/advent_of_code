@@ -240,13 +240,15 @@
           "7079",
           "8183"
         ],
-        "time": 514.154292
+        "time": 129.611875
       },
       "part2": {
-        "solved": false,
-        "result": null,
-        "attempts": [],
-        "time": null
+        "solved": true,
+        "result": "9064",
+        "attempts": [
+          "9063"
+        ],
+        "time": 38124.568209
       }
     },
     {
