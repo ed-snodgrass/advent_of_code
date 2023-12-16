@@ -7,8 +7,7 @@ import {
   findVerticalMirror,
   flipGrid,
   makeGrid,
-  findHorizontalMirror
-} from './index.ts'
+  findHorizontalMirror, flipGridBack} from './index.ts'
 
 const input = fs.readFileSync(`${__dirname}/input.txt`, 'utf-8');
 
@@ -42,6 +41,25 @@ describe('Day13Test tests', () => {
 ###..##
 ...##..`
         expect(flipGrid(grid).map(row => row.join('')).join('\n')).toBe(expected)
+      })
+      it('should flip the grid back', () => {
+        const flipped =
+          `#..##.#
+...##..
+###..##
+.#....#
+#.#..#.
+#.#..#.
+.#....#
+###..##
+...##..`
+        expect(flipGridBack(flipped.split('\n'))).toEqual(makeGrid(`#.##..##.
+..#.##.#.
+##......#
+##......#
+..#.##.#.
+..##..##.
+#.#.##.#.`.split('\n')))
       })
     })
     describe('findVerticalMirror', () => {
@@ -84,19 +102,22 @@ describe('Day13Test tests', () => {
   })
   describe('part2', () => {
     describe('example input', () => {
-      beforeEach(() => {
-        parsedInput = parseInput(exampleInput)
-      })
-      it.skip('part2 should be...', () => {
-        expect(part2(exampleInput)).toBe()
+      it('part2 should be...', () => {
+        expect(part2(exampleInput)).toBe(400)
       })
     })
     describe('real input', () => {
-      beforeEach(() => {
-        parsedInput = parseInput(input)
+      it('part2 should be greater than 26999', () => {
+        expect(part2(input)).toBeGreaterThan(26999)
       })
-      it.skip('part2 should be...', () => {
-        expect(part2(input)).toBe()
+      it('part2 should be less than 34427', () => {
+        expect(part2(input)).toBeLessThan(34427)
+      })
+      it('part2 should be less than 35047', () => {
+        expect(part2(input)).toBeLessThan(35047)
+      })
+      it('part2 should be 32192', () => {
+        expect(part2(input)).toBe(32192)
       })
     })
   })
