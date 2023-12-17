@@ -1,5 +1,4 @@
 import run from "aocrunner"
-import {southEastConnector} from "../day10";
 
 export const parseInput = (rawInput: string) => rawInput.split('\n').map(line => line.split('').map(char => char as Tile))
 
