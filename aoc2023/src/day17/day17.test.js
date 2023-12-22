@@ -1,24 +1,30 @@
 import fs from "fs"
-import {part1, part2, exampleInput} from './index.ts'
+import {parseInput, part1, part2, exampleInput, findNextPossibleNodes, Direction, parseToNumbers} from './index.ts'
 
 const input = fs.readFileSync(`${__dirname}/input.txt`, 'utf-8');
 
 describe('Day17Test tests', () => {
   describe('part1', () => {
+    let actualOutput
+    describe('when getting nextPossibleNodes', () => {
+
+      it('should find (2,0) and (1,1) for (1, 0)', () => {
+        const initialNode = {x: 1, y: 0, heatLoss: 4, stepCount: 1, direction: Direction.EAST}
+        actualOutput = findNextPossibleNodes(parseToNumbers(parseInput(exampleInput)), initialNode)
+        expect(actualOutput).toEqual([
+          expect.objectContaining({x: 2, y: 0, heatLoss: 5, direction: Direction.EAST, stepCount: 2}),
+          expect.objectContaining({x: 1, y: 1, heatLoss: 6, direction: Direction.SOUTH, stepCount: 0}),
+        ])
+      })
+    })
     describe('example input', () => {
       it('part1 should be 102', () => {
         expect(part1(exampleInput)).toBe(102)
       })
     })
     describe('real input', () => {
-      it('part1 should be greater than 565', () => {
-        expect(part1(input)).toBeGreaterThan(565)
-      })
-      it('part1 should be less than 645', () => {
-        expect(part1(input)).toBeLessThan(645)
-      })
-      it('part1 should be less than 640', () => {
-        expect(part1(input)).toBeLessThan(640)
+      it('part1 should be less than 638', () => {
+        expect(part1(input)).toBe(638)
       })
     })
   })
