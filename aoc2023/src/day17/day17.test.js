@@ -1,5 +1,14 @@
 import fs from "fs"
-import {parseInput, part1, part2, exampleInput, findNextPossibleNodes, Direction, parseToNumbers} from './index.ts'
+import {
+  parseInput,
+  part1,
+  part2,
+  exampleInput,
+  findNextPossibleNodes,
+  Direction,
+  parseToNumbers,
+  secondExample
+} from './index.ts'
 
 const input = fs.readFileSync(`${__dirname}/input.txt`, 'utf-8');
 
@@ -29,14 +38,28 @@ describe('Day17Test tests', () => {
     })
   })
   describe('part2', () => {
+    let actualOutput
     describe('example input', () => {
-      it.skip('part2 should be...', () => {
-        expect(part2(exampleInput)).toBe()
+      describe('example 2 input', () => {
+        it('should find (2,0) for (1, 0) of first example', () => {
+          const initialNode = {x: 1, y: 0, heatLoss: 4, stepCount: 1, direction: Direction.EAST}
+          actualOutput = findNextPossibleNodes(parseToNumbers(parseInput(exampleInput)), initialNode, true)
+          expect(actualOutput).toEqual([
+            expect.objectContaining({x: 2, y: 0, heatLoss: 5, direction: Direction.EAST, stepCount: 2}),
+          ])
+        })
+        it('part2 example2 should be 71', () => {
+          expect(part2(secondExample)).toBe(71)
+        })
+      })
+
+      it('part2  example1 should be...', () => {
+        expect(part2(exampleInput)).toBe(94)
       })
     })
     describe('real input', () => {
-      it.skip('part2 should be...', () => {
-        expect(part2(input)).toBe()
+      it('part2 should be...', () => {
+        expect(part2(input)).toBe(748)
       })
     })
   })

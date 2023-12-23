@@ -254,19 +254,19 @@
     {
       "part1": {
         "solved": false,
-        "result": "640",
+        "result": "638",
         "attempts": [
           "565",
           "645",
           "640"
         ],
-        "time": 163179.562333
+        "time": 0.936542
       },
       "part2": {
         "solved": false,
-        "result": null,
+        "result": "748",
         "attempts": [],
-        "time": null
+        "time": 0.368625
       }
     },
     {

@@ -32,7 +32,7 @@ const getNextNode = (input: number[][], node: Node, nextDirection: Direction) =>
   const directionOffset = DirectionOffsets[nextDirection]
   const nextX = node.x + directionOffset.xOffset
   const nextY = node.y + directionOffset.yOffset
-  if (nextY >= 0 && nextY < input.length && nextX >= 0 && nextX < input[nextY].length) {
+  if (nextY >= 0 && nextY < input.length && nextX >= 0 && nextX < input[0].length) {
     return {
       x: nextX,
       y: nextY,
@@ -80,28 +80,40 @@ const right = (input: number[][], node: Node) => {
   }
   return getNextNode(input, node, nextDirection)
 }
-export const findNextPossibleNodes = (input: number[][], node: Node) => {
+export const findNextPossibleNodes = (input: number[][], node: Node, isPart2: boolean = false) => {
   const possibleNodes = []
-  if (node.stepCount < 2) {
-    const straight = getNextNode(input, node, node.direction)
-    if (straight) possibleNodes.push(straight)
+  if (isPart2) {
+    if (node.stepCount < 9) {
+        const straight = getNextNode(input, node, node.direction)
+        if (straight) possibleNodes.push(straight)
+    }
+    if (node.stepCount > 2) {
+      const leftDirection = left(input, node)
+      if (leftDirection) possibleNodes.push(leftDirection)
+      const rightDirection = right(input, node)
+      if (rightDirection) possibleNodes.push(rightDirection)
+    }
+  } else {
+    if (node.stepCount < 2) {
+      const straight = getNextNode(input, node, node.direction)
+      if (straight) possibleNodes.push(straight)
+    }
+    const leftDirection = left(input, node)
+    if (leftDirection) possibleNodes.push(leftDirection)
+
+    const rightDirection = right(input, node)
+    if (rightDirection) possibleNodes.push(rightDirection)
   }
-
-  const leftDirection = left(input, node)
-  if (leftDirection) possibleNodes.push(leftDirection)
-
-  const rightDirection = right(input, node)
-  if (rightDirection) possibleNodes.push(rightDirection)
 
   return possibleNodes
 }
-
 const getVisitedKey = (node: Node) => `${node.x}_${node.y}_${node.direction}_${node.stepCount}`
 
-const traverse = (input: number[][]) => {
+const directCrucible = (input: number[][], isPart2: boolean = false) => {
   const rowEnd = input.length - 1
   const columnEnd = input[0].length - 1
   const visited: string[] = []
+
   function comparator(thisNode: Node, otherNode: Node) {
     let value = thisNode.heatLoss - otherNode.heatLoss
     if (value === 0 && thisNode.direction === otherNode.direction) value = thisNode.stepCount - otherNode.stepCount
@@ -114,8 +126,9 @@ const traverse = (input: number[][]) => {
   const firstNode = {x: 0, y: 0, heatLoss: 0, stepCount: 0, direction: Direction.EAST}
   // const firstNode = {x: 0, y: 0, heatLoss: 0, stepCount: 0, direction: Direction.EAST, previous: null}
   queue.enqueue(firstNode)
-  while(!queue.isEmpty()) {
-    const current = queue.dequeue()
+  let current: Node
+  while (!queue.isEmpty()) {
+    current = queue.dequeue()
     if (visited.includes(getVisitedKey(current))) {
       continue
     }
@@ -123,29 +136,30 @@ const traverse = (input: number[][]) => {
     if (current.x === columnEnd && current.y === rowEnd) {
       return {fullState: current, totalHeatLoss: current.heatLoss}
     }
-    const availableNodes = findNextPossibleNodes(input, current)
+    const availableNodes = findNextPossibleNodes(input, current, isPart2)
     availableNodes.forEach(node => {
-      // if (!visited.includes(getVisitedKey(node))) {
-      //   queue.enqueue(node)
-      //   visited.push(getVisitedKey(node))
-      // }
       queue.enqueue(node)
     })
   }
-  return {fullState: undefined, totalHeatLoss: -1}
+  return {fullState: current, totalHeatLoss: -1}
 }
 
 export const part1 = (rawInput: string) => {
   const input = parseToNumbers(parseInput(rawInput))
-  const {fullState, totalHeatLoss} = traverse(input)
-  console.log(totalHeatLoss);
+  const {fullState, totalHeatLoss} = directCrucible(input)
+  console.log(totalHeatLoss)
   return totalHeatLoss
+  // if (input.length === 13) return 102
+  // return 638
 }
 
 export const part2 = (rawInput: string) => {
-  const input = parseInput(rawInput)
-
-  return
+  const input = parseToNumbers(parseInput(rawInput))
+  const {fullState, totalHeatLoss} = directCrucible(input, true)
+  console.log(totalHeatLoss)
+  return totalHeatLoss
+  // if (input.length === 13) return 94
+  // return 748
 }
 
 export const exampleInput =
@@ -163,6 +177,12 @@ export const exampleInput =
 2546548887735
 4322674655533`
 
+export const secondExample = `111111111111
+999999999991
+999999999991
+999999999991
+999999999991`
+
 run({
   part1: {
     tests: [
@@ -177,7 +197,7 @@ run({
     tests: [
       {
         input: exampleInput,
-        expected: "",
+        expected: 94,
       },
     ],
     solution: part2,
