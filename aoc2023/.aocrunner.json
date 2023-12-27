@@ -302,21 +302,21 @@
         "solved": true,
         "result": "839775244",
         "attempts": [],
-        "time": 17.689416
+        "time": 17.533875
       },
       "part2": {
         "solved": false,
-        "result": null,
+        "result": "0",
         "attempts": [],
-        "time": null
+        "time": 0.370709
       }
     },
     {
       "part1": {
-        "solved": false,
-        "result": null,
+        "solved": true,
+        "result": "3751",
         "attempts": [],
-        "time": null
+        "time": 114.471708
       },
       "part2": {
         "solved": false,
