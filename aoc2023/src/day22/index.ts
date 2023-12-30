@@ -130,22 +130,24 @@ export const letEmFall = (bricks: Brick[], maxZ: number) => {
     currentBricks.forEach(currentBrick => {
       const bricksBelow: Brick[] = findSupportingBricks(bricks, currentBrick)
       currentBrick.supportingBricks = bricksBelow
-      bricksBelow.forEach(supporterBrick => {
-        const brickKey = brickToKey(supporterBrick)
-        if (brickMap.has(brickKey)) {
-          const brickSupport = brickMap.get(brickKey)
-          brickSupport.supportedBricks.push(currentBrick)
-          brickMap.set(brickKey, {
-            brick: supporterBrick,
-            supportedBricks: brickSupport.supportedBricks
-          })
-        } else {
-          brickMap.set(brickKey, {
-            brick: supporterBrick,
-            supportedBricks: [currentBrick]
-          })
-        }
-      })
+      if (bricksBelow.length) {
+        bricksBelow.forEach(supporterBrick => {
+          const brickKey = brickToKey(supporterBrick)
+          if (brickMap.has(brickKey)) {
+            const brickSupport = brickMap.get(brickKey)
+            brickSupport.supportedBricks.push(currentBrick)
+            brickMap.set(brickKey, {
+              brick: supporterBrick,
+              supportedBricks: brickSupport.supportedBricks
+            })
+          } else {
+            brickMap.set(brickKey, {
+              brick: supporterBrick,
+              supportedBricks: [currentBrick]
+            })
+          }
+        })
+      }
     })
     currentTop++
   }
@@ -182,10 +184,62 @@ export const part1 = (rawInput: string) => {
   return identifyBricksToDisintegrate(brickSupportsMap, input.bricks)
 }
 
+const calculateFallCountForBrick = (key: string, brickSupport: BrickSupports, brickSupportsMap: Map<string, BrickSupports>) => {
+  const bricksToCheckSet: Set<string> = new Set()
+  const hasFallen: Set<string> = new Set()
+  //
+  let count = 0
+  brickSupport.supportedBricks.forEach((supportedBrick) => {
+    const supportedBrickKey = brickToKey(supportedBrick)
+    if (supportedBrick.supportingBricks.length === 1) {
+      bricksToCheckSet.add(supportedBrickKey)
+      hasFallen.add(supportedBrickKey)
+      count++
+    }
+  })
+  let nextBrickSupportsToCheck: BrickSupports
+  do {
+    const nextKeyToCheck = Array.from(bricksToCheckSet.keys())[0]
+
+    nextBrickSupportsToCheck = brickSupportsMap.get(nextKeyToCheck)
+    if (nextBrickSupportsToCheck) {
+      bricksToCheckSet.delete(nextKeyToCheck)
+      nextBrickSupportsToCheck.supportedBricks.forEach((supportedBrick: Brick) => {
+        const supportedBrickKey = brickToKey(supportedBrick)
+        if (!hasFallen.has(supportedBrickKey)) {
+
+          if (supportedBrick.supportingBricks.length === 1) {
+            bricksToCheckSet.add(supportedBrickKey)
+            hasFallen.add(supportedBrickKey)
+            count++
+          } else if (supportedBrick.supportingBricks.every(brick => hasFallen.has(brickToKey(brick)))) {
+            bricksToCheckSet.add(supportedBrickKey)
+            hasFallen.add(supportedBrickKey)
+            count++
+          }
+        }
+        // failSafe++
+      })
+    }
+  } while (bricksToCheckSet.size)
+  // } while (bricksToCheckSet.size && failSafe < 20)
+  return count
+}
+
 export const part2 = (rawInput: string) => {
   const input = parseInput(rawInput)
+  const brickSupportsMap = letEmFall(input.bricks, input.maxZ)
+  input.bricks.forEach(brick => {
+    if (!brickSupportsMap.get(brickToKey(brick))) {
+      brickSupportsMap.set(brickToKey(brick), {brick, supportedBricks: []})
+    }
+  })
+  let sum = 0
+  brickSupportsMap.forEach((brickSupports, key) => {
+    sum += calculateFallCountForBrick(key, brickSupports, brickSupportsMap)
+  })
 
-  return
+  return sum
 }
 
 export const exampleInput = `1,0,1~1,2,1
@@ -217,7 +271,7 @@ run({
     tests: [
       {
         input: exampleInput,
-        expected: "",
+        expected: 7,
       },
     ],
     solution: part2,

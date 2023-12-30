@@ -114,8 +114,8 @@ describe('Day22Test tests', () => {
   })
   describe('part2', () => {
     describe('example input', () => {
-      it.skip('part2 should be...', () => {
-        expect(part2(exampleInput)).toBe()
+      it('part2 should calculate 7 bricks to fall', () => {
+        expect(part2(exampleInput)).toBe(7)
       })
     })
     describe('real input', () => {

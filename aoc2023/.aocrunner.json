@@ -333,13 +333,13 @@
           "615",
           "491"
         ],
-        "time": 183.581625
+        "time": 185.712125
       },
       "part2": {
-        "solved": false,
-        "result": null,
+        "solved": true,
+        "result": "39247",
         "attempts": [],
-        "time": null
+        "time": 190.621833
       }
     },
     {
