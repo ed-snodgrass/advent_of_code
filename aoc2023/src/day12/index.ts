@@ -12,7 +12,10 @@ type DamageRecord = {
 
 export const parseInput = (rawInput: string): DamageRecord[] => rawInput.split('\n').map(line => {
   const parts = line.split(' ')
-  return {springConditions: parts[0].split('').map((condition, index) => ({status: condition, index})), groupings: parts[1].split(',').map(group => Number.parseInt(group))}
+  return {
+    springConditions: parts[0].split('').map((condition, index) => ({status: condition, index})),
+    groupings: parts[1].split(',').map(group => Number.parseInt(group)),
+  }
 })
 
 const getGroupsOfDamaged = (springConditions: SpringCondition[]) => {
@@ -107,10 +110,30 @@ export const part1 = (rawInput: string) => {
   return input.map(findArrangementCount).reduce((sum, value) => sum + value, 0)
 }
 
-export const part2 = (rawInput: string) => {
-  const input = parseInput(rawInput)
+export const unfold = (rawInputLine: string) => {
+  const parts = rawInputLine.split(' ')
+  let newSpringsRecord = ''
+  let newGroupings = ''
+  newSpringsRecord += `${parts[0]}?`
+  newSpringsRecord += `${parts[0]}?`
+  newSpringsRecord += `${parts[0]}?`
+  newSpringsRecord += `${parts[0]}?`
+  newSpringsRecord += `${parts[0]}`
+  newGroupings += `${parts[1]},`
+  newGroupings += `${parts[1]},`
+  newGroupings += `${parts[1]},`
+  newGroupings += `${parts[1]},`
+  newGroupings += `${parts[1]}`
 
-  return
+  return `${newSpringsRecord} ${newGroupings}`
+}
+export const unfoldAll = (rawInput: string) => {
+  return rawInput.split('\n').map(unfold).join('\n')
+}
+
+export const part2 = (rawInput: string) => {
+  const input = parseInput(unfoldAll(rawInput))
+  return input.map(findArrangementCount).reduce((sum, value) => sum + value, 0)
 }
 export const exampleInput = `???.### 1,1,3
 .??..??...?##. 1,1,3

@@ -1,5 +1,5 @@
 import fs from "fs"
-import {parseInput, part1, part2, exampleInput, findArrangementCount} from './index.ts'
+import {parseInput, part1, part2, exampleInput, findArrangementCount, unfold, unfoldAll} from './index.ts'
 
 const input = fs.readFileSync(`${__dirname}/input.txt`, 'utf-8');
 
@@ -51,6 +51,15 @@ describe('Day12Test tests', () => {
     })
   })
   describe('part2', () => {
+
+    describe('unfolding', () => {
+      it('should unfoldAll to be same length as original', () => {
+        expect(parseInput(unfoldAll(exampleInput))).toHaveLength(parseInput(exampleInput).length)
+      })
+      it('should unfold', () => {
+        expect(unfold('???.### 1,1,3')).toBe('???.###????.###????.###????.###????.### 1,1,3,1,1,3,1,1,3,1,1,3,1,1,3')
+      })
+    })
     describe('example input', () => {
       it.skip('part2 should be...', () => {
         expect(part2(exampleInput)).toBe()
