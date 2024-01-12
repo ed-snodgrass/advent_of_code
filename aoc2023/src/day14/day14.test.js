@@ -1,5 +1,5 @@
 import fs from "fs"
-import {parseInput, part1, part2, exampleInput, tiltNorth, calculateNorthLoad} from './index.ts'
+import {parseInput, part1, part2, exampleInput, tiltNorth, calculateNorthLoad, zip} from './index.ts'
 
 const input = fs.readFileSync(`${__dirname}/input.txt`, 'utf-8');
 
@@ -26,6 +26,13 @@ O..#.OO...
           expect(calculateNorthLoad(parseInput(northTiltedLoad))).toBe(136)
         })
       })
+      describe('zipping', () => {
+        it('should flip the grid', () => {
+          const zipped = zip(...parseInput(exampleInput))
+          console.log(zipped);
+          expect(zipped[0].join('')).toEqual('OO.O.O..##')
+        })
+      })
       it('part1 should be...', () => {
         expect(part1(exampleInput)).toBe(136)
       })
@@ -38,13 +45,13 @@ O..#.OO...
   })
   describe('part2', () => {
     describe('example input', () => {
-      it.skip('part2 should be...', () => {
-        expect(part2(exampleInput)).toBe()
+      it('part2 should be 136', () => {
+        expect(part2(exampleInput)).toBe(64)
       })
     })
     describe('real input', () => {
-      it.skip('part2 should be...', () => {
-        expect(part2(input)).toBe()
+      it('part2 should be...', () => {
+        expect(part2(input)).toBe(83516)
       })
     })
   })

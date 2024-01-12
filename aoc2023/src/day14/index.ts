@@ -70,6 +70,7 @@ export const tiltEast = (input: string[][]) => {
 
   return input
 }
+
 export const calculateNorthLoad = (input: string[][]) => {
   return input.reduce((load, value, currentIndex) => {
     const loadForLine = value.reduce((lineSum, lineItem) => {
@@ -90,7 +91,7 @@ export const part1 = (rawInput: string) => {
   return calculateNorthLoad(tiltedNorth)
 }
 
-export const cycle = (input: string[][]) => {
+export const tiltCycle = (input: string[][]) => {
   input = tiltNorth(input)
   input = tiltWest(input)
   input = tiltSouth(input)
@@ -99,18 +100,35 @@ export const cycle = (input: string[][]) => {
   return input
 }
 
-const numberOfCycles = 1000000000
+const gridToString = (grid: string[][]) => {
+  return grid.map(gridRow => gridRow.join('')).join('\n')
+}
+
 export const part2 = (rawInput: string) => {
-  let timeStart = Date.now()
-  let input = parseInput(rawInput)
-  for (let i = 0; i < numberOfCycles; i ++) {
-    input = cycle(input)
-    if (i % 1000000 === 0) {
-      console.log(`iteration[${i/1000000}m] took ${Date.now() - timeStart} milliseconds`)
-      timeStart = Date.now()
+  let grid = parseInput(rawInput)
+  let grids = []
+  const cache: string[] = [gridToString(grid)]
+  let tiltCycleCount = 0
+  let first: number
+  while (!first) {
+    tiltCycleCount++
+    grid = tiltCycle(grid)
+    const inputString = gridToString(grid)
+    // console.log(`After ${tiltCycleCount} cycles: \n${inputString}`)
+    if (cache.includes(inputString)) {
+      first = cache.indexOf(inputString)
+      break
+    } else {
+      grids.push(grid)
+      cache.push(inputString)
     }
   }
-  return calculateNorthLoad(input)
+  first = cache.indexOf(gridToString(grid))
+  console.log(`cycleCount: ${tiltCycleCount}`)
+  console.log(`first: ${first}`)
+  const indexOfFinalGrid = (1000000000 - first) % (tiltCycleCount - first) + first
+  console.log(`indexOfFinalGrid: ${indexOfFinalGrid}`)
+  return calculateNorthLoad(parseInput(cache[indexOfFinalGrid]))
 }
 
 export const exampleInput = `O....#....
