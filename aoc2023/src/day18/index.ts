@@ -1,22 +1,30 @@
 import run from "aocrunner"
-// import {findNumberOfPointsWithinPolygon, shoelace} from "../utils/polygon";
-import {findNumberOfPointsWithinPolygon, shoelace} from "../utils/polygon.js";
+import {findNumberOfPointsWithinPolygon, shoelace} from "../utils/polygon";
+// import {findNumberOfPointsWithinPolygon, shoelace} from "../utils/polygon.js";
 
 type DigPlanItem = {
   direction: Direction
   digCount: number
-  hexValue: string
+  hexValue?: string
 }
 
-export const gridToString = (grid: string[][]) => {
-  let gridString = "";
-  for (let yIndex = 0; yIndex < grid.length; yIndex++) {
-    for (let xIndex = 0; xIndex < grid[yIndex].length; xIndex++) {
-      gridString += grid[yIndex][xIndex];
-    }
-    gridString += "\n";
+export function translateHex(s: string) {
+  const digCount = parseInt(s.slice(1,6), 16);
+  const direction = directionLookup(parseInt(s.slice(6, 7), 10))
+  return {direction, digCount};
+}
+
+function directionLookup (directionNum: number) {
+  switch (directionNum) {
+    case 0:
+      return Direction.RIGHT
+    case 1:
+      return Direction.DOWN
+    case 2:
+      return Direction.LEFT
+    case 3:
+      return Direction.UP
   }
-  return gridString;
 }
 
 export const parseInput = (rawInput: string): DigPlanItem[] => {
@@ -29,6 +37,12 @@ export const parseInput = (rawInput: string): DigPlanItem[] => {
     }
   })
 }
+export const parseInput2 = (rawInput: string): DigPlanItem[] => {
+  return rawInput.split('\n').map(line => {
+    const hexCode = line.split(' ')[2].replace('(', '').replace(')', '')
+    return translateHex(hexCode)
+  })
+}
 
 export enum Direction {
   UP = 'U',
@@ -37,80 +51,6 @@ export enum Direction {
   RIGHT = 'R',
 }
 
-type Node = {
-  x: number
-  y: number
-  direction: Direction
-}
-
-export const createInitialGrid = (digPlan: DigPlanItem[]) => {
-  let rows = 1
-  let columns = 1
-  let currentX = 0
-  let currentY = 0
-
-  digPlan.forEach(instruction => {
-    // console.log(instruction);
-    switch(instruction.direction) {
-      case Direction.RIGHT:
-        if (columns < currentX + instruction.digCount) {
-          columns += instruction.digCount
-        }
-        currentX += instruction.digCount
-        break
-      case Direction.DOWN:
-        if (rows < currentY + instruction.digCount) {
-          rows += instruction.digCount
-        }
-        currentY += instruction.digCount
-        break
-      case Direction.LEFT:
-        currentX -= instruction.digCount
-        break
-      case Direction.UP:
-        currentY -= instruction.digCount
-        break
-    }
-  })
-  return Array(rows).fill([]).map(() => Array(columns).fill('.'))
-}
-
-export const drawExterior = (digPlan: DigPlanItem[], exterior: string[][]) => {
-  let currentX = 1
-  let currentY = 1
-  const drawnExterior = exterior.map(row => row.map(rowItem => rowItem))
-  digPlan.forEach(instruction => {
-    // console.log(instruction);
-    switch(instruction.direction) {
-      case Direction.RIGHT:
-        for (let i = 0; i < instruction.digCount; i++) {
-          drawnExterior[currentY - 1][currentX - 1 + i] = '#'
-        }
-        currentX += instruction.digCount
-        break
-      case Direction.DOWN:
-        for (let i = 0; i < instruction.digCount; i++) {
-          drawnExterior[currentY - 1 + i][currentX - 1] = '#'
-        }
-        currentY += instruction.digCount
-        break
-      case Direction.LEFT:
-        for (let i = 0; i < instruction.digCount; i++) {
-          drawnExterior[currentY - 1][currentX - 1 - i] = '#'
-        }
-        currentX -= instruction.digCount
-        break
-      case Direction.UP:
-        for (let i = 0; i < instruction.digCount; i++) {
-          drawnExterior[currentY - 1 - i][currentX - 1] = '#'
-        }
-        currentY -= instruction.digCount
-        break
-    }
-  })
-  console.log(drawnExterior.map(row => row.join('')).join('\n'));
-  return drawnExterior.map(row => row.join('')).join('\n')
-}
 export const mapExterior = (digPlan: DigPlanItem[]) => {
   let currentX = 1
   let currentY = 1
@@ -119,47 +59,54 @@ export const mapExterior = (digPlan: DigPlanItem[]) => {
     // console.log(instruction);
     switch(instruction.direction) {
       case Direction.RIGHT:
-        for (let i = 0; i < instruction.digCount; i++) {
-          exteriorNodes.push({x: currentX - 1 + i, y: currentY - 1})
-        }
         currentX += instruction.digCount
         break
       case Direction.DOWN:
-        for (let i = 0; i < instruction.digCount; i++) {
-          exteriorNodes.push({x: currentX - 1, y: currentY - 1 + i})
-        }
         currentY += instruction.digCount
         break
       case Direction.LEFT:
-        for (let i = 0; i < instruction.digCount; i++) {
-          exteriorNodes.push({x: currentX - 1 - i, y: currentY - 1})
-        }
         currentX -= instruction.digCount
         break
       case Direction.UP:
-        for (let i = 0; i < instruction.digCount; i++) {
-          exteriorNodes.push({x: currentX - 1, y: currentY - 1 - i})
-        }
         currentY -= instruction.digCount
         break
     }
+    exteriorNodes.push({x: currentX, y: currentY})
   })
   return exteriorNodes
+}
+
+export const countBoundaryItems = (edgeBoundaryNodes: {x: number, y: number}[]) => {
+  const firstEdge = edgeBoundaryNodes[0]
+  let runningTotal = firstEdge.x === 1 ? Math.abs(firstEdge.y - 1) : Math.abs(firstEdge.x - 1)
+  for (let i = 0; i < edgeBoundaryNodes.length - 1; i ++) {
+    const thisEdge = edgeBoundaryNodes[i]
+    const nextEdge = edgeBoundaryNodes[i + 1]
+    if (thisEdge.x === nextEdge.x) {
+      runningTotal += Math.abs(thisEdge.y - nextEdge.y)
+    } else {
+      runningTotal += Math.abs(thisEdge.x - nextEdge.x)
+    }
+  }
+  return runningTotal
 }
 
 export const part1 = (rawInput: string) => {
   const input = parseInput(rawInput)
   const exterior = mapExterior(input)
   const polygonArea = shoelace(exterior)
-  const numberOfPoints = findNumberOfPointsWithinPolygon(exterior.length - 1, 0, polygonArea)
-  console.log(numberOfPoints)
-  return Math.floor(numberOfPoints) + exterior.length
+  const numberOfBoundaryItems = countBoundaryItems(exterior)
+  const numberOfPoints = findNumberOfPointsWithinPolygon(numberOfBoundaryItems - 1, 0, polygonArea)
+  return Math.floor(numberOfPoints) + numberOfBoundaryItems
 }
 
 export const part2 = (rawInput: string) => {
-  const input = parseInput(rawInput)
-
-  return
+  const input = parseInput2(rawInput)
+  const exterior = mapExterior(input)
+  const polygonArea = shoelace(exterior)
+  const numberOfBoundaryItems = countBoundaryItems(exterior)
+  const numberOfPoints = findNumberOfPointsWithinPolygon(numberOfBoundaryItems, 0, polygonArea)
+  return Math.floor(numberOfPoints) + numberOfBoundaryItems
 }
 
 export const exampleInput = `R 6 (#70c710)
@@ -191,7 +138,7 @@ run({
     tests: [
       {
         input: exampleInput,
-        expected: "",
+        expected: 952408144115,
       },
     ],
     solution: part2,

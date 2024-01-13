@@ -19,9 +19,7 @@ export const findNumberOfPointsWithinPolygon = (numberOfIntegerPointsOnBoundary_
   // b is number of boundary items
   // i is the number of integers within the polygon
   // typically A = i + b/2 + h - 1
-  console.log('A: ', polygonArea_A);
-  console.log('b: ', numberOfIntegerPointsOnBoundary_b);
-  console.log('h: ', numberOfHoles_h)
-  console.log('i: ', polygonArea_A - (numberOfIntegerPointsOnBoundary_b/2) - numberOfHoles_h + 1)
+  const numberOfItemsInsideThePolygon = polygonArea_A - (numberOfIntegerPointsOnBoundary_b/2) - numberOfHoles_h + 1
+  console.log(`A -> ${polygonArea_A}, b -> ${numberOfIntegerPointsOnBoundary_b}, h -> ${numberOfHoles_h}, i -> ${numberOfItemsInsideThePolygon}`)
   return polygonArea_A - (numberOfIntegerPointsOnBoundary_b/2) - numberOfHoles_h + 1
 }
