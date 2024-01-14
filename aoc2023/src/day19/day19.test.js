@@ -72,13 +72,15 @@ describe('Day19Test tests', () => {
   })
   describe('part2', () => {
     describe('example input', () => {
-      it.skip('part2 should be...', () => {
+      it('part2 should be...', () => {
         expect(part2(exampleInput)).toBe(167409079868000)
       })
     })
     describe('real input', () => {
-      it.skip('part2 should be...', () => {
-        expect(part2(input)).toBe()
+      it('part2 should be...', () => {
+        const value = part2(input)
+        console.log('part2: ', value);
+        expect(value).toBe(124615747767410)
       })
     })
   })

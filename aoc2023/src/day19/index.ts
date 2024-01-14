@@ -21,6 +21,11 @@ export type Workflow = {
   name: string
   rules: Rule[]
 }
+export type Workflow2 = {
+  name: string
+  rules: Rule[]
+  fallback: string
+}
 
 enum Status {
   ACCEPTED = 'A',
@@ -62,6 +67,15 @@ const buildWorkflows = (workflowPart: string) => {
     return {name: workflowMatch.groups.name, rules}
   })
 }
+const buildWorkflows2 = (workflowPart: string) => {
+  return workflowPart.split('\n').map(workflowString => {
+    const workflowMatch = workflowString.match(/^(?<name>.*)\{(?<rules>.*)\}$/u)
+    const rulesStringArray = workflowMatch.groups.rules.split(',')
+    const rules = buildWorkflowRules(rulesStringArray)
+    const fallback = rules.find(rule => !rule.condition)
+    return {name: workflowMatch.groups.name, rules: rules.filter(rule => !!rule.condition), fallback: fallback.nextWorkflow}
+  })
+}
 
 const buildPartRatings = (partRatingsPart: string) => {
   return partRatingsPart.split('\n').map(partRatingString => {
@@ -82,7 +96,13 @@ export const parseInput = (rawInput: string) : {workflows: Workflow[], partRatin
 
   return {workflows, partRatings}
 }
+export const parseInput2 = (rawInput: string) : {workflows: Workflow2[], partRatings: PartRating[]} => {
+  const inputParts= rawInput.split('\n\n')
+  const workflows = buildWorkflows2(inputParts[0])
+  const partRatings = buildPartRatings(inputParts[1])
 
+  return {workflows, partRatings}
+}
 export const sumUpAcceptedPartRatings = (partRatings: PartRating[]) => {
   return partRatings.reduce((sum, partRating) => {
     sum += partRating.x + partRating.m + partRating.a + partRating.s
@@ -118,17 +138,64 @@ export const isAcceptedPart = (partRating: PartRating, workflows: Workflow[]) =>
 
 export const part1 = (rawInput: string) => {
   const input = parseInput(rawInput)
-  // for each part, start at workflow "in"
   const acceptedParts = input.partRatings.filter(partRating => {
     return isAcceptedPart(partRating, input.workflows)
   })
   return sumUpAcceptedPartRatings(acceptedParts)
 }
 
-export const part2 = (rawInput: string) => {
-  const input = parseInput(rawInput)
+export const countAll = (workflows: Workflow2[]) => {
+  const ratingRanges = {}
+  'xmas'.split('').forEach(key => {
+    ratingRanges[key] = [1, 4000]
+  })
+  const countOne = (target: string, ranges: Record<string, number[]>) => {
+    if (target === 'R') {
+      return 0
+    }
+    if (target === 'A') {
+      let product = 1
+      Object.keys(ranges).forEach(rangeKey => {
+        const [min, max] = ranges[rangeKey]
+        product *= (1 + max - min)
+      })
+      return product
+    }
+    let total = 0
+    const targetWorkflow = workflows.find(workflow => workflow.name === target)
+    targetWorkflow.rules.forEach(({nextWorkflow, condition}) => {
+      const category = condition.partRatingCategory
+      const ratingValue = condition.rating
+      const operator = condition.operator
 
-  return
+      const [min, max] = ranges[category]
+      let acceptedRanges: number[], otherRanges: number[]
+      if (operator === '<') {
+        acceptedRanges = [min, Math.min(max, ratingValue - 1)]
+        otherRanges = [Math.max(min, ratingValue), max]
+      } else {
+        acceptedRanges = [Math.max(min, ratingValue + 1), max]
+        otherRanges = [min, Math.min(max, ratingValue)]
+      }
+      if (acceptedRanges[0] <= acceptedRanges[1]) {
+        const newRanges = JSON.parse(JSON.stringify(ranges))
+        newRanges[category] = acceptedRanges
+        total += countOne(nextWorkflow, newRanges)
+      }
+      if (otherRanges[0] <= otherRanges[1]) {
+        ranges[category] = otherRanges
+      }
+    })
+    total += countOne(targetWorkflow.fallback, ranges)
+    return total
+  }
+
+  return countOne('in', ratingRanges)
+}
+
+export const part2 = (rawInput: string) => {
+  const input = parseInput2(rawInput)
+  return countAll(input.workflows)
 }
 
 export const exampleInput = `px{a<2006:qkq,m>2090:A,rfg}
