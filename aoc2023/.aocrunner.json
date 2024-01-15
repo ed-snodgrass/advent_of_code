@@ -305,13 +305,13 @@
         "solved": true,
         "result": "839775244",
         "attempts": [],
-        "time": 17.533875
+        "time": 17.671083
       },
       "part2": {
-        "solved": false,
-        "result": "0",
+        "solved": true,
+        "result": "207787533680413",
         "attempts": [],
-        "time": 0.370709
+        "time": 79.680875
       }
     },
     {

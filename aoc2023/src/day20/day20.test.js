@@ -6,15 +6,6 @@ const input = fs.readFileSync(`${__dirname}/input.txt`, 'utf-8');
 describe('2023 Day20 tests ... Pulse Propagation', () => {
   describe('part1', () => {
     describe('example input', () => {
-      describe('when button is pressed the first time', () => {
-        let state
-        beforeEach(() => {
-          state = buttonPress(parseInput(exampleInput))
-        })
-        it('should ', () => {
-          expect(state).toBe()
-        })
-      })
       describe('parsing modules', () => {
         it('should find 6 modules', () => {
           expect(parseInput(exampleInput)).toHaveLength(6)
@@ -66,14 +57,10 @@ describe('2023 Day20 tests ... Pulse Propagation', () => {
     })
   })
   describe('part2', () => {
-    describe('example input', () => {
-      it.skip('part2 should be...', () => {
-        expect(part2(exampleInput)).toBe()
-      })
-    })
     describe('real input', () => {
-      it.skip('part2 should be...', () => {
-        expect(part2(input)).toBe()
+
+      it('part2 should be...', () => {
+        expect(part2(input)).toBe(207787533680413)
       })
     })
   })

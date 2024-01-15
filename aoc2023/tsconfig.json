@@ -13,7 +13,8 @@
     "importHelpers": true
   },
   "include": [
-    "src"
+    "src",
+    "dist/utils/Deque.d.ts"
   ],
   "exclude": [
     "node_modules",

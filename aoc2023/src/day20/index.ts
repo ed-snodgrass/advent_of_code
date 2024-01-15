@@ -1,11 +1,14 @@
 import run from "aocrunner"
 
+import {Deque} from "../utils/Deque";
+// import {Deque} from "../utils/Deque.js";
+
 export type Module = {
   name: string
   type: ModuleType
   connections: string[]
   status?: Status
-  incomingPulseMap?: Map<string, Pulse>
+  incomingPulseMap?: Record<string, Pulse>
 }
 
 export enum ModuleType {
@@ -25,7 +28,7 @@ export enum Status {
   ON,
 }
 
-export const parseInput = (rawInput: string) : Module[] => {
+export const parseInput = (rawInput: string): Module[] => {
   const modules: Module[] = []
   rawInput.split('\n').forEach((line: string) => {
     let type: ModuleType
@@ -55,16 +58,20 @@ export const parseInput = (rawInput: string) : Module[] => {
     }
     modules.push(module)
   })
-  modules.filter((module) => module.type === ModuleType.CONJUNCTION)
-    .forEach(conjunctionModule => {
-    const incomingConnections = modules.reduce((agg, module) => {
-      if (module.connections.includes(conjunctionModule.name)) {
-        agg.push(module.name)
-      }
-      return agg
-    }, [])
-    conjunctionModule.incomingPulseMap = new Map(incomingConnections.map((connection: string) => [connection, Pulse.LOW]))
+  modules.forEach(module => {
+    if (module.type === ModuleType.CONJUNCTION) {
+      const incomingConnections = modules.reduce((agg, otherModule) => {
+        if (otherModule.connections.includes(module.name)) {
+          agg.push(otherModule.name)
+        }
+        return agg
+      }, [])
+      module.incomingPulseMap = {}
+      incomingConnections.forEach((connection: string) => {
+        module.incomingPulseMap[connection] = Pulse.LOW
+      })
 
+    }
   })
   const untypedModules = []
   modules.forEach((module) => {
@@ -88,26 +95,38 @@ export const parseInput = (rawInput: string) : Module[] => {
 const findModuleByName = (modules: Module[], name: string) => modules.find(module => module.name === name)
 const findModuleByType = (modules: Module[], type: string) => modules.find(module => module.type === type)
 
-const sendPulseToModule = (currentModuleState: Module[], pulseToProcess: {fromModule: Module, destinationModule: Module, pulse: Pulse}) => {
+const sendPulseToModule = (currentModuleState: Module[], pulseToProcess: {
+  fromModule: Module,
+  destinationModule: Module,
+  pulse: Pulse
+}) => {
   const nextPulses = []
 
   let lowCount = 0
   let highCount = 0
   switch (pulseToProcess.destinationModule.type) {
     case ModuleType.CONJUNCTION:
-      pulseToProcess.destinationModule.incomingPulseMap.set(pulseToProcess.fromModule.name, pulseToProcess.pulse)
+      pulseToProcess.destinationModule.incomingPulseMap[pulseToProcess.fromModule.name] = pulseToProcess.pulse
 
-      if (Array.from(pulseToProcess.destinationModule.incomingPulseMap.values()).every(value => value === Pulse.HIGH)) {
+      if (Object.values(pulseToProcess.destinationModule.incomingPulseMap).every(value => value === Pulse.HIGH)) {
         pulseToProcess.destinationModule.connections.forEach(connection => {
           // console.log(`${pulseToProcess.destinationModule.name} -LOW-> ${connection}`)
           lowCount++
-          nextPulses.push({fromModule: pulseToProcess.destinationModule, destinationModule: findModuleByName(currentModuleState, connection), pulse: Pulse.LOW})
+          nextPulses.push({
+            fromModule: pulseToProcess.destinationModule,
+            destinationModule: findModuleByName(currentModuleState, connection),
+            pulse: Pulse.LOW
+          })
         })
       } else {
         pulseToProcess.destinationModule.connections.forEach(connection => {
           // console.log(`${pulseToProcess.destinationModule.name} -HIGH-> ${connection}`)
           highCount++
-          nextPulses.push({fromModule: pulseToProcess.destinationModule, destinationModule: findModuleByName(currentModuleState, connection), pulse: Pulse.HIGH})
+          nextPulses.push({
+            fromModule: pulseToProcess.destinationModule,
+            destinationModule: findModuleByName(currentModuleState, connection),
+            pulse: Pulse.HIGH
+          })
         })
       }
       break
@@ -118,14 +137,22 @@ const sendPulseToModule = (currentModuleState: Module[], pulseToProcess: {fromMo
           pulseToProcess.destinationModule.connections.forEach(connection => {
             lowCount++
             // console.log(`${pulseToProcess.destinationModule.name} -LOW-> ${connection}`)
-            nextPulses.push({fromModule: pulseToProcess.destinationModule, destinationModule: findModuleByName(currentModuleState, connection), pulse: Pulse.LOW})
+            nextPulses.push({
+              fromModule: pulseToProcess.destinationModule,
+              destinationModule: findModuleByName(currentModuleState, connection),
+              pulse: Pulse.LOW
+            })
           })
         } else {
           pulseToProcess.destinationModule.status = Status.ON
           pulseToProcess.destinationModule.connections.forEach(connection => {
             highCount++
             // console.log(`${pulseToProcess.destinationModule.name} -HIGH-> ${connection}`)
-            nextPulses.push({fromModule: pulseToProcess.destinationModule, destinationModule: findModuleByName(currentModuleState, connection), pulse: Pulse.HIGH})
+            nextPulses.push({
+              fromModule: pulseToProcess.destinationModule,
+              destinationModule: findModuleByName(currentModuleState, connection),
+              pulse: Pulse.HIGH
+            })
           })
         }
       }
@@ -151,8 +178,8 @@ export const buttonPress = (currentModuleState: Module[]) => {
   let index = 1
   while (next) {
     const {nextPulsesToProcess, pulsesSentByModule} = sendPulseToModule(currentModuleState, next)
-    lowCount+= pulsesSentByModule.low
-    highCount+= pulsesSentByModule.high
+    lowCount += pulsesSentByModule.low
+    highCount += pulsesSentByModule.high
     pulseProcessing.push(...nextPulsesToProcess)
     next = pulseProcessing[index]
     index++
@@ -172,14 +199,88 @@ export const part1 = (rawInput: string) => {
   return highCount * lowCount
 }
 
-export const part2 = (rawInput: string) => {
-  const input = parseInput(rawInput)
 
-  return
+export const greatestCommonDivisor = (a: number, b: number) => {
+  return !b ? a : greatestCommonDivisor(b, a % b)
+}
+
+export const leastCommonMultiple = (a: number, b: number) : number => {
+  return a * (b / greatestCommonDivisor(a, b))
+}
+
+type PulseAction = { from: string, to: string, pulse: number }
+
+const buttonPress2 = (connectorModule: Module, input: Module[]) => {
+  const cycles = {}
+  const seen = JSON.parse(JSON.stringify(connectorModule.incomingPulseMap))
+
+  let buttonPresses = 0;
+  while (buttonPresses < 1000000) {
+    buttonPresses += 1
+
+    const deque = new Deque<PulseAction>()
+    const broadcaster = input.find(module => module.name === 'broadcaster')
+    broadcaster.connections.forEach(connection => {
+      deque.addRear({from: 'broadcaster', to: connection, pulse: Pulse.LOW})
+    })
+
+    while (!deque.isEmpty()) {
+      const {from, to, pulse} = deque.removeFront()
+      const currentModule = input.find(inputModule => inputModule.name === to)
+
+      if (currentModule.name === connectorModule.name && pulse === 1) {
+        seen[from] = seen[from] + 1
+        // update cycles
+        if (!cycles[from]) {
+          cycles[from] = buttonPresses
+        }
+      }
+      // if all the cycles exist, lessss go
+      if (Object.keys(cycles).length === 4) {
+        return cycles
+      }
+
+      if (currentModule.type === ModuleType.FLIP_FLOP) {
+        if (pulse === Pulse.LOW) {
+          if (currentModule.status === Status.ON) {
+            currentModule.status = Status.OFF
+            currentModule.connections.forEach(connection => {
+              deque.addRear({from: currentModule.name, to: connection, pulse: Pulse.LOW})
+            })
+          } else {
+            currentModule.status = Status.ON
+            currentModule.connections.forEach(connection => {
+              deque.addRear({from: currentModule.name, to: connection, pulse: Pulse.HIGH})
+            })
+          }
+        }
+      } else if (currentModule.type === ModuleType.CONJUNCTION) {
+        currentModule.incomingPulseMap[from] = pulse
+        if (Object.values(currentModule.incomingPulseMap).every(value => value === Pulse.HIGH)) {
+          currentModule.connections.forEach(connection => {
+            deque.addRear({from: currentModule.name, to: connection, pulse: Pulse.LOW})
+          })
+        } else {
+          currentModule.connections.forEach(connection => {
+            deque.addRear({from: currentModule.name, to: connection, pulse: Pulse.HIGH})
+          })
+        }
+      }
+    }
+  }
+  return cycles
+}
+
+export const part2 = (rawInput: string) : number => {
+  const input = parseInput(rawInput)
+  const rxConnection = input.find(module => module.connections.includes('rx'))
+
+  const cycles = buttonPress2(rxConnection, input)
+  return <number>Object.values(cycles).reduce(leastCommonMultiple)
 }
 
 export const exampleInput =
-`broadcaster -> a
+  `broadcaster -> a
 %a -> inv, con
 &inv -> b
 %b -> con
@@ -196,12 +297,6 @@ run({
     solution: part1,
   },
   part2: {
-    tests: [
-      {
-        input: exampleInput,
-        expected: "",
-      },
-    ],
     solution: part2,
   },
   trimTestInputs: true,
