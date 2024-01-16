@@ -58,9 +58,8 @@ describe('Day23Test tests', () => {
       })
     })
     describe('real input', () => {
-      // 19879
-      it('part2 should be greater than 4598', () => {
-        expect(part2(input)).toBeGreaterThan(4598)
+      it('part2 should be greater than 6286', () => {
+        expect(part2(input)).toBe(6286)
       })
     })
   })
