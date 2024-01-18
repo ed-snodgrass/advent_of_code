@@ -1,4 +1,6 @@
 import run from "aocrunner"
+import {init} from 'z3-solver';
+import assert from "node:assert";
 
 type Position = { x: number, y: number, z: number }
 type Velocity = { x: number, y: number, z: number }
@@ -84,26 +86,55 @@ export const part1 = (rawInput: string) => {
   const hailstonePairs = findHailstonePairs(hailstones)
   const min = hailstones.length > 5 ? 200000000000000 : 7
   const max = hailstones.length > 5 ? 400000000000000 : 27
-  const counts = hailstonePairs.map(hailstonePair => {
+  return hailstonePairs.reduce((sum, hailstonePair) => {
     const intersection = findIntersection(hailstonePair)
-//     console.log(`HailstoneA: ${hailstonePair.one.position.x}, ${hailstonePair.one.position.y}, ${hailstonePair.one.position.z}\n
-// HailstoneB: ${hailstonePair.two.position.x}, ${hailstonePair.two.position.y}, ${hailstonePair.two.position.z}\n
-// ${JSON.stringify(intersection)}`)
     if (intersection && !wasInThePast(intersection, hailstonePair.one) && !wasInThePast(intersection, hailstonePair.two)) {
       if (intersection.x >= min && intersection.y >= min && intersection.y <= max && intersection.x <= max) {
-        return 1
+        return sum + 1
       }
     }
-    return 0
-  })
-
-  return counts.reduce((sum, value) => sum + value, 0)
+    return sum
+  }, 0)
 }
 
-export const part2 = (rawInput: string) => {
-  const hailstones = parseInput(rawInput)
+export const findPerfectPitch = async (originalHailstones: Hailstone[]) => {
+  const { Context, em } = await init();
+  const { Real, Solver } = Context('main');
+  const hailstones = originalHailstones.map(({position, velocity}) => {
+    return [position.x, position.y, position.z, velocity.x, velocity.y, velocity.z]
+  })
+  const xr = Real.const('xr');
+  const yr = Real.const('yr');
+  const zr = Real.const('zr');
 
-  return
+  const vxr = Real.const('vxr');
+  const vyr = Real.const('vyr');
+  const vzr = Real.const('vzr');
+
+  const solver = new Solver();
+
+  for (let i = 0; i < hailstones.length; i++) {
+    const [hx, hy, hz, hvx, hvy, hvz] = hailstones[i]
+    const t = Real.const(`t${i}`);
+
+    solver.add(xr.add(vxr.mul(t)).eq(t.mul(hvx).add(hx)));
+    solver.add(yr.add(vyr.mul(t)).eq(t.mul(hvy).add(hy)));
+    solver.add(zr.add(vzr.mul(t)).eq(t.mul(hvz).add(hz)));
+  }
+
+
+  const satisfied = await solver.check();
+  assert(satisfied === 'sat', 'Z3 solver unsatisfied');
+  const model = solver.model();
+
+  em.PThread.terminateAllThreads();
+  return [model.eval(xr), model.eval(yr), model.eval(zr)].map(Number)
+}
+
+export const part2 = async (rawInput: string) => {
+  // I got lots of help on this, can't find the link
+  const perfectPitch = await findPerfectPitch(parseInput(rawInput))
+  return perfectPitch.reduce((sum, number) => sum + number);
 }
 
 export const exampleInput = `19, 13, 30 @ -2,  1, -2
@@ -129,6 +160,7 @@ run({
         expected: 47,
       },
     ],
+    // @ts-ignore
     solution: part2,
   },
   trimTestInputs: true,

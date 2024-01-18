@@ -1,5 +1,12 @@
 import fs from "fs"
-import {part1, part2, exampleInput, parseInput, travelOneNanosecond, findHailstonePairs} from './index.ts'
+import {
+  part1,
+  part2,
+  exampleInput,
+  parseInput,
+  travelOneNanosecond,
+  findHailstonePairs,
+} from './index.ts'
 
 const input = fs.readFileSync(`${__dirname}/input.txt`, 'utf-8');
 
@@ -45,14 +52,24 @@ describe('Day24Test tests', () => {
     })
   })
   describe('part2', () => {
+
     describe('example input', () => {
-      it.skip('part2 should be...', () => {
-        expect(part2(exampleInput)).toBe()
+
+      // it('part2 should be...', () => {
+      //   expect(part2(exampleInput)).toBe(47)
+      // })
+      it('part2 should be...', async () => {
+        expect(await part2(exampleInput)).toBe(47)
       })
     })
     describe('real input', () => {
-      it.skip('part2 should be...', () => {
-        expect(part2(input)).toBe()
+
+      // it('part2 should be...', () => {
+      //   expect(part2(input)).toBe(886858737029295)
+      // })
+
+      it('part2 should be...', async () => {
+        expect(await part2(input)).toBe(886858737029295)
       })
     })
   })
