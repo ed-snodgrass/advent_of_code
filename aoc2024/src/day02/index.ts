@@ -1,24 +1,12 @@
 import run from "aocrunner"
 
-const parseInput = (rawInput: string) => rawInput
-
-const part1 = (rawInput: string) => {
-  const input = parseInput(rawInput)
-
-  return
-}
-
-const part2 = (rawInput: string) => {
-  const input = parseInput(rawInput)
-
-  return
-}
+import {part1, part2, exampleInputPart1, exampleInputPart2} from "./solution.js"
 
 run({
   part1: {
     tests: [
       // {
-      //   input: ``,
+      //   input: exampleInputPart1,
       //   expected: "",
       // },
     ],
@@ -27,7 +15,7 @@ run({
   part2: {
     tests: [
       // {
-      //   input: ``,
+      //   input: exampleInputPart2,
       //   expected: "",
       // },
     ],
