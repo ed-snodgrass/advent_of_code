@@ -35,15 +35,15 @@ describe('Day1 tests', () => {
     })
   })
   describe('part2', () => {
-    // describe('example input', () => {
-    //   it('part2 should be...', () => {
-    //     expect(part2(exampleInputPart2)).toBe(31)
-    //   })
-    // })
-    // describe('real input', () => {
-    //   it.skip('part2 should be...', () => {
-    //     expect(part2(input)).toBe()
-    //   })
-    // })
+    describe('example input', () => {
+      it('part2 should be...', () => {
+        expect(part2(exampleInputPart2)).toBe(31)
+      })
+    })
+    describe('real input', () => {
+      it('part2 should be...', () => {
+        expect(part2(input)).toBe(25574739)
+      })
+    })
   })
 })

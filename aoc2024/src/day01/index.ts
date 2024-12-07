@@ -14,10 +14,10 @@ run({
   },
   part2: {
     tests: [
-      // {
-      //   input: exampleInputPart2,
-      //   expected: "",
-      // },
+      {
+        input: exampleInputPart2,
+        expected: 31,
+      },
     ],
     solution: part2,
   },
