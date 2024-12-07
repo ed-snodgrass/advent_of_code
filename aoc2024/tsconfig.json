@@ -13,11 +13,10 @@
     "importHelpers": true
   },
   "include": [
-    "src"
+    "src",
   ],
   "exclude": [
     "node_modules",
-    "src/**/*.test.ts",
     "src/**/*.temp.ts"
   ]
 }
