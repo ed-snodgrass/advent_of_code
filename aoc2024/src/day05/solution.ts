@@ -1,7 +1,9 @@
 export const parseInput = (rawInput: string) => {
-  const lines = rawInput.split('\n');
-
-  return lines
+  const inputSplit = rawInput.split('\n\n');
+  const pageOrderingRules = inputSplit[0].split('\n').map(() => {
+    return []
+  });
+  return [pageOrderingRules, []]
 }
 
 export const part1 = (rawInput: string):number => {
