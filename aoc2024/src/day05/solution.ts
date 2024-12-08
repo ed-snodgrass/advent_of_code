@@ -9,9 +9,29 @@ export const parseInput = (rawInput: string) => {
   return [pageOrderingRules, updateSequences]
 }
 
-export const part1 = (rawInput: string):number => {
-  const input = parseInput(rawInput)
+export const determineCorrectnessAccordingToRules = (orderingRules: number[][], orderSequence: number[]) => {
+  const pageIndexMap: Record<number, number> = {};
+  orderSequence.forEach((page, index) => {
+    pageIndexMap[page] = index;
+  });
 
+  for (const [first, second] of orderingRules) {
+    const firstIndex = pageIndexMap[first];
+    const secondIndex = pageIndexMap[second];
+
+    if (firstIndex > secondIndex) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+export const part1 = (rawInput: string):number => {
+  const [pageOrderingRules, updateSequences] = parseInput(rawInput)
+  const correctUpdateSequences = updateSequences.filter(updateSequence => {
+    return determineCorrectnessAccordingToRules(pageOrderingRules, updateSequence)
+  })
   return -1
 }
 

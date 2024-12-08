@@ -1,15 +1,18 @@
 import * as fs from "fs"
-import {part1, part2, parseInput, exampleInputPart1, exampleInputPart2} from './solution'
-import exp from "node:constants"
+import {
+  part1,
+  part2,
+  parseInput,
+  exampleInputPart1,
+  exampleInputPart2,
+  determineCorrectnessAccordingToRules,
+} from "./solution"
 
 const input = fs.readFileSync(`${__dirname}/input.txt`, 'utf-8');
 
 describe('Day5Test tests', () => {
   describe('part1', () => {
     describe('example input', () => {
-      it('part1 should be...', () => {
-        expect(part1(exampleInputPart1)).toBe(143)
-      })
       describe("parsingInput tests", () => {
         it("should return pageOrderingRules as an array of 21 arrays", () => {
           expect(parseInput(exampleInputPart1)[0].length).toBe(21)
@@ -31,6 +34,36 @@ describe('Day5Test tests', () => {
           const updateSequences = parseInput(exampleInputPart1)[1]
           expect(updateSequences[updateSequences.length - 1]).toEqual([97,13,75,29,47])
         })
+      })
+      describe("determineCorrectnessAccordingToRules", () => {
+        it("should return true for [75,47,61,53,29]", () => {
+          const [pageOrderingRules] = parseInput(exampleInputPart1)
+          expect(determineCorrectnessAccordingToRules(pageOrderingRules, [75,47,61,53,29])).toBe(true)
+        })
+        it("should return true for [97,61,53,29,13]", () => {
+          const [pageOrderingRules] = parseInput(exampleInputPart1)
+          expect(determineCorrectnessAccordingToRules(pageOrderingRules, [97,61,53,29,13])).toBe(true)
+        })
+        it("should return true for [75,29,13]", () => {
+          const [pageOrderingRules] = parseInput(exampleInputPart1)
+          expect(determineCorrectnessAccordingToRules(pageOrderingRules, [75,29,13])).toBe(true)
+        })
+        it("should return false for [75,97,47,61,53]", () => {
+          const [pageOrderingRules] = parseInput(exampleInputPart1)
+          expect(determineCorrectnessAccordingToRules(pageOrderingRules, [75,97,47,61,53])).toBe(false)
+        })
+        it("should return false for [61,13,29]", () => {
+          const [pageOrderingRules] = parseInput(exampleInputPart1)
+          expect(determineCorrectnessAccordingToRules(pageOrderingRules, [61,13,29])).toBe(false)
+        })
+        it("should return false for [97,13,75,29,47]", () => {
+          const [pageOrderingRules] = parseInput(exampleInputPart1)
+          expect(determineCorrectnessAccordingToRules(pageOrderingRules, [97,13,75,29,47])).toBe(false)
+        })
+      })
+
+      it('part1 should be...', () => {
+        expect(part1(exampleInputPart1)).toBe(143)
       })
     })
     describe('real input', () => {
