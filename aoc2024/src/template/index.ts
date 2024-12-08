@@ -1,6 +1,6 @@
 import run from "aocrunner"
 
-//import {part1, part2, exampleInputPart1, exampleInputPart2} from "./solution"
+//import {part1, part2, exampleInputPart1, exampleInputPart2} from "./solution.js"
 
 const parseInput = (rawInput: string) => rawInput
 
