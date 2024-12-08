@@ -7,12 +7,12 @@ describe('Day4Test tests', () => {
   describe('part1', () => {
     describe('example input', () => {
       it('part1 should be...', () => {
-        expect(part1(exampleInputPart1)).toBe(null)
+        expect(part1(exampleInputPart1)).toBe(18)
       })
     })
     describe('real input', () => {
       it.skip('part1 should be...', () => {
-        expect(part1(input)).toBe(null)
+        expect(part1(input)).toBe(2514)
       })
     })
   })
