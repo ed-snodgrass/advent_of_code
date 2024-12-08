@@ -20,6 +20,9 @@ describe('Day5Test tests', () => {
           const pageOrderingRules = parseInput(exampleInputPart1)[0]
           expect(pageOrderingRules[pageOrderingRules.length - 1]).toEqual([53,13])
         })
+        it("should return updateSequences as an array of 6 arrays", () => {
+          expect(parseInput(exampleInputPart1)[1].length).toBe(6)
+        })
       })
     })
     describe('real input', () => {
