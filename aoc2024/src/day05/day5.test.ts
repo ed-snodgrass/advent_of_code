@@ -13,6 +13,13 @@ describe('Day5Test tests', () => {
         it("should return pageOrderingRules as an array of 21 arrays", () => {
           expect(parseInput(exampleInputPart1)[0].length).toBe(21)
         })
+        it("should return [47, 53] for the first pageOrderingRules", () => {
+          expect(parseInput(exampleInputPart1)[0][0]).toEqual([47,53])
+        })
+        it("should return [53, 13] for the last pageOrderingRules", () => {
+          const pageOrderingRules = parseInput(exampleInputPart1)[0]
+          expect(pageOrderingRules[pageOrderingRules.length - 1]).toEqual([53,13])
+        })
       })
     })
     describe('real input', () => {
