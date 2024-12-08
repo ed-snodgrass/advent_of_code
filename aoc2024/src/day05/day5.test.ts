@@ -67,8 +67,8 @@ describe('Day5Test tests', () => {
       })
     })
     describe('real input', () => {
-      it.skip('part1 should be...', () => {
-        expect(part1(input)).toBe(null)
+      it('part1 should be 5391', () => {
+        expect(part1(input)).toBe(5391)
       })
     })
   })

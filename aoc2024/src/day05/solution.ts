@@ -27,12 +27,19 @@ export const determineCorrectnessAccordingToRules = (orderingRules: number[][], 
   return true;
 }
 
+export const summarizeMiddlePageNumbers = (updateSequences: number[][]) => {
+  return updateSequences.reduce((acc, orderingSequence) => {
+    const middleIndex = Math.floor(orderingSequence.length / 2);
+    return acc + orderingSequence[middleIndex];
+  }, 0)
+}
+
 export const part1 = (rawInput: string):number => {
   const [pageOrderingRules, updateSequences] = parseInput(rawInput)
   const correctUpdateSequences = updateSequences.filter(updateSequence => {
     return determineCorrectnessAccordingToRules(pageOrderingRules, updateSequence)
   })
-  return -1
+  return summarizeMiddlePageNumbers(correctUpdateSequences)
 }
 
 export const part2 = (rawInput: string): number => {
