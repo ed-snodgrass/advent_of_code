@@ -3,6 +3,41 @@ export const parseInput = (rawInput: string) => {
   return rawInput.split('\n').map(line => line.trim().split(''))
 }
 
+export function countWordOccurrencesDiagonally(puzzle: string[][], word: string): number {
+  const numRows = puzzle.length;
+  const numCols = puzzle[0].length;
+  const wordLength = word.length;
+  const middleIndex = Math.floor(wordLength / 2);
+
+  let count = 0;
+
+  function checkCross(x: number, y: number): boolean {
+    const startingX = x - middleIndex;
+    const endingX = x + middleIndex;
+    const startingY = y + middleIndex;
+    const endingY = y - middleIndex;
+
+    if (startingX < 0 || endingX >= numRows || endingY < 0 || startingY >= numCols) {
+      return false;
+    }
+
+    return ((puzzle[startingX][startingY] === 'M' && puzzle[endingX][endingY] === 'S')
+        || (puzzle[startingX][startingY] === 'S' && puzzle[endingX][endingY] === 'M'))
+      && ((puzzle[startingX][endingY] === 'M' && puzzle[endingX][startingY] === 'S')
+        || (puzzle[startingX][endingY] === 'S' && puzzle[endingX][startingY] === 'M'));
+  }
+  for (let row = 0; row < numRows; row++) {
+    for (let col = 0; col < numCols; col++) {
+      if (puzzle[row][col] === word[middleIndex]) {
+        if (checkCross(row, col)) {
+          count++;
+        }
+      }
+    }
+  }
+
+  return count;
+}
 export function countWordOccurrences(puzzle: string[][], word: string): number {
   const numRows: number = puzzle.length;
   const numCols: number = puzzle[0].length;
@@ -73,6 +108,6 @@ export const part1 = (rawInput: string) => {
 
 export const part2 = (rawInput: string) => {
   const input = parseInput(rawInput)
-
-  return -1
+  // console.log(JSON.stringify(input))
+  return countWordOccurrencesDiagonally(input, 'MAS')
 }

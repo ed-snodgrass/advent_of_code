@@ -16,7 +16,7 @@ run({
     tests: [
       {
         input: exampleInputPart2,
-        expected: "",
+        expected: 9,
       },
     ],
     solution: part2,
