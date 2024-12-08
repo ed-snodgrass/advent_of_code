@@ -1,5 +1,6 @@
 import * as fs from "fs"
 import {part1, part2, parseInput, exampleInputPart1, exampleInputPart2} from './solution'
+import exp from "node:constants"
 
 const input = fs.readFileSync(`${__dirname}/input.txt`, 'utf-8');
 
@@ -22,6 +23,13 @@ describe('Day5Test tests', () => {
         })
         it("should return updateSequences as an array of 6 arrays", () => {
           expect(parseInput(exampleInputPart1)[1].length).toBe(6)
+        })
+        it("should return [75,47,61,53,29] as the first updateSequence", () => {
+          expect(parseInput(exampleInputPart1)[1][0]).toEqual([75,47,61,53,29])
+        })
+        it("should return [97,13,75,29,47] as the last updateSequence", () => {
+          const updateSequences = parseInput(exampleInputPart1)[1]
+          expect(updateSequences[updateSequences.length - 1]).toEqual([97,13,75,29,47])
         })
       })
     })
