@@ -11,15 +11,18 @@ describe('Day6Test tests', () => {
       })
     })
     describe('real input', () => {
-      it.skip('part1 should be...', () => {
-        expect(part1(input)).toBe(null)
+      it('part1 should be 5409', () => {
+        expect(part1(input)).toBe(5409)
+      })
+      it('part1 should be 5444', () => {
+        expect(part1(input)).toBeLessThan(5444)
       })
     })
   })
   describe('part2', () => {
     describe('example input', () => {
-      it.skip('part2 should be...', () => {
-        expect(part2(exampleInputPart2)).toBe(null)
+      it('part2 should be 6', () => {
+        expect(part2(exampleInputPart2)).toBe(6)
       })
     })
     describe('real input', () => {
