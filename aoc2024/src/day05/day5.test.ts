@@ -5,7 +5,7 @@ import {
   parseInput,
   exampleInputPart1,
   exampleInputPart2,
-  determineCorrectnessAccordingToRules,
+  determineCorrectnessAccordingToRules, fixOrderSequence,
 } from "./solution"
 
 const input = fs.readFileSync(`${__dirname}/input.txt`, 'utf-8');
@@ -62,7 +62,7 @@ describe('Day5Test tests', () => {
         })
       })
 
-      it('part1 should be...', () => {
+      it('part1 should be 143', () => {
         expect(part1(exampleInputPart1)).toBe(143)
       })
     })
@@ -73,9 +73,24 @@ describe('Day5Test tests', () => {
     })
   })
   describe('part2', () => {
+    describe('fixOrderSequence', () => {
+      let pageOrderingRules: number[][]
+      beforeEach(() => {
+        pageOrderingRules = parseInput(exampleInputPart1)[0]
+      })
+      it('should turn [75,97,47,61,53] into [97,75,47,61,53]', () => {
+        expect(fixOrderSequence(pageOrderingRules, [75,97,47,61,53])).toEqual([97,75,47,61,53])
+      })
+      it('should turn [61,13,29 ] into [61,29,13]', () => {
+        expect(fixOrderSequence(pageOrderingRules, [61,13,29 ])).toEqual([61,29,13])
+      })
+      it('should turn 97,13,75,29,47 into 97,75,47,29,13', () => {
+        expect(fixOrderSequence(pageOrderingRules, [97,13,75,29,47])).toEqual([97,75,47,29,13])
+      })
+    })
     describe('example input', () => {
-      it.skip('part2 should be...', () => {
-        expect(part2(exampleInputPart2)).toBe(null)
+      it('part2 should be 123', () => {
+        expect(part2(exampleInputPart2)).toBe(123)
       })
     })
     describe('real input', () => {
