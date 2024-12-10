@@ -1,13 +1,55 @@
 export const parseInput = (rawInput: string) => {
-  const lines = rawInput.split('\n');
+  return rawInput.split("\n").map((line) => {
+    const equationParts = line.split(": ")
+    const testValue = Number.parseInt(equationParts[0].trim())
+    const numbers = equationParts[1].split(" ").map(Number)
 
-  return lines
+    return { testValue, numbers }
+  })
+}
+
+function generateAllPossibleArrays(size: number) {
+  const allArrays = [];
+  const totalCombinations = Math.pow(2, size);
+
+  for (let i = 0; i < totalCombinations; i++) {
+    const array = [];
+    for (let j = 0; j < size; j++) {
+      // Using bitwise AND to determine if the j-th bit is set
+      array.push((i & (1 << j)) !== 0);
+    }
+    allArrays.push(array);
+  }
+
+  return allArrays;
+}
+
+export const determineCalibrationPossibility = (testValue: number, numbers: number[]): boolean => {
+  const possibleOperatorOptions = generateAllPossibleArrays(numbers.length - 1)
+
+  for (let i = 0; i < possibleOperatorOptions.length; i++) {
+    let currentValue = numbers[0]
+
+    for (let j = 0; j < numbers.length - 1; j++) {
+      const operator = possibleOperatorOptions[i][j]
+      const nextValue = numbers[j + 1]
+      if (operator) {
+        currentValue += nextValue
+      } else {
+        currentValue *= nextValue
+      }
+    }
+    if (currentValue === testValue) {
+      return true
+    }
+  }
+  return false;
 }
 
 export const part1 = (rawInput: string):number => {
   const input = parseInput(rawInput)
-
-  return -1
+  const validEquations = input.filter(equation => determineCalibrationPossibility(equation.testValue, equation.numbers))
+  return validEquations.reduce((acc, equation) => acc + equation.testValue, 0)
 }
 
 export const part2 = (rawInput: string): number => {
