@@ -25,7 +25,9 @@ function generateAllPossibleArrays(operators:string[], exponent: number) {
   return allArrays;
 }
 
-export const determineCalibrationPossibility = (testValue: number, numbers: number[], operators: string[]): boolean => {
+export const determineCalibrationPossibility = (testValue: number, numbers: number[]): boolean => {
+  const operators: string[] = ['+', '*']
+
   const possibleOperatorOptions = generateAllPossibleArrays(operators, numbers.length - 1)
 
   for (let i = 0; i < possibleOperatorOptions.length; i++) {
@@ -47,16 +49,47 @@ export const determineCalibrationPossibility = (testValue: number, numbers: numb
   return false;
 }
 
+export const retryFailedEquations = (testValue: number, numbers: number[]) => {
+  const operators: string[] = ['+', '*', '||']
+  const possibleOperatorOptions = generateAllPossibleArrays(operators, numbers.length - 1)
+
+  for (let i = 0; i < possibleOperatorOptions.length; i++) {
+    let currentValue = numbers[0]
+
+    for (let j = 0; j < numbers.length - 1; j++) {
+      const operator = possibleOperatorOptions[i][j]
+      const nextValue = numbers[j + 1]
+      if (operator === 0) {
+        currentValue += nextValue
+      } else if (operator === 1) {
+        currentValue *= nextValue
+      } else if (operator === 2) {
+        currentValue = Number(String(currentValue) + String(nextValue))
+      }
+    }
+    if (currentValue === testValue) {
+      return true
+    }
+  }
+  return false;
+}
+
 export const part1 = (rawInput: string):number => {
   const input = parseInput(rawInput)
-  const validEquations = input.filter(equation => determineCalibrationPossibility(equation.testValue, equation.numbers, ['+', '*']))
+
+  const calibrationFlags = input.map(equation => determineCalibrationPossibility(equation.testValue, equation.numbers))
+  const validEquations = input.filter((equation, index) => calibrationFlags[index])
   return validEquations.reduce((acc, equation) => acc + equation.testValue, 0)
 }
 
 export const part2 = (rawInput: string): number => {
   const input = parseInput(rawInput)
-
-  return -1
+  const calibrationFlags = input.map(equation => determineCalibrationPossibility(equation.testValue, equation.numbers))
+  const validEquations = input.filter((_equation, index) => calibrationFlags[index])
+  const invalidEquations = input.filter((_equation, index) => !calibrationFlags[index])
+  const validAfterRetryEquations = invalidEquations.filter(equation => retryFailedEquations(equation.testValue, equation.numbers))
+  validEquations.push(...validAfterRetryEquations)
+  return validEquations.reduce((acc, equation) => acc + equation.testValue, 0)
 }
 
 export const exampleInputPart1 =  `190: 10 19
