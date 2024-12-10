@@ -8,15 +8,16 @@ export const parseInput = (rawInput: string) => {
   })
 }
 
-function generateAllPossibleArrays(size: number) {
+function generateAllPossibleArrays(operators:string[], exponent: number) {
   const allArrays = [];
-  const totalCombinations = Math.pow(2, size);
-
+  const base = operators.length;
+  const totalCombinations = Math.pow(base, exponent);
   for (let i = 0; i < totalCombinations; i++) {
     const array = [];
-    for (let j = 0; j < size; j++) {
-      // Using bitwise AND to determine if the j-th bit is set
-      array.push((i & (1 << j)) !== 0);
+    let currentNumber = i;
+    for (let j = 0; j < exponent; j++) {
+      array.push(currentNumber % base);
+      currentNumber = Math.floor(currentNumber / base);
     }
     allArrays.push(array);
   }
@@ -24,8 +25,8 @@ function generateAllPossibleArrays(size: number) {
   return allArrays;
 }
 
-export const determineCalibrationPossibility = (testValue: number, numbers: number[]): boolean => {
-  const possibleOperatorOptions = generateAllPossibleArrays(numbers.length - 1)
+export const determineCalibrationPossibility = (testValue: number, numbers: number[], operators: string[]): boolean => {
+  const possibleOperatorOptions = generateAllPossibleArrays(operators, numbers.length - 1)
 
   for (let i = 0; i < possibleOperatorOptions.length; i++) {
     let currentValue = numbers[0]
@@ -48,7 +49,7 @@ export const determineCalibrationPossibility = (testValue: number, numbers: numb
 
 export const part1 = (rawInput: string):number => {
   const input = parseInput(rawInput)
-  const validEquations = input.filter(equation => determineCalibrationPossibility(equation.testValue, equation.numbers))
+  const validEquations = input.filter(equation => determineCalibrationPossibility(equation.testValue, equation.numbers, ['+', '*']))
   return validEquations.reduce((acc, equation) => acc + equation.testValue, 0)
 }
 
