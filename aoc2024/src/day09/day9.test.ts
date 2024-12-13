@@ -1,5 +1,14 @@
 import * as fs from "fs"
-import {part1, part2, parseInput, exampleInputPart1, exampleInputPart2, rearrange} from './solution'
+import {
+  part1,
+  part2,
+  parseInput,
+  exampleInputPart1,
+  exampleInputPart2,
+  rearrange,
+  performFullFileMovement,
+  calculateChecksum,
+} from "./solution"
 
 const input = fs.readFileSync(`${__dirname}/input.txt`, 'utf-8');
 
@@ -28,6 +37,7 @@ describe('Day9Test tests', () => {
         })
       })
     })
+
     describe("rearrange tests", () => {
       describe("when rearranging 0.1", () => {
         it("should return 01.", () => {
@@ -74,14 +84,29 @@ describe('Day9Test tests', () => {
     })
   })
   describe('part2', () => {
+    describe("performFullFileMovement tests", () => {
+      let fileBlocks = [2, 3, 1, 3, 2, 4, 4, 3, 4, 2]
+      describe("when rearranging disk map 00...111...2...333.44.5555.6666.777.888899", () => {
+        it("should return 00992111777.44.333....5555.6666.....8888..", () => {
+          expect(performFullFileMovement("00...111...2...333.44.5555.6666.777.888899".split(''), fileBlocks).join('')).toEqual("00992111777.44.333....5555.6666.....8888..")
+        })
+      })
+    })
+    describe("calculateChecksum tests", () => {
+      describe("when calculating 00992111777.44.333....5555.6666.....8888..", () => {
+        it("should return 2858", () => {
+          expect(calculateChecksum("00992111777.44.333....5555.6666.....8888..".split(''))).toEqual(2858)
+        })
+      })
+    })
     describe('example input', () => {
-      it.skip('part2 should be...', () => {
-        expect(part2(exampleInputPart2)).toBe(null)
+      it('part2 should be...', () => {
+        expect(part2(exampleInputPart2)).toBe(2858)
       })
     })
     describe('real input', () => {
-      it.skip('part2 should be...', () => {
-        expect(part2(input)).toBe(null)
+      it('part2 should be 6237075041489', () => {
+        expect(part2(input)).toBe(6237075041489)
       })
     })
   })

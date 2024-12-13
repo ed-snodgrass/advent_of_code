@@ -17,7 +17,7 @@ export const parseInput = (rawInput: string) => {
   let index = 0
   for (let i = 0; i < fileBlocks.length; i++) {
     for (let j = 0; j < fileBlocks[i]; j++) {
-      disk[index] = i
+      disk[index] = i.toString()
       index++
     }
     if (freeSpace[i]) {
@@ -39,17 +39,19 @@ export const rearrange = (disk: string) => {
   return newDiskArray.join("")
 }
 
-export const calculateChecksum = (disk: number[]) => {
+export const calculateChecksum = (disk: any[]) => {
   let checksum = 0
   for (let i = 0; i < disk.length; i++) {
-    checksum += i * Number(disk[i])
+    if (disk[i] !== '.') {
+      checksum += i * Number(disk[i])
+
+    }
   }
   return checksum
 }
 
 export const rearrangeFullDisk = (disk: any[]) => {
   const tempDisk = [...disk]
-  console.log("rearranging")
   const reverseDisk = [...tempDisk].reverse()
   for (let i = 0; i < tempDisk.length; i++) {
     const currentCharacter = tempDisk[i]
@@ -78,10 +80,47 @@ export const part1 = (rawInput: string): number => {
   return calculateChecksum(newDisk)
 }
 
-export const part2 = (rawInput: string): number => {
-  const input = parseInput(rawInput)
+export const performFullFileMovement = (disk: any[], fileBlocks: number[]) => {
+  const tempDisk = [...disk]
+  for (let fileBlockId = fileBlocks.length - 1; fileBlockId >= 0; fileBlockId--) {
+    const fileBlockWidth = fileBlocks[fileBlockId];
+    let currentDotIndex = tempDisk.indexOf('.');
+    const fileBlockIndex = tempDisk.indexOf(fileBlockId.toString());
 
-  return -1
+    let canMove = false;
+
+    for (let i = currentDotIndex; i < fileBlockIndex; i++) {
+
+      if (tempDisk[i] !== '.') {
+        currentDotIndex = tempDisk.indexOf('.', i)
+        i = currentDotIndex
+      } else {
+        if (i - currentDotIndex === fileBlockWidth - 1) {
+          canMove = true;
+          break;
+        }
+      }
+    }
+
+    if (canMove) {
+      // console.log(`found room for file block ${fileBlockId}`);
+      for (let i = 0; i < fileBlockWidth; i++) {
+        tempDisk[i + fileBlockIndex] = '.'
+      }
+      for (let i = currentDotIndex; i < currentDotIndex + fileBlockWidth; i++) {
+        tempDisk[i] = fileBlockId.toString();
+      }
+    } else {
+      // console.log(`no space for file block ${fileBlockId}`);
+    }
+  }
+  return tempDisk;
+}
+
+export const part2 = (rawInput: string): number => {
+  const {disk, fileBlocks} = parseInput(rawInput)
+  const newDisk = performFullFileMovement(disk, fileBlocks)
+  return calculateChecksum(newDisk)
 }
 
 export const exampleInputPart1 = `2333133121414131402`
