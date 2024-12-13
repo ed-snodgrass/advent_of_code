@@ -7,7 +7,7 @@ import {
   exampleInputPart2,
   isOnMap,
   findAntennas,
-  findFrequencies, findAntinodesByFrequency, Antenna,
+  findFrequencies, findAntinodesByFrequency, Antenna, findAntinodesByFrequencyUntilEdge,
 } from "./solution"
 
 const input = fs.readFileSync(`${__dirname}/input.txt`, 'utf-8');
@@ -23,6 +23,15 @@ describe('Day8Test tests', () => {
         let antennas: Antenna[], frequencies
         beforeEach(() => {
           antennas = findAntennas(grid)
+        })
+        describe("findAntinodesByFrequencyUntilEdge", () => {
+          it("should find 10 antinodes for 0", () => {
+            //4+4+1+1+2+4
+            expect(findAntinodesByFrequencyUntilEdge(grid, antennas.filter(antenna => (antenna.cell === '0'))).length).toBe(29)
+          })
+          it("should find 4 antinodes for A", () => {
+            expect(findAntinodesByFrequencyUntilEdge(grid, antennas.filter(antenna => (antenna.cell === 'A'))).length).toBe(19)
+          })
         })
         describe("findAntinodesByFrequency", () => {
           it("should find 10 antinodes for 0", () => {
@@ -61,20 +70,20 @@ describe('Day8Test tests', () => {
       })
     })
     describe('real input', () => {
-      it.skip('part1 should be...', () => {
-        expect(part1(input)).toBe(null)
+      it('part1 should be 394', () => {
+        expect(part1(input)).toBe(394)
       })
     })
   })
   describe('part2', () => {
     describe('example input', () => {
-      it.skip('part2 should be...', () => {
-        expect(part2(exampleInputPart2)).toBe(null)
+      it('part2 should be 34', () => {
+        expect(part2(exampleInputPart2)).toBe(34)
       })
     })
     describe('real input', () => {
-      it.skip('part2 should be...', () => {
-        expect(part2(input)).toBe(null)
+      it.skip('part2 should be 1277', () => {
+        expect(part2(input)).toBe(1277)
       })
     })
   })

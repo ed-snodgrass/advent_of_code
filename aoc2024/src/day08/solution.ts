@@ -73,13 +73,48 @@ export const findAntinodesByFrequency = (grid: string[][], antennasWithFrequency
   return antinodes
 }
 
-export const findAntinodeCount = (grid: string[][], antennas: Antenna[], frequencies: string[]) => {
+export const findAntinodesByFrequencyUntilEdge = (grid: string[][], antennasWithFrequency: Antenna[]) => {
+  const antinodes: { x:number, y:number }[] = []
+  for (let j = 0; j < antennasWithFrequency.length; j++) {
+    for (let k = j + 1; k < antennasWithFrequency.length; k++) {
+      let antennaA, antennaB
+      if (antennasWithFrequency[j].y > antennasWithFrequency[k].y) {
+        antennaA = antennasWithFrequency[j]
+        antennaB = antennasWithFrequency[k]
+      } else {
+        antennaA = antennasWithFrequency[k]
+        antennaB = antennasWithFrequency[j]
+      }
+      antinodes.push({x: antennaA.x, y: antennaA.y})
+      antinodes.push({x: antennaB.x, y: antennaB.y})
+      const xDistance = antennaA.x - antennaB.x
+      const yDistance = antennaA.y - antennaB.y
+
+      let antinode1 = {x: antennaA.x + xDistance, y: antennaA.y + yDistance}
+      while(isOnMap(antinode1.x, antinode1.y, grid)) {
+        antinodes.push(antinode1)
+        antinode1 = {x: antinode1.x + xDistance, y: antinode1.y + yDistance}
+      }
+
+      let antinode2 = {x: antennaB.x - xDistance, y: antennaB.y - yDistance}
+      while (isOnMap(antinode2.x, antinode2.y, grid)) {
+        antinodes.push(antinode2)
+        antinode2 = {x: antinode2.x - xDistance, y: antinode2.y - yDistance}
+      }
+    }
+  }
+  return antinodes
+}
+
+
+
+export const findAntinodeCount = (grid: string[][], antennas: Antenna[], frequencies: string[], accumulationFunction: Function) => {
   let antinodes: {x:number, y:number }[] = []
   for (let i = 0; i < frequencies.length; i++) {
     const frequency = frequencies[i]
     const antennasWithFrequency = antennas.filter(antenna => antenna.cell === frequency)
 
-    antinodes.push(...findAntinodesByFrequency(grid, antennasWithFrequency))
+    antinodes.push(...accumulationFunction(grid, antennasWithFrequency))
   }
   return makeUnique(antinodes).length
 }
@@ -89,13 +124,15 @@ export const part1 = (rawInput: string):number => {
   const antennas = findAntennas(grid)
   const frequencies = findFrequencies(antennas)
 
-  return findAntinodeCount(grid, antennas, frequencies)
+  return findAntinodeCount(grid, antennas, frequencies, findAntinodesByFrequency)
 }
 
 export const part2 = (rawInput: string): number => {
-  const input = parseInput(rawInput)
+  const grid = parseInput(rawInput)
+  const antennas = findAntennas(grid)
+  const frequencies = findFrequencies(antennas)
 
-  return -1
+  return findAntinodeCount(grid, antennas, frequencies, findAntinodesByFrequencyUntilEdge)
 }
 
 export const exampleInputPart1 =  `............
