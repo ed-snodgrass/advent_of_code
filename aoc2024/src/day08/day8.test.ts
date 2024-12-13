@@ -7,7 +7,7 @@ import {
   exampleInputPart2,
   isOnMap,
   findAntennas,
-  findFrequencies, findAntinodesByFrequency, Antenna, findAntinodesByFrequencyUntilEdge,
+  findAntinodesByFrequency, Antenna, findAntinodesByFrequencyUntilEdge,
 } from "./solution"
 
 const input = fs.readFileSync(`${__dirname}/input.txt`, 'utf-8');
