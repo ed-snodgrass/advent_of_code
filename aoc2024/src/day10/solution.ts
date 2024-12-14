@@ -91,6 +91,61 @@ export const findPathsFromTrailhead = (
 
   return pathCount;
 };
+const dfs2 = (
+  grid: number[][],
+  current: Position,
+  visited: Set<string>,
+  target: Position,
+  path: Position[]
+): Position[][] => {
+  // If the current position is the target, return the completed path
+  if (current.x === target.x && current.y === target.y) {
+    return [path.slice()]; // Return a copy of the current path as a successful one
+  }
+
+  const key = `${current.x},${current.y}`;
+  visited.add(key);
+
+  const allPaths: Position[][] = []; // Collect all valid paths from this point
+
+  for (const [dx, dy] of directions) {
+    const next = {
+      x: current.x + dx,
+      y: current.y + dy,
+      value: grid[current.y + dy]?.[current.x + dx] ?? -1,
+    };
+
+    if (
+      isOnMap(grid, next) &&
+      !visited.has(`${next.x},${next.y}`) &&
+      next.value === current.value + 1 // Ensure it's a valid path (value increases by 1)
+    ) {
+      // Add the next position to the path and recursively explore further
+      path.push(next);
+      const pathsFromNext = dfs2(grid, next, visited, target, path);
+      allPaths.push(...pathsFromNext);
+      path.pop(); // Backtrack for other potential paths
+    }
+  }
+
+  visited.delete(key); // Unmark this position
+  return allPaths;
+};
+export const findPathsFromTrailhead2 = (
+  grid: number[][],
+  trailhead: Position,
+  summits: Position[]
+): Position[][] => {
+  const allPaths: Position[][] = [];
+
+  for (const summit of summits) {
+    const visited = new Set<string>();
+    const pathsToSummit = dfs2(grid, trailhead, visited, summit, [trailhead]);
+    allPaths.push(...pathsToSummit); // Collect all paths to this summit
+  }
+
+  return allPaths;
+};
 
 export const part1 = (rawInput: string): number => {
   const { grid, trailheads, summits } = parseInput(rawInput);
@@ -101,9 +156,12 @@ export const part1 = (rawInput: string): number => {
 };
 
 export const part2 = (rawInput: string): number => {
-  const input = parseInput(rawInput)
+  const { grid, trailheads, summits } = parseInput(rawInput);
 
-  return -1
+  const allPaths: Position[][] = trailheads.flatMap((trailhead) =>
+    findPathsFromTrailhead2(grid, trailhead, summits)
+  );
+  return allPaths.length;
 }
 
 export const exampleInputPart1 =  `89010123
