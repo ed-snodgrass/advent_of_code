@@ -38,9 +38,8 @@ export const part1 = (rawInput: string):number => {
 }
 
 export const part2 = (rawInput: string): number => {
-  const input = parseInput(rawInput)
-
-  return -1
+  const initialStones = parseInput(rawInput)
+  return performBlinkMany(initialStones, 75).length
 }
 
 export const exampleInputPart1 =  `125 17`
