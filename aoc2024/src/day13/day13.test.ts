@@ -32,7 +32,7 @@ describe('Day13Test tests', () => {
       })
     })
     describe('real input', () => {
-      it.skip('part1 should be 29023', () => {
+      it('part1 should be 29023', () => {
         expect(part1(input)).toBe(29023)
       })
     })

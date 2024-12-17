@@ -35,55 +35,44 @@ export type ClawConfig = {
   buttonB: Button
   prizeLocation: [number, number]
 }
+
 function minimumScoreToTarget(clawConfig: ClawConfig) {
-  const [a1, b1] = clawConfig.buttonA; // Move option 1
-  const [a2, b2] = clawConfig.buttonB; // Move option 2
+  const [a1, b1] = clawConfig.buttonA;
+  const [a2, b2] = clawConfig.buttonB;
+  const [x, y] = clawConfig.prizeLocation
   const cost1 = 3; // Cost of move 1
   const cost2 = 1; // Cost of move 2
 
-  const priorityQueue = [[0, 0, 0]]; // [currentX, currentY, totalScore]
-  const visited = new Map(); // To store visited positions with their minimum score
-
-  const getKey = (x:number, y:number) => `${x},${y}`;
-
-  // Dijkstra’s algorithm loop
-  while (priorityQueue.length > 0) {
-    // Sort the queue by score so we always expand the node with the smallest score
-    priorityQueue.sort((a, b) => a[2] - b[2]);
-
-    // @ts-ignore
-    const [currentX, currentY, currentScore] = priorityQueue.shift();
-    const key = getKey(currentX, currentY);
-
-    if (currentScore > 400) return -1
-    if (currentX === clawConfig.prizeLocation[0] && currentY === clawConfig.prizeLocation[1]) return currentScore;
-
-    // If this position has already been visited with a lower score, skip it
-    if (visited.has(key) && visited.get(key) <= currentScore) continue;
-    visited.set(key, currentScore);
-
-    // Generate new positions with their respective scores
-    const nextPositions = [
-      [currentX + a1, currentY + b1, currentScore + cost1],
-      [currentX + a2, currentY + b2, currentScore + cost2],
-    ];
-
-    // Add all valid new positions to the priority queue
-    for (const [nextX, nextY, nextScore] of nextPositions) {
-      const nextKey = getKey(nextX, nextY);
-      if (!visited.has(nextKey) || visited.get(nextKey) > nextScore) {
-        priorityQueue.push([nextX, nextY, nextScore]);
-      }
-    }
+  // Helper function to compute if values are integers
+  function isInteger(value: number) {
+    return Number.isInteger(value);
   }
 
-  // If the target is unreachable
-  return -1;
+  // Compute the determinant of the coefficient matrix
+  const determinant = a1 * b2 - a2 * b1;
+
+  // If the determinant is zero, the system of equations is linearly dependent (no unique solution)
+  if (determinant === 0) {
+    return -1;
+  }
+
+  // Solve for m and n using Cramer's rule
+  const m = (x * b2 - y * a2) / determinant;
+  const n = (y * a1 - x * b1) / determinant;
+
+  // Ensure both m and n are integers
+  if (!isInteger(m) || !isInteger(n) || m < 0 || n < 0) {
+    return -1; // Invalid solution
+  }
+
+  // Calculate the cost based on m and n
+  return cost1 * m + cost2 * n
 }
 
 export const part1 = (rawInput: string):number => {
   const clawConfigs = parseInput(rawInput)
   const minimumScoreToTargets = clawConfigs.map(minimumScoreToTarget)
+
   return minimumScoreToTargets.reduce((acc, score) => {
     if (score > 0) {
       return acc + score
