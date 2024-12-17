@@ -1,11 +1,11 @@
 import * as fs from "fs"
-import {part1, part2, parseInput, exampleInputPart1, exampleInputPart2} from './solution'
+import { part1, part2, parseInput, exampleInputPart1, exampleInputPart2, ClawConfig } from "./solution"
 
 const input = fs.readFileSync(`${__dirname}/input.txt`, 'utf-8');
 
 describe('Day13Test tests', () => {
   describe("parseInput", () => {
-    let actual: { buttonA: [number, number], buttonB: [number, number], prizeLocation: [number, number] }[]
+    let actual: ClawConfig[]
     describe("when parsing exampleInputPart1", () => {
       beforeEach(() => {
         actual = parseInput(exampleInputPart1)
@@ -24,15 +24,16 @@ describe('Day13Test tests', () => {
       })
     })
   })
+
   describe('part1', () => {
     describe('example input', () => {
-      it('part1 should be...', () => {
+      it('part1 should be 480', () => {
         expect(part1(exampleInputPart1)).toBe(480)
       })
     })
     describe('real input', () => {
-      it.skip('part1 should be...', () => {
-        expect(part1(input)).toBe(null)
+      it.skip('part1 should be 29023', () => {
+        expect(part1(input)).toBe(29023)
       })
     })
   })
