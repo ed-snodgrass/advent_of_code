@@ -39,13 +39,13 @@ describe('Day13Test tests', () => {
   })
   describe('part2', () => {
     describe('example input', () => {
-      it.skip('part2 should be...', () => {
-        expect(part2(exampleInputPart2)).toBe(null)
+      it('part2 should be 875318608908', () => {
+        expect(part2(exampleInputPart2)).toBe(875318608908)
       })
     })
     describe('real input', () => {
-      it.skip('part2 should be...', () => {
-        expect(part2(input)).toBe(null)
+      it('part2 should be 96787395375634', () => {
+        expect(part2(input)).toBe(96787395375634)
       })
     })
   })

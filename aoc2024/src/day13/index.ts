@@ -14,13 +14,13 @@ run({
   },
   part2: {
     tests: [
-      // {
-      //   input: exampleInputPart2,
-      //   expected: "",
-      // },
+      {
+        input: exampleInputPart2,
+        expected: 875318608908,
+      },
     ],
     solution: part2,
   },
   trimTestInputs: true,
-  onlyTests: true,
+  onlyTests: false,
 })

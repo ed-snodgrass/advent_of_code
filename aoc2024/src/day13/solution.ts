@@ -82,10 +82,20 @@ export const part1 = (rawInput: string):number => {
   }, 0)
 }
 
-export const part2 = (rawInput: string): number => {
-  const input = parseInput(rawInput)
+export const part2 = (rawInput: string):number => {
+  const clawConfigs = parseInput(rawInput).map((clawConfig: ClawConfig) => {
+    const [a, b] = clawConfig.prizeLocation
+    return {...clawConfig, prizeLocation: [a + 10000000000000, b + 10000000000000] as [number, number]}
+  })
+  const minimumScoreToTargets = clawConfigs.map(minimumScoreToTarget)
 
-  return -1
+  return minimumScoreToTargets.reduce((acc, score) => {
+    if (score > 0) {
+      return acc + score
+    } else {
+      return acc
+    }
+  }, 0)
 }
 
 export const exampleInputPart1 =  `Button A: X+94, Y+34
