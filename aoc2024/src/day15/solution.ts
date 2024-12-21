@@ -33,60 +33,38 @@ export const parseInput = (rawInput: string) => {
   return {warehouseMap, movements, robotPosition}
 }
 
-const findBoxesToMove = (warehouseMap: string[][], currentPosition: [number, number], direction: Direction): [number, number][]|undefined => {
-  const boxesToMove: [number, number][] = []
-  const [directionX, directionY] = direction
-
-  let [currentX, currentY] = currentPosition
-  let [newBoxX, newBoxY] = [currentX + directionX, currentY + directionY]
-  let nextItem = warehouseMap[newBoxY][newBoxX]
-
-  do {
-    nextItem = warehouseMap[newBoxY][newBoxX]
-    if (nextItem === WALL) {
-      return undefined
-    } else if (nextItem === EMPTY) {
-      boxesToMove.push(currentPosition)
-      return boxesToMove
-    } else {
-      boxesToMove.push(currentPosition)
-      currentPosition = [newBoxX, newBoxY]
-
-      currentX = currentPosition[0]
-      currentY = currentPosition[1]
-
-      newBoxX = currentX + directionX
-      newBoxY = currentY + directionY
-    }
-  } while (nextItem === BOX)
-  return boxesToMove
-}
-
 export const attemptMove = (warehouseMap: string[][], robotPosition: [number, number], direction: Direction) => {
   const [directionX, directionY] = direction
   const [currentRobotX, currentRobotY] = robotPosition
   let [newRobotX, newRobotY] = [currentRobotX + directionX, currentRobotY + directionY]
-  const newPositionItem = warehouseMap[newRobotY][newRobotX]
-  const hasWallInNewPosition = newPositionItem === WALL
+  let newPositionItem = warehouseMap[newRobotY][newRobotX]
 
-  if (newPositionItem === BOX) {
-    const boxesToMove = findBoxesToMove(warehouseMap, [newRobotX, newRobotY], direction)
-    if (boxesToMove && boxesToMove.length) {
-      boxesToMove.forEach(([boxX, boxY], index) => {
-        warehouseMap[boxY + direction[1]][boxX + direction[0]] = BOX
-      })
-      warehouseMap[currentRobotY][currentRobotX] = EMPTY
-      warehouseMap[newRobotY][newRobotX] = ROBOT
-      // printGrid(warehouseMap)
-      return {newMap: warehouseMap, newPosition: [newRobotX, newRobotY] as [number, number]}
-    }
-  } else if (!hasWallInNewPosition) {
-    warehouseMap[currentRobotY][currentRobotX] = EMPTY
-    warehouseMap[newRobotY][newRobotX] = ROBOT
-    // printGrid(warehouseMap)
-    return {newMap: warehouseMap, newPosition: [newRobotX, newRobotY] as [number, number]}
+  let canMove = true
+
+  while (true) {
+      if (newPositionItem === EMPTY) {
+        break
+      } else if (newPositionItem === WALL) {
+        canMove = false
+        break
+      } else if (newPositionItem === BOX) {
+        newRobotX = newRobotX + directionX
+        newRobotY = newRobotY + directionY
+        newPositionItem = warehouseMap[newRobotY][newRobotX]
+      } else {
+        throw new Error(`Invalid tile ${newPositionItem} at [x,y]: [${newRobotX}, ${newRobotY}]`)
+      }
   }
-  return {newMap: warehouseMap, newPosition: robotPosition}
+
+  if (!canMove) return {newMap: warehouseMap, newPosition: robotPosition}
+  warehouseMap[robotPosition[1]][robotPosition[0]] = EMPTY
+  const newPosition = [robotPosition[0] + directionX, robotPosition[1] + directionY] as [number, number]
+  if (warehouseMap[newPosition[1]][newPosition[0]] == BOX) {
+    warehouseMap[newRobotY][newRobotX] = BOX
+  }
+  warehouseMap[newPosition[1]][newPosition[0]] = ROBOT
+
+  return {newMap: warehouseMap, newPosition: newPosition as [number, number]}
 }
 
 export const performAllMoves = (warehouseMap: string[][], robotPosition: [number, number], movements: Direction[]) => {
@@ -112,10 +90,7 @@ export const calculateGps = (warehouseMap: string[][]) => {
 
 export const part1 = (rawInput: string):number => {
   const {warehouseMap, movements, robotPosition} = parseInput(rawInput)
-  // console.log(`INITIAL`)
-  // printGrid(warehouseMap)
   const finishedWarehouseMap = performAllMoves(warehouseMap, robotPosition as [number, number], movements)
-  // printGrid(finishedWarehouseMap)
   return calculateGps(finishedWarehouseMap)
 }
 

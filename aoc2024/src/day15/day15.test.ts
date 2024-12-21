@@ -67,7 +67,7 @@ describe('Day15Test tests', () => {
         expect(attemptMove(warehouseMap, [1, 2], DIRECTIONS['^']).newMap[1][1]).toBe(ROBOT)
       })
       it('should return the empty in old position', () => {
-        expect(attemptMove(warehouseMap, [1, 3], DIRECTIONS['^']).newMap[3][1]).toBe(EMPTY)
+        expect(attemptMove(warehouseMap, [1, 2], DIRECTIONS['^']).newMap[2][1]).toBe(EMPTY)
       })
     })
     describe('when up move is blocked by wall', () => {
