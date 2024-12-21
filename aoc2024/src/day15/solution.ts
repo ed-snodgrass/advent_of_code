@@ -108,7 +108,6 @@ export const calculateGps2 = (warehouseMap: string[][]) => {
       if (warehouseMap[y][x] === '[') boxes.push({x, y})
     }
   }
-  //TODO modify to first find the distance from the left/right edge based on location
   return boxes.map(box => (box.y * 100) + box.x).reduce((sum, value) => value + sum)
 }
 
@@ -136,11 +135,66 @@ export const translateMap = (originalMap: string[][]): string[][] => {
     return newLine
   })
 }
+export type DoubleWide = {left: [number, number], right: [number, number]}
 
+export const attemptMove2 = (warehouseMap: string[][], direction: Direction) => {
+  const [directionX, directionY] = direction
+  const [currentRobotX, currentRobotY] = findRobot(warehouseMap)
+  let canMove = true
+  const boxesToMove:[number, number][] = [[currentRobotX, currentRobotY]as [number, number]]
+  let i = 0
+
+  while (i < boxesToMove.length) {
+    const [boxX, boxY] = boxesToMove[i]
+    i += 1
+    let [newBoxX, newBoxY] = [boxX + directionX, boxY + directionY]
+
+    if (boxesToMove.findIndex(([x, y]) => x === newBoxX && y === newBoxY) >= 0) continue
+    const newPositionItem = warehouseMap[newBoxY][newBoxX]
+    if (newPositionItem === WALL) {
+      canMove = false
+      // console.log(`Can't move to [${newBoxX}, ${newBoxY}] because it's a wall`)
+      break
+    } else if (newPositionItem === EMPTY) {
+    } else if (newPositionItem === '[') {
+      boxesToMove.push([newBoxX, newBoxY], [newBoxX + 1, newBoxY])
+    } else if (newPositionItem === ']') {
+      boxesToMove.push([newBoxX, newBoxY], [newBoxX - 1, newBoxY])
+    } else {
+      throw new Error(`Invalid tile ${newPositionItem} at [x,y]: [${newBoxX}, ${newBoxY}]`)
+    }
+  }
+
+  if (!canMove) return {newMap: warehouseMap}
+  const copy = warehouseMap.map(line => line.map(tile => tile))
+
+  // const newPosition = [robotPosition[0] + directionX, robotPosition[1] + directionY] as [number, number]
+  boxesToMove.forEach(([boxX, boxY]) => {
+    warehouseMap[boxY][boxX] = EMPTY
+  })
+  boxesToMove.forEach(([boxX, boxY]) => {
+    warehouseMap[boxY + directionY][boxX + directionX] = copy[boxY][boxX]
+  })
+
+  return {newMap: warehouseMap}
+}
+
+export const performAllMoves2 = (warehouseMap: string[][], movements: Direction[]) => {
+  let newMap = warehouseMap
+  movements.forEach(movement => {
+    const moveResults = attemptMove2(newMap, movement)
+    newMap = moveResults.newMap
+  })
+  return newMap
+}
 export const part2 = (rawInput: string): number => {
-  const input = parseInput(rawInput)
-
-  return -1
+  const {warehouseMap, movements} = parseInput(rawInput)
+  const translatedMap = translateMap(warehouseMap)
+  // console.log(`INITIAL`)
+  // printGrid(warehouseMap)
+  const finishedWarehouseMap = performAllMoves2(translatedMap, movements)
+  // printGrid(finishedWarehouseMap)
+  return calculateGps2(finishedWarehouseMap)
 }
 
 export const printGrid = (grid: number[][]|string[][]) => {
