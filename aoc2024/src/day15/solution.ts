@@ -17,18 +17,23 @@ export const DIRECTIONS = {
   '<': LEFT,
 }
 
+export const findRobot = (warehouseMap: string[][]) => {
+  for (let y = 0; y < warehouseMap.length; y++) {
+    for (let x = 0; x < warehouseMap[y].length; x++) {
+      if (warehouseMap[y][x] === ROBOT) {
+        return [x, y]
+      }
+    }
+  }
+  return [-1, -1]
+}
+
 export const parseInput = (rawInput: string) => {
   const splitInput = rawInput.split('\n\n');
   const warehouseMap = splitInput[0].split('\n').map(line => line.split(''))
   const movements = splitInput[1].split('\n').join('').split('').map(movement => DIRECTIONS[movement as keyof typeof DIRECTIONS])
 
-  let robotPosition
-  for (let i = 0; i < warehouseMap.length; i++) {
-    const line = warehouseMap[i];
-    if (line.includes(ROBOT)) {
-      robotPosition = [line.indexOf(ROBOT), i]
-    }
-  }
+  let robotPosition = findRobot(warehouseMap)
 
   return {warehouseMap, movements, robotPosition}
 }
@@ -88,10 +93,48 @@ export const calculateGps = (warehouseMap: string[][]) => {
   return boxes.map(box => (box.y * 100) + box.x).reduce((sum, value) => value + sum)
 }
 
+
 export const part1 = (rawInput: string):number => {
   const {warehouseMap, movements, robotPosition} = parseInput(rawInput)
   const finishedWarehouseMap = performAllMoves(warehouseMap, robotPosition as [number, number], movements)
   return calculateGps(finishedWarehouseMap)
+}
+
+export const calculateGps2 = (warehouseMap: string[][]) => {
+  const boxes = []
+  // const boxMap: Record<string, {left: [number, number], right: [number, number]}> = {}
+  for(let y = 0; y < warehouseMap.length; y++) {
+    for (let x = 0; x < warehouseMap[y].length; x++) {
+      if (warehouseMap[y][x] === '[') boxes.push({x, y})
+    }
+  }
+  //TODO modify to first find the distance from the left/right edge based on location
+  return boxes.map(box => (box.y * 100) + box.x).reduce((sum, value) => value + sum)
+}
+
+export const translateMap = (originalMap: string[][]): string[][] => {
+  return originalMap.map(line => {
+    const newLine: string[] = []
+    line.forEach(tile => {
+      switch (tile) {
+        case WALL:
+          newLine.push(WALL, WALL)
+          break
+        case BOX:
+          newLine.push('[', ']')
+          break
+        case EMPTY:
+          newLine.push(EMPTY, EMPTY)
+          break
+        case ROBOT:
+          newLine.push(ROBOT, EMPTY)
+          break
+        default:
+          throw Error(`Invalid Tile Value: ${tile}`)
+      }
+    })
+    return newLine
+  })
 }
 
 export const part2 = (rawInput: string): number => {

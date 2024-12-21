@@ -6,11 +6,13 @@ import {
   exampleInputPart1,
   exampleInputPart2,
   smallerInput,
+  translateMap,
   attemptMove,
-  DIRECTIONS, ROBOT, BOX, EMPTY,
+  DIRECTIONS, ROBOT, BOX, EMPTY, calculateGps2,
 } from "./solution"
 
 const input = fs.readFileSync(`${__dirname}/input.txt`, 'utf-8');
+const toGrid = (mapAsString: string) => mapAsString.split('\n').map(s => s.split(''))
 
 describe('Day15Test tests', () => {
   describe('parseInput', () => {
@@ -136,9 +138,49 @@ describe('Day15Test tests', () => {
     })
   })
   describe('part2', () => {
+    describe("translateMap", () => {
+      let originalMap: string[][]
+      beforeEach(() => {
+        originalMap = `#######
+#...#.#
+#.....#
+#..OO@#
+#..O..#
+#.....#
+#######`.split('\n').map(s => s.split(''))
+      })
+      it("should match the expected", () => {
+        const expectedTranslatedMap = `##############
+##......##..##
+##..........##
+##....[][]@.##
+##....[]....##
+##..........##
+##############`.split('\n').map(s => s.split(''))
+        expect(translateMap(originalMap)).toEqual(expectedTranslatedMap)
+      })
+    })
+    describe("calculateGps2", () => {
+      let warehouseMap: string[][]
+      beforeEach(() => {
+        warehouseMap = toGrid(`####################
+##[].......[].[][]##
+##[]...........[].##
+##[]........[][][]##
+##[]......[]....[]##
+##..##......[]....##
+##..[]............##
+##..@......[].[][]##
+##......[][]..[]..##
+####################`)
+      })
+      it("should return 9021", () => {
+        expect(calculateGps2(warehouseMap)).toBe(9021)
+      })
+    })
     describe('example input', () => {
-      it.skip('part2 should be...', () => {
-        expect(part2(exampleInputPart2)).toBe(null)
+      it.skip('part2 should be 9021', () => {
+        expect(part2(exampleInputPart2)).toBe(9021)
       })
     })
     describe('real input', () => {
