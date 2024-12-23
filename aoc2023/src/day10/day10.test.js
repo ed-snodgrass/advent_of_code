@@ -22,13 +22,13 @@ describe('Day10Test tests', () => {
         parsedInput = parseInput(exampleInput)
       })
       it('should have 2 viable options', () => {
-        expect(findViablePathsFromNode(parsedInput, parsedInput.start, {x: Infinity, y: Infinity, v: '', stepsFromStart: 0})).toHaveLength(2)
+        expect(findViablePathsFromNode(parsedInput, parsedInput.start)).toHaveLength(2)
       })
       it('should have horizontal for east', () => {
-        expect(findViablePathsFromNode(parsedInput, parsedInput.start, {x: Infinity, y: Infinity, v: '', stepsFromStart: 0})).toStrictEqual(expect.arrayContaining([expect.objectContaining({x: 2, y: 1, v: horizontalConnector})]))
+        expect(findViablePathsFromNode(parsedInput, parsedInput.start)).toStrictEqual(expect.arrayContaining([expect.objectContaining({x: 2, y: 1, v: horizontalConnector})]))
       })
       it('should have horizontal for east', () => {
-        expect(findViablePathsFromNode(parsedInput, parsedInput.start, {x: Infinity, y: Infinity, v: '', stepsFromStart: 0})).toStrictEqual(expect.arrayContaining([expect.objectContaining({x: 1, y: 2, v: verticalConnector})]))
+        expect(findViablePathsFromNode(parsedInput, parsedInput.start)).toStrictEqual(expect.arrayContaining([expect.objectContaining({x: 1, y: 2, v: verticalConnector})]))
       })
       it('should have starting point at 1, 1', () => {
         expect(findStartingPoint(parsedInput)).toEqual({x: 1, y: 1, v: 'S', hasVisited: false})
@@ -104,8 +104,8 @@ L--J.L7...LJS7F-7L7.
       beforeEach(() => {
         parsedInput = parseInput(input)
       })
-      it('part2 should be...', () => {
-        expect(part2(input)).toBe()
+      it('part2 should be 579', () => {
+        expect(part2(input)).toBe(579)
       })
     })
   })

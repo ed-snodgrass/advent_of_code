@@ -1,7 +1,8 @@
 import run from "aocrunner"
-import Grid, {GridNode} from "../utils/Grid.js";
 import {findNumberOfPointsWithinPolygon, shoelace} from "../utils/polygon";
-// import Grid, {GridNode} from "../utils/Grid";
+
+// import Grid, {GridNode} from "../utils/Grid.js";
+import Grid, {GridNode} from "../utils/Grid";
 
 export const verticalConnector = '|'
 export const horizontalConnector = '-'
@@ -25,8 +26,7 @@ export const findStartingPoint = (grid: Grid) => {
   return grid.start
 }
 export const determineStartingPoint = (grid: Grid) => {
-  let previousNode: DirectionNode = {x: Infinity, y: Infinity, v: '', stepsFromStart: 0, hasVisited: true, previousDirection: ''}
-  const openings = findViablePathsFromNode(grid, grid.start, previousNode, 0, '')
+  const openings = findViablePathsFromNode(grid, grid.start, 0, '')
 
   const openingsValues = openings.map(opening => opening.v)
   if (openings[0].v === openings[1].v) {
@@ -86,7 +86,7 @@ interface DirectionNode extends GridNode {
   previousDirection: string
 }
 
-export const findViablePathsFromNode = (grid: Grid, node: GridNode, previousNode: DirectionNode, stepsFromStart: number, previousDirection: string): DirectionNode[] => {
+export const findViablePathsFromNode = (grid: Grid, node: GridNode, stepsFromStart: number, previousDirection: string): DirectionNode[] => {
   grid.visit(node.x, node.y)
   const viableNextOptions : DirectionNode[] = []
   const startY = node.y
@@ -130,16 +130,16 @@ export const findViablePathsFromNode = (grid: Grid, node: GridNode, previousNode
 
 export const findFullLoop = (grid: Grid) => {
   const path = []
-  let previousNode: DirectionNode = {x: Infinity, y: Infinity, v: '', stepsFromStart: 0, hasVisited: true, previousDirection: ''}
+  let previousNode: DirectionNode
   path.push(grid.start)
-  let initialOptions =  findViablePathsFromNode(grid, grid.start, previousNode, 0, '')
+  let initialOptions =  findViablePathsFromNode(grid, grid.start, 0, '')
   previousNode = {...grid.start, previousDirection: '', stepsFromStart: 1}
   let nextStop = initialOptions[0]
   path.push(nextStop)
   let isStartingPosition = nextStop.x === grid.start.x && nextStop.y === grid.start.y
   while (!isStartingPosition) {
       const tempNextStop = {...nextStop}
-      nextStop = findViablePathsFromNode(grid, nextStop, previousNode, previousNode.stepsFromStart, tempNextStop.previousDirection)[0];
+      nextStop = findViablePathsFromNode(grid, nextStop, previousNode.stepsFromStart, tempNextStop.previousDirection)[0];
       path.push(nextStop)
       isStartingPosition = nextStop.x === grid.start.x && nextStop.y === grid.start.y
       previousNode = tempNextStop
