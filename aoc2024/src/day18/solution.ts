@@ -93,23 +93,53 @@ export const findBestPath = (grid: string[][], start: [number, number], end: [nu
 export const part1 = (rawInput: string):number => {
   const input = parseInput(rawInput)
   let grid: string[][]
+  let numberOfBytes
+  let height, width
   let bestPathCost:number
   if (input.length === 25) {
-    grid = createGrid(7, 7)
-    grid = processBytes(grid, input, 12)
-    bestPathCost = findBestPath(grid, [0, 0], [6, 6])
+    height = 7
+    width = 7
+    numberOfBytes = 12
   } else {
-    grid = createGrid(71, 71)
-    grid = processBytes(grid, input, 1024)
-    bestPathCost = findBestPath(grid, [0, 0], [70, 70])
+    height = 71
+    width = 71
+    numberOfBytes = 1024
   }
+  grid = createGrid(height, width)
+  grid = processBytes(grid, input, numberOfBytes)
+  bestPathCost = findBestPath(grid, [0, 0], [width - 1, height - 1])
   return bestPathCost
 }
 
-export const part2 = (rawInput: string): number => {
+export const part2 = (rawInput: string): string => {
   const input = parseInput(rawInput)
+  let grid: string[][]
+  let initialByteIndex
+  let blockingByte: [number, number] = [-1, -1] as [number, number]
+  let height: number, width: number
+  if (input.length === 25) {
+    height = 7
+    width = 7
+    initialByteIndex = 12
+  } else {
+    height = 71
+    width = 71
+    initialByteIndex = 1024
+  }
 
-  return -1
+  grid = createGrid(height, width)
+  for (let i = initialByteIndex + 1; i < input.length; i++) {
+    // console.time(`part2 ${i}`)
+    grid = processBytes(grid, input, i)
+    const bestPathCost = findBestPath(grid, [0, 0], [width - 1, height - 1])
+    // console.timeEnd(`part2 ${i}`)
+    if (bestPathCost < 0) {
+      blockingByte = input[i - 1]
+      break
+    }
+  }
+
+  return blockingByte.join(',')
 }
 
 export const exampleInputPart1 =  `5,4

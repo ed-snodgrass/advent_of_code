@@ -53,13 +53,13 @@ describe('Day18Test tests', () => {
   })
   describe('part2', () => {
     describe('example input', () => {
-      it.skip('part2 should be 6,1', () => {
+      it('part2 should be 6,1', () => {
         expect(part2(exampleInputPart2)).toBe('6,1')
       })
     })
     describe('real input', () => {
-      it.skip('part2 should be...', () => {
-        expect(part2(input)).toBe(null)
+      it.skip('part2 should be "24,32"', () => {
+        expect(part2(input)).toBe("24,32")
       })
     })
   })
