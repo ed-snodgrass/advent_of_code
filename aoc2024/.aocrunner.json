@@ -248,13 +248,13 @@
         "solved": true,
         "result": "5,1,4,0,5,1,0,2,6",
         "attempts": [],
-        "time": 0.135167
+        "time": 0.147125
       },
       "part2": {
         "solved": false,
         "result": "-1",
         "attempts": [],
-        "time": 0.007833
+        "time": 0.006875
       }
     },
     {
