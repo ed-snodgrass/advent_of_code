@@ -39,10 +39,17 @@ export const part1 = (rawInput: string):number => {
   return narrowedTriads.length
 }
 
-export const part2 = (rawInput: string): number => {
-  const input = parseInput(rawInput)
+export const findLargestSetOfConnections = (computerPairs: string[][]): string[] => {
+  const largestSetOfConnections = new Set<string>()
 
-  return -1
+  return Array.from(largestSetOfConnections)
+}
+
+export const part2 = (rawInput: string): string => {
+  const computerPairs = parseInput(rawInput)
+  const largestSetOfConnections = findLargestSetOfConnections(computerPairs)
+
+  return largestSetOfConnections.join(',')
 }
 
 export const exampleInputPart1 =  `kh-tc
@@ -78,4 +85,3 @@ wh-qp
 tb-vc
 td-yn`
 
-export const exampleInputPart2 = exampleInputPart1

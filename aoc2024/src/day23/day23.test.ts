@@ -1,5 +1,12 @@
 import * as fs from "fs"
-import { part1, part2, parseInput, exampleInputPart1, exampleInputPart2, narrowNetworkTriads } from "./solution"
+import {
+  part1,
+  part2,
+  parseInput,
+  exampleInputPart1,
+  narrowNetworkTriads,
+  findLargestSetOfConnections,
+} from "./solution"
 
 const input = fs.readFileSync(`${__dirname}/input.txt`, 'utf-8');
 
@@ -45,9 +52,14 @@ td,wh,yn`.split('\n')
     })
   })
   describe('part2', () => {
+    describe("findLargestSetOfConnections", () => {
+      it('should find set of co, de, ka, and ta', () => {
+        expect(findLargestSetOfConnections(parseInput(exampleInputPart1))).toEqual(['co', 'de', 'ka', 'ta'])
+      })
+    })
     describe('example input', () => {
-      it.skip('part2 should be...', () => {
-        expect(part2(exampleInputPart2)).toBe(null)
+      it('part2 should be...', () => {
+        expect(part2(exampleInputPart1)).toBe('co,de,ka,ta')
       })
     })
     describe('real input', () => {
