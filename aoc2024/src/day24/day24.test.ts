@@ -4,7 +4,6 @@ import {
   part2,
   parseInput,
   exampleInputPart1,
-  exampleInputPart2,
   convertBinaryToDecimal,
   executeGate, createBinaryStringFromZOutputs, arrangeWireNames,
 } from "./solution"
@@ -169,22 +168,7 @@ z12: 0`.split('\n').map(item => item.split(': ')).map(item => ([item[0], parseIn
       })
     })
   })
-  function add45Bit(decA:number, decB: number) {
-    // Convert to BigInt
 
-    const bigA = BigInt(decA.toString(2));
-    const bigB = BigInt(decB.toString(2));
-
-    // Perform addition
-    const result = bigA + bigB;
-
-    // Check if the result is within 45 bits
-    if (result >= 2n ** 45n) {
-      throw new Error("Result exceeds 45 bits");
-    }
-
-    return result;
-  }
   describe('part2', () => {
     describe('arrangeWireNames', () => {
       it("should return sorted wire names", () => {
