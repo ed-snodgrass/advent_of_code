@@ -348,13 +348,13 @@
         "solved": true,
         "result": "55730288838374",
         "attempts": [],
-        "time": 1.436125
+        "time": 1.581542
       },
       "part2": {
-        "solved": false,
-        "result": "-1",
+        "solved": true,
+        "result": "fvw,grf,mdb,nwq,wpq,z18,z22,z36",
         "attempts": [],
-        "time": 0.160792
+        "time": 0.634625
       }
     },
     {

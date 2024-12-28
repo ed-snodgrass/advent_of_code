@@ -6,7 +6,7 @@ import {
   exampleInputPart1,
   exampleInputPart2,
   convertBinaryToDecimal,
-  executeGate, createBinaryStringFromZOutputs,
+  executeGate, createBinaryStringFromZOutputs, arrangeWireNames,
 } from "./solution"
 
 const input = fs.readFileSync(`${__dirname}/input.txt`, 'utf-8');
@@ -169,16 +169,31 @@ z12: 0`.split('\n').map(item => item.split(': ')).map(item => ([item[0], parseIn
       })
     })
   })
+  function add45Bit(decA:number, decB: number) {
+    // Convert to BigInt
 
+    const bigA = BigInt(decA.toString(2));
+    const bigB = BigInt(decB.toString(2));
+
+    // Perform addition
+    const result = bigA + bigB;
+
+    // Check if the result is within 45 bits
+    if (result >= 2n ** 45n) {
+      throw new Error("Result exceeds 45 bits");
+    }
+
+    return result;
+  }
   describe('part2', () => {
-    describe('example input', () => {
-      it.skip('part2 should be...', () => {
-        expect(part2(exampleInputPart2)).toBe(null)
+    describe('arrangeWireNames', () => {
+      it("should return sorted wire names", () => {
+        expect(arrangeWireNames(['aaa', 'eee', 'ooo', 'z99', 'bbb', 'ccc', 'aoc', 'z24'])).toBe('aaa,aoc,bbb,ccc,eee,ooo,z24,z99')
       })
     })
     describe('real input', () => {
-      it.skip('part2 should be...', () => {
-        expect(part2(input)).toBe(null)
+      it('part2 should be...', () => {
+        expect(part2(input)).toBe('fvw,grf,mdb,nwq,wpq,z18,z22,z36')
       })
     })
   })
