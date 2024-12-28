@@ -120,7 +120,6 @@ export function findConnectionsWithSingleWires(wiredConnections: WiredConnection
 
 export const part2 = (rawInput: string): string => {
   const { wiredConnections } = parseInput(rawInput)
-  // const initialWireKeys = initialWireValues.map(wire => wire.key)
   const gatesToSwap:WiredConnection[] = []
   const exclusiveOrGatesWithXYInputs = wiredConnections.filter(wiredConnection => {
     const [wire1, wire2] = wiredConnection.inputWires
@@ -173,117 +172,6 @@ export const part2 = (rawInput: string): string => {
     }
   })
 
-  //
-
-  // const retries: WiredConnection[] = []
-  // const completed: string[] = []
-  // wiredConnections.forEach((wiredConnection) => {
-  //   const { inputWires, gate, output } = wiredConnection
-  //   const [inputWire1, inputWire2] = inputWires
-  //   if (initialWireKeys.includes(inputWire1) && initialWireKeys.includes(inputWire2)) {
-  //       completed.push(output)
-  //   } else {
-  //     retries.push(wiredConnection)
-  //   }
-  // })
-  // while (retries.length > 0) {
-  //   const retry = retries.shift()
-  //   if (!retry) {
-  //     break
-  //   }
-  //   const { inputWires, gate, output } = retry
-  //   const [inputWire1, inputWire2] = inputWires
-  //   if (completed.includes(inputWire1) && completed.includes(inputWire2)) {
-  //     completed.push(output)
-  //   } else {
-  //     retries.push(retry)
-  //   }
-  // }
-  // const extrapolationRetries: WiredConnection[] = []
-  // const fullList:WiredConnection[] = []
-  // completed.forEach(output => {
-  //   const wireConnectionWithOutput = wiredConnections.find(wiredConnection => wiredConnection.output === output)
-  //   const [inputWire1, inputWire2] = wireConnectionWithOutput!.inputWires
-  //
-  //   if ((inputWire1.startsWith('x') || inputWire1.startsWith('y')) && (inputWire2.startsWith('x') || inputWire2.startsWith('y'))) {
-  //     fullList.push(wireConnectionWithOutput!)
-  //   } else {
-  //     if (!extrapolationRetries.map(retry => retry.output).includes(wireConnectionWithOutput!.output)) {
-  //       extrapolationRetries.push(wireConnectionWithOutput!)
-  //     }
-  //   }
-  // })
-  //
-  // while(extrapolationRetries.length > 0) {
-  //   const retry = extrapolationRetries.shift()
-  //   if (!retry) {throw new Error('Invalid retry')}
-  //     const outputsSoFar = fullList.map(item => item.output)
-  //     const [wire1, wire2] = retry.inputWires
-  //     const wire1Ready = wire1.startsWith('x') || wire1.startsWith('y') || outputsSoFar.includes(wire1)
-  //     const wire2Ready = wire2.startsWith('x') || wire2.startsWith('y') || outputsSoFar.includes(wire2)
-  //     if (wire1Ready && wire2Ready) {
-  //       fullList.push(retry)
-  //     } else {
-  //       extrapolationRetries.push(retry)
-  //     }
-  // }
-  //
-  // const extrapolations: {output: string, connection: string}[] = []
-  // for (let wiredConnection of fullList) {
-  //   const { inputWires, gate, output } = wiredConnection
-  //   const [inputWire1, inputWire2] = inputWires
-  //   let wire1Extrapolation, wire2Extrapolation
-  //   if (inputWire1.startsWith('x') || inputWire1.startsWith('y')) {
-  //     wire1Extrapolation = `${inputWire1}`
-  //   } else {
-  //     const existingConnection = extrapolations.find(extrapolation => extrapolation.output === inputWire1)?.connection
-  //     if (existingConnection) {
-  //       wire1Extrapolation = existingConnection
-  //     } else {
-  //       const connection = wiredConnections.find(wiredConnection => wiredConnection.output === inputWire1)
-  //       if (!connection) {
-  //         throw new Error('Invalid connection')
-  //       }
-  //       const { inputWires: inputWires1, gate: gate1, output: output1 } = connection
-  //       const [inputWire11, inputWire21] = inputWires1
-  //       wire1Extrapolation = `${inputWire11} ${gate1} ${inputWire21}`
-  //     }
-  //   }
-  //   if (inputWire2.startsWith('x') || inputWire2.startsWith('y')) {
-  //     wire2Extrapolation = `${inputWire2}`
-  //   } else {
-  //     const existingConnection = extrapolations.find(extrapolation => extrapolation.output === inputWire2)?.connection
-  //     if (existingConnection) {
-  //       wire2Extrapolation = existingConnection
-  //     } else {
-  //       const connection = wiredConnections.find(wiredConnection => wiredConnection.output === inputWire2)
-  //       if (!connection) {
-  //         throw new Error('Invalid connection')
-  //       }
-  //       const { inputWires: inputWires2, gate: gate2, output: output2 } = connection
-  //       const [inputWire21, inputWire22] = inputWires2
-  //       wire2Extrapolation = `${inputWire21} ${gate2} ${inputWire22}`
-  //     }
-  //   }
-  //   extrapolations.push({output, connection: `(${wire1Extrapolation} ${gate} ${wire2Extrapolation})`})
-  // }
-  //
-  // const graphConnections:string[] = []
-  // fullList.forEach(wiredConnection => {
-  //   const { inputWires, gate, output } = wiredConnection
-  //   const [inputWire1, inputWire2] = inputWires
-  //   const gateKey = `${inputWire1}_${inputWire2}_${gate}`
-  //   const inputWire1ConnectionToGate = `${inputWire1}{${inputWire1}} --> ${gateKey}[${gate}]`
-  //   const inputWire2ConnectionToGate = `${inputWire2}{${inputWire2}} --> ${gateKey}[${gate}]`
-  //   graphConnections.push(`${inputWire1ConnectionToGate}`)
-  //   graphConnections.push(`${inputWire2ConnectionToGate}`)
-  //   graphConnections.push(`${gateKey} --> ${output}{${output}}`)
-  // })
-  // console.log(graphConnections.join('\n'))
-  // console.log(extrapolations.filter(extrapolation => extrapolation.output.startsWith('z')).map(extrapolation => `${extrapolation.output} => ${extrapolation.connection}`).join('\n'))
-  // console.log(extrapolations.map(extrapolation => `${extrapolation.output} => ${extrapolation.connection.match(/[xy]\d\d/gi)?.length}`).join('\n'))
-  // console.log(extrapolations.filter(extrapolation => extrapolation.output.startsWith('z')).map(extrapolation => `${extrapolation.output} => ${extrapolation.connection.match(/\s[A|X]?[N|O][R|D]\s/gi)?.length}`).join('\n'))
-  // console.log(extrapolations.map(extrapolation => `${extrapolation.output} => ${extrapolation.connection}`).join('\n'))
   return arrangeWireNames(gatesToSwap.map(fullGate => fullGate.output))
 }
 
@@ -336,36 +224,3 @@ tgd XOR rvg -> z12
 tnw OR pbm -> gnj`
 
 export const exampleInputPart2 = exampleInputPart1
-
-class Graph {
-  noOfVertices: number;
-  AdjList: Map<string, string[]>;
-
-  constructor(noOfVertices: number) {
-    this.noOfVertices = noOfVertices;
-    this.AdjList = new Map();
-  }
-
-  addVertex(v: string) {
-    this.AdjList.set(v, []);
-  }
-  addEdge(v:string, w:string){
-    this.AdjList.get(v)?.push(w);
-    this.AdjList.get(w)?.push(v);
-  }
-  printGraph() {
-    const vertices = this.AdjList.keys();
-
-    for (let i of vertices) {
-      const adjacencyList = this.AdjList.get(i);
-      let graphString = "";
-
-      if (adjacencyList) {
-        for (const j of adjacencyList)
-          graphString += j + " ";
-      }
-
-      console.log(i + " -> " + graphString);
-    }
-  }
-}
