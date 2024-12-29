@@ -39,17 +39,67 @@ export const part1 = (rawInput: string):number => {
   return narrowedTriads.length
 }
 
-export const findLargestSetOfConnections = (computerPairs: string[][]): string[] => {
-  const largestSetOfConnections = new Set<string>()
+const findAllConnections = (computerPairs: string[][]) => {
+  const connections: Record<string, string[]> = {}
 
-  return Array.from(largestSetOfConnections)
+  for (const [a,b] of computerPairs) {
+    if (!connections[a]) {
+      connections[a] = [b]
+    } else {
+      connections[a].push(b)
+    }
+    if (!connections[b]) {
+      connections[b] = [a]
+    } else {
+      connections[b].push(a)
+    }
+  }
+  return connections
+}
+
+export const findLargestSetOfConnections = (computerPairs: string[][]): string | undefined => {
+  const connections = findAllConnections(computerPairs)
+  const networkMap: Map<string, number> = new Map()
+
+  for (let connectionsKey in connections) {
+    const otherConnections = connections[connectionsKey].map(connection => {
+      return {key: connection, connections: connections[connection].filter(item => item !== connectionsKey)}
+    })
+    const network = [connectionsKey]
+    let score = 0
+    otherConnections.forEach(otherConnection => {
+      const allOtherConnectionsFlattened = otherConnections.map(connection => connection.connections).flat()
+      score += allOtherConnectionsFlattened.reduce((acc, value) => {
+        return value === otherConnection.key ? acc + 1 : acc
+      }, 0)
+      if (otherConnections.map(connection => connection.connections).flat().some(connection => connection.includes(otherConnection.key))) {
+        network.push(otherConnection.key)
+      }
+    })
+    const networkKey = network.sort((a,b) => a.localeCompare(b)).join(',')
+    if (networkMap.has(networkKey)) {
+      const currentScore = networkMap.get(networkKey)
+      networkMap.set(networkKey, !!currentScore ? currentScore + score : 0)
+    } else {
+      networkMap.set(networkKey, score)
+    }
+  }
+  let bestNetwork: {network: string, score: number} | undefined
+  networkMap.forEach((score, network) => {
+    if (!bestNetwork || score > bestNetwork.score) {
+      bestNetwork = {network, score}
+    }
+  })
+  return bestNetwork?.network
 }
 
 export const part2 = (rawInput: string): string => {
   const computerPairs = parseInput(rawInput)
   const largestSetOfConnections = findLargestSetOfConnections(computerPairs)
-
-  return largestSetOfConnections.join(',')
+  if (!largestSetOfConnections) {
+    throw new Error('No largest set of connections found')
+  }
+  return largestSetOfConnections
 }
 
 export const exampleInputPart1 =  `kh-tc

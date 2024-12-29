@@ -334,13 +334,13 @@
         "solved": true,
         "result": "1304",
         "attempts": [],
-        "time": 353.624375
+        "time": 352.055
       },
       "part2": {
-        "solved": false,
-        "result": "-1",
+        "solved": true,
+        "result": "ao,es,fe,if,in,io,ky,qq,rd,rn,rv,vc,vl",
         "attempts": [],
-        "time": 0.727042
+        "time": 163.422458
       }
     },
     {

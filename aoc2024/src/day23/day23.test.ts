@@ -54,7 +54,7 @@ td,wh,yn`.split('\n')
   describe('part2', () => {
     describe("findLargestSetOfConnections", () => {
       it('should find set of co, de, ka, and ta', () => {
-        expect(findLargestSetOfConnections(parseInput(exampleInputPart1))).toEqual(['co', 'de', 'ka', 'ta'])
+        expect(findLargestSetOfConnections(parseInput(exampleInputPart1))).toEqual(['co', 'de', 'ka', 'ta'].join(','))
       })
     })
     describe('example input', () => {
@@ -63,8 +63,8 @@ td,wh,yn`.split('\n')
       })
     })
     describe('real input', () => {
-      it.skip('part2 should be...', () => {
-        expect(part2(input)).toBe(null)
+      it('part2 should be \'ao,es,fe,if,in,io,ky,qq,rd,rn,rv,vc,vl\'', () => {
+        expect(part2(input)).toBe('ao,es,fe,if,in,io,ky,qq,rd,rn,rv,vc,vl')
       })
     })
   })
