@@ -44,10 +44,41 @@ export const part1 = (rawInput: string): number => {
   return designs.filter((design) => checkDesignViability(design, towelPatterns)).length
 }
 
-export const part2 = (rawInput: string): number => {
-  const input = parseInput(rawInput)
+export function findDesignOptions(design: string, towelPatterns: string[]) {
+  const matchingPatterns = towelPatterns.filter((towelPattern) => design.includes(towelPattern))
+  const memo: Map<string, number> = new Map()
 
-  return -1
+  function backtrack(remaining: string, path: string[]): number {
+    if (memo.has(remaining)) {
+      return memo.get(remaining)!
+    }
+
+    let solutionsCount = 0
+    if (remaining === "") {
+      return 1
+    }
+
+    for (const pattern of matchingPatterns) {
+      if (remaining.startsWith(pattern)) {
+        const newRemaining = remaining.slice(pattern.length)
+        const newPath = [...path, pattern]
+        const subSolutions = backtrack(newRemaining, newPath)
+
+        solutionsCount += subSolutions
+      }
+    }
+    memo.set(remaining, solutionsCount)
+
+    return solutionsCount
+  }
+
+  return backtrack(design, [])
+}
+
+export const part2 = (rawInput: string): number => {
+  const { towelPatterns, designs } = parseInput(rawInput)
+  const possibleDesigns = designs.map((design) => findDesignOptions(design, towelPatterns))
+  return possibleDesigns.reduce((acc, b) => acc + b, 0)
 }
 
 export const exampleInputPart1 = `r, wr, b, g, bwu, rb, gb, br
