@@ -1,6 +1,4 @@
-export const parseInput = (
-  rawInput: string,
-): { towelPatterns: string[]; designs: string[] } => {
+export const parseInput = (rawInput: string): { towelPatterns: string[]; designs: string[] } => {
   const lines = rawInput.split("\n\n")
   const towelPatterns = lines[0].split(", ")
   const designs = lines[1].split("\n")
@@ -31,7 +29,7 @@ export function checkDesignViability(design: string, towelPatterns: string[]) {
       const towelPattern = patternsToCheck[i]
       if (designToCheck.startsWith(towelPattern)) {
         const index = designToCheck.indexOf(towelPattern)
-        attempt += towelPattern + '_'
+        attempt += towelPattern + "_"
         designToCheck = designToCheck.substring(index + towelPattern.length)
         break
       }
@@ -43,7 +41,7 @@ export function checkDesignViability(design: string, towelPatterns: string[]) {
 export const part1 = (rawInput: string): number => {
   const { towelPatterns, designs } = parseInput(rawInput)
 
-  return designs.filter(design => checkDesignViability(design, towelPatterns)).length
+  return designs.filter((design) => checkDesignViability(design, towelPatterns)).length
 }
 
 export const part2 = (rawInput: string): number => {
