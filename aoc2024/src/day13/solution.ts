@@ -36,37 +36,36 @@ export type ClawConfig = {
   prizeLocation: [number, number]
 }
 
+function cramerSolve(a: [number, number], b: [number, number],x: number, y:number): [number, number] {
+  const [a1, b1] = a
+  const [a2, b2] = b
+
+  const determinant = a1 * b2 - a2 * b1;
+
+  if (determinant === 0) {
+    return [-1,-1]
+  }
+
+  const m:number = (x * b2 - y * a2) / determinant;
+  const n:number = (y * a1 - x * b1) / determinant;
+  if (!Number.isInteger(m) || !Number.isInteger(n) || m < 0 || n < 0) {
+    return [-1,-1]
+  }
+  return [m, n]
+}
+
 function minimumScoreToTarget(clawConfig: ClawConfig) {
   const [a1, b1] = clawConfig.buttonA;
   const [a2, b2] = clawConfig.buttonB;
   const [x, y] = clawConfig.prizeLocation
-  const cost1 = 3; // Cost of move 1
-  const cost2 = 1; // Cost of move 2
+  const costOfMove1 = 3;
+  const costOfMove2 = 1;
 
-  // Helper function to compute if values are integers
-  function isInteger(value: number) {
-    return Number.isInteger(value);
-  }
-
-  // Compute the determinant of the coefficient matrix
-  const determinant = a1 * b2 - a2 * b1;
-
-  // If the determinant is zero, the system of equations is linearly dependent (no unique solution)
-  if (determinant === 0) {
+  const [m, n] = cramerSolve([a1, b1], [a2, b2], x, y);
+  if (!Number.isInteger(m) || !Number.isInteger(n) || m < 0 || n < 0) {
     return -1;
   }
-
-  // Solve for m and n using Cramer's rule
-  const m = (x * b2 - y * a2) / determinant;
-  const n = (y * a1 - x * b1) / determinant;
-
-  // Ensure both m and n are integers
-  if (!isInteger(m) || !isInteger(n) || m < 0 || n < 0) {
-    return -1; // Invalid solution
-  }
-
-  // Calculate the cost based on m and n
-  return cost1 * m + cost2 * n
+  return costOfMove1 * m + costOfMove2 * n
 }
 
 export const part1 = (rawInput: string):number => {
