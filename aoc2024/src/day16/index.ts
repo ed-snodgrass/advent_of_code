@@ -15,8 +15,12 @@ run({
   part2: {
     tests: [
       {
-        input: exampleInputPart2,
+        input: exampleInputPart1,
         expected: 45,
+      },
+      {
+        input: exampleInputPart2,
+        expected: 64,
       },
     ],
     solution: part2,
