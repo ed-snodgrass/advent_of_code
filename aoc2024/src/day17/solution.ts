@@ -59,36 +59,80 @@ export type InstructionResult = {
   instructionPointer: number;
   output?: number;
 }
+const adv = (registerA: number, operand: number, instructionPointer: number) => {
+  const newRegisterA = Math.trunc(registerA / Math.pow(2, operand))
+  const newInstructionPointer = instructionPointer + 2
+  return [newRegisterA, newInstructionPointer]
+}
+const bxl = (registerB: number, operand: number, instructionPointer: number) => {
+  const newRegisterB = Number(BigInt(registerB) ^ BigInt(operand))
+  const newInstructionPointer = instructionPointer + 2
+  return [newRegisterB, newInstructionPointer]
+}
+const bst = (operand: number, instructionPointer: number) => {
+  const newRegisterB = ((operand % 8) + 8) % 8
+  const newInstructionPointer = instructionPointer + 2
+  return [newRegisterB, newInstructionPointer]
+}
+const jnz = (registerA: number, operand: number, instructionPointer: number) => {
+  return registerA === 0 ? instructionPointer + 2 : operand
+}
+
+const bxc = (registerB: number, registerC: number, instructionPointer: number) => {
+  const newRegisterB = Number(BigInt(registerB) ^ BigInt(registerC))
+  const newInstructionPointer = instructionPointer + 2
+  return [newRegisterB, newInstructionPointer]
+}
+
+const out = (operand: number, instructionPointer: number) => {
+  const output = ((operand % 8) + 8) % 8
+  const newInstructionPointer = instructionPointer + 2
+  return [output, newInstructionPointer]
+}
+
 export function performInstruction(instruction: Instruction, registerA: number, registerB: number, registerC: number, instructionPointer: number):InstructionResult | undefined {
+  let newRegisterA = registerA, newRegisterB = registerB, newRegisterC = registerC, newInstructionPointer = instructionPointer, output
+
   if (instruction.opcode === 0) {
-    return {registerA: Math.trunc(registerA / Math.pow(2, instruction.operand)), registerB, registerC, instructionPointer: instructionPointer + 2}
+    const response = adv(registerA, instruction.operand, instructionPointer)
+    newRegisterA = response[0]
+    newInstructionPointer = response[1]
   }
   if (instruction.opcode === 1) {
-    return {registerA, registerB: registerB ^ instruction.operand, registerC, instructionPointer: instructionPointer + 2}
+    const response = bxl(registerB, instruction.operand, instructionPointer)
+    newRegisterB = response[0]
+    newInstructionPointer = response[1]
   }
   if (instruction.opcode === 2) {
-    return {registerA, registerB: instruction.operand % 8, registerC, instructionPointer: instructionPointer + 2}
+    const response = bst(instruction.operand, instructionPointer)
+    newRegisterB = response[0]
+    newInstructionPointer = response[1]
   }
   if (instruction.opcode === 3) {
-    if (registerA === 0) {
-      return {registerA, registerB, registerC, instructionPointer: instructionPointer + 2}
-    } else {
-      return {registerA, registerB, registerC, instructionPointer: instruction.operand}
-    }
+    newInstructionPointer = jnz(registerA, instruction.operand, instructionPointer)
   }
   if (instruction.opcode === 4) {
-    return { registerA, registerB: registerB ^ registerC, registerC, instructionPointer: instructionPointer + 2 }
+    const response = bxc(registerB, registerC, instructionPointer)
+    newRegisterB = response[0]
+    newInstructionPointer = response[1]
   }
   if (instruction.opcode === 5) {
-    return {output: instruction.operand % 8, registerA, registerB, registerC, instructionPointer: instructionPointer + 2}
+    const response = out(instruction.operand, instructionPointer)
+    output = response[0]
+    newInstructionPointer = response[1]
   }
   if (instruction.opcode === 6) {
-    return {registerA, registerB: Math.trunc(registerA / Math.pow(2, instruction.operand)), registerC, instructionPointer: instructionPointer + 2}
+    const response = adv(registerA, instruction.operand, instructionPointer)
+    newRegisterB = response[0]
+    newInstructionPointer = response[1]
   }
   if (instruction.opcode === 7) {
-    return {registerA, registerB, registerC: Math.trunc(registerA / Math.pow(2, instruction.operand)), instructionPointer: instructionPointer + 2}
+    const response = adv(registerA, instruction.operand, instructionPointer)
+    newRegisterC = response[0]
+    newInstructionPointer = response[1]
   }
-  return undefined
+
+  return {registerA: newRegisterA, registerB: newRegisterB, registerC: newRegisterC, instructionPointer: newInstructionPointer, output}
 }
 
 export type ProgramState = {
@@ -138,7 +182,7 @@ Register C: 0
 
 Program: 0,1,5,4,3,0`
 
-export const exampleInputPart2 = `Register A: 2024
+export const exampleInputPart2 = `Register A: 117440
 Register B: 0
 Register C: 0
 
