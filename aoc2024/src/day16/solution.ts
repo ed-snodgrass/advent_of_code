@@ -104,12 +104,79 @@ export const part1 = (rawInput: string): number => {
   return findBestPath(maze, start, end)
 }
 
-export const part2 = (rawInput: string): number => {
-  const input = parseInput(rawInput)
+export const findAllBestPaths = (
+  maze: string[][],
+  current: Node,
+  target: [number, number],
+  visited: Set<string>,
+  path: Node[],
+  bestScore: number
+) => {
+  const [endX, endY] = target
+  const bestPaths: Node[][] = []
 
-  return -1
+  if (current.x === endX && current.y === endY) {
+    if (current.cost <= bestScore) {
+      bestPaths.push(path.slice())
+    } else {
+      console.log(`busted the score: ${current.cost} > ${bestScore}`)
+    }
+    return bestPaths
+  }
+
+  const key = `${current.x},${current.y}`;
+  visited.add(key);
+
+  const nextPossibleNodes = findNextPossibleNodes(maze, current)
+
+  nextPossibleNodes.forEach((nextNode) => {
+    const nextKey = `${nextNode.x},${nextNode.y}`;
+
+    if (!visited.has(nextKey) && nextNode.cost <= bestScore) {
+      path.push(nextNode)
+      const pathsFromNext = findAllBestPaths(maze, nextNode, target, visited, path, bestScore)
+      bestPaths.push(...pathsFromNext)
+      path.pop()
+    }
+  })
+  visited.delete(key)
+  return bestPaths
 }
 
+export const part2 = (rawInput: string): number => {
+  const maze = parseInput(rawInput)
+  const visited = new Set<string>();
+  const [startX, startY] = findItem(maze, START)
+  const startNode = {x: startX, y: startY, cost: 0, direction: EAST}
+  const end = findItem(maze, END)
+  const bestScore = findBestPath(maze, [startX, startY], end)
+  const bestPaths = findAllBestPaths(maze, startNode, end, visited, [startNode], bestScore)
+
+  const tilesOnABestPath = new Set<string>()
+  bestPaths.forEach((path) => {
+    path.forEach((node) => {
+      tilesOnABestPath.add(`${node.x},${node.y}`)
+    })
+  })
+  printMaze(maze, tilesOnABestPath)
+  return tilesOnABestPath.size
+}
+
+export const printMaze = (maze: string[][], tilesOnABestPath: Set<string>) => {
+  let mazeString = ""
+  for(let y = 0; y < maze.length; y++) {
+    for(let x = 0; x < maze[y].length; x++) {
+      if (tilesOnABestPath.has(`${x},${y}`)) {
+        mazeString += "O"
+      } else {
+        mazeString += maze[y][x]
+      }
+
+    }
+    mazeString += "\n"
+  }
+  console.log(mazeString)
+}
 export const exampleInputPart1 = `###############
 #.......#....E#
 #.#.###.#.###.#

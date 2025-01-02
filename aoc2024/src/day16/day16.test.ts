@@ -32,16 +32,18 @@ describe("Day16Test tests", () => {
     })
   })
   describe("part2", () => {
-    describe("example input", () => {
-      it("part2 should be 45", () => {
+    describe("exampleInputPart1 input", () => {
+      it("should be 45", () => {
         expect(part2(exampleInputPart1)).toBe(45)
       })
-      it("part2 should be 45", () => {
+    })
+    describe("exampleInputPart2 input", () => {
+      it("should be 64", () => {
         expect(part2(exampleInputPart2)).toBe(64)
       })
     })
     describe("real input", () => {
-      it.skip("part2 should be...", () => {
+      it("part2 should be...", () => {
         expect(part2(input)).toBe(null)
       })
     })
