@@ -1,29 +1,29 @@
 import PriorityQueue from "../utils/PriorityQueue"
 // import PriorityQueue from "../utils/PriorityQueue.js"
 
-export const END = 'E'
-export const START = 'S'
-export const WALL = '#'
-export const EMPTY = '.'
+export const END = "E"
+export const START = "S"
+export const WALL = "#"
+export const EMPTY = "."
 
 export const TURN_COST = 1000
 export const MOVE_COST = 1
 
-export type Direction = [number, number];
+export type Direction = [number, number]
 
-export const EAST = '>'
-export const SOUTH = 'v'
-export const WEST = '<'
-export const NORTH = '^'
+export const EAST = ">"
+export const SOUTH = "v"
+export const WEST = "<"
+export const NORTH = "^"
 
 export const DIRECTIONS = {
-  '^': [0, -1],
-  '>': [1, 0],
-  'v': [0, 1],
-  '<': [-1, 0],
+  "^": [0, -1],
+  ">": [1, 0],
+  v: [0, 1],
+  "<": [-1, 0],
 }
 
-export const findItem = (grid: string[][], item: string):[number, number] => {
+export const findItem = (grid: string[][], item: string): [number, number] => {
   for (let y = 0; y < grid.length; y++) {
     for (let x = 0; x < grid[y].length; x++) {
       if (grid[y][x] === item) {
@@ -39,14 +39,14 @@ export const parseInput = (rawInput: string) => {
 }
 
 export type Node = {
-  x: number,
+  x: number
   y: number
   cost: number
   direction: string
 }
 
-function findNextPossibleNodes(grid: string[][], current: Node):Node[] {
-  const possibleNodes:Node[] = []
+function findNextPossibleNodes(grid: string[][], current: Node): Node[] {
+  const possibleNodes: Node[] = []
   Object.keys(DIRECTIONS).forEach((direction) => {
     const tempCost = direction === current.direction ? current.cost + MOVE_COST : current.cost + TURN_COST + MOVE_COST
     const [directionX, directionY] = DIRECTIONS[direction as keyof typeof DIRECTIONS]
@@ -54,7 +54,7 @@ function findNextPossibleNodes(grid: string[][], current: Node):Node[] {
     if (newX < 0 || newY < 0 || newX >= grid.length || newY >= grid[0].length) {
     } else if (grid[newY][newX] === WALL) {
     } else {
-      possibleNodes.push({x: newX, y: newY, cost: tempCost, direction: direction as string})
+      possibleNodes.push({ x: newX, y: newY, cost: tempCost, direction: direction as string })
     }
   })
   return possibleNodes
@@ -67,9 +67,10 @@ export const findBestPath = (maze: string[][], start: [number, number], end: [nu
   function comparator(thisNode: Node, otherNode: Node) {
     return thisNode.cost - otherNode.cost
   }
+
   const visited: string[] = []
   const queue = new PriorityQueue<Node>(comparator)
-  const firstNode = {x: startX, y: startY, direction: EAST, cost: 0}
+  const firstNode = { x: startX, y: startY, direction: EAST, cost: 0 }
 
   queue.enqueue(firstNode)
   let current: Node
@@ -84,7 +85,7 @@ export const findBestPath = (maze: string[][], start: [number, number], end: [nu
     }
     visited.push(`${current.x}_${current.y}`)
     const availableNodes = findNextPossibleNodes(maze, current)
-    availableNodes.forEach(node => {
+    availableNodes.forEach((node) => {
       queue.enqueue(node)
     })
   }
@@ -92,13 +93,13 @@ export const findBestPath = (maze: string[][], start: [number, number], end: [nu
   return -1
 }
 
-export const part1 = (rawInput: string):number => {
+export const part1 = (rawInput: string): number => {
   const maze = parseInput(rawInput)
   const start = findItem(maze, START)
   const end = findItem(maze, END)
 
   if (start[0] === -1 || start[1] === -1 || end[0] === -1 || end[1] === -1) {
-    throw new Error('Invalid maze')
+    throw new Error("Invalid maze")
   }
   return findBestPath(maze, start, end)
 }
@@ -106,11 +107,10 @@ export const part1 = (rawInput: string):number => {
 export const part2 = (rawInput: string): number => {
   const input = parseInput(rawInput)
 
-
   return -1
 }
 
-export const exampleInputPart1 =  `###############
+export const exampleInputPart1 = `###############
 #.......#....E#
 #.#.###.#.###.#
 #.....#.#...#.#
