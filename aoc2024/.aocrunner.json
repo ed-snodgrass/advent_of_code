@@ -248,13 +248,16 @@
         "solved": true,
         "result": "5,1,4,0,5,1,0,2,6",
         "attempts": [],
-        "time": 0.147125
+        "time": 0.08975
       },
       "part2": {
-        "solved": false,
-        "result": "-1",
-        "attempts": [],
-        "time": 0.006875
+        "solved": true,
+        "result": "202322936867370",
+        "attempts": [
+          "105541682640808",
+          "1512939433576536"
+        ],
+        "time": 4.718166
       }
     },
     {

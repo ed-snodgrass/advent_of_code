@@ -170,10 +170,27 @@ export const part1 = (rawInput: string):string => {
   return runProgram(initialState).output
 }
 
+export const findRegisterA = (initialState: ProgramState) => {
+  const {registerB, registerC, program} = initialState
+
+  const baseNumber = Math.pow(2, (program.length - 1) * 3)
+  const firstResult = runProgram({registerA: baseNumber, registerB, registerC, program})
+
+  let newRegisterA = baseNumber
+  let currentOutput = firstResult.output.split(',').map(Number)
+  for (let i = currentOutput.map(Number).length - 1; i >= 0; i--) {
+    while (currentOutput[i] !== program[i]) {
+      const valueToAdd = Math.pow(2, i * 3)
+      newRegisterA += valueToAdd
+      currentOutput = runProgram({registerA: newRegisterA, registerB, registerC, program}).output.split(',').map(Number)
+    }
+  }
+  return newRegisterA
+}
+
 export const part2 = (rawInput: string): number => {
   const input = parseInput(rawInput)
-
-  return -1
+  return findRegisterA(input)
 }
 
 export const exampleInputPart1 =  `Register A: 729
