@@ -1,7 +1,7 @@
 import * as fs from "fs"
 import { part1, part2, parseInput, exampleInputPart1, exampleInputPart2, findItem } from "./solution"
 
-const input = fs.readFileSync(`${__dirname}/input.txt`, "utf-8")
+const input = fs.readFileSync(`${__dirname}/input.txt`, "utf-8").trim()
 
 describe("Day16Test tests", () => {
   describe("parseInput", () => {
@@ -43,8 +43,8 @@ describe("Day16Test tests", () => {
       })
     })
     describe("real input", () => {
-      it("part2 should be...", () => {
-        expect(part2(input)).toBe(null)
+      it("part2 should be 513", () => {
+        expect(part2(input)).toBe(513)
       })
     })
   })

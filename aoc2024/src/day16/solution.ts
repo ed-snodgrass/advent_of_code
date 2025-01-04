@@ -118,53 +118,64 @@ export const part1 = (rawInput: string): number => {
   return findBestPath(maze, start, end)
 }
 
+const nodeKey = (node: Node) => `${node.x}_${node.y}_${node.direction}`
+
+interface PathNode extends Node {
+  path: Node[]
+}
+
 export const findAllBestPaths = (
   maze: string[][],
-  current: Node,
-  target: [number, number],
-  visited: Set<string>,
-  path: Node[],
+  startNode: Node,
+  end: [number, number],
   bestScore: number
 ) => {
-  const [endX, endY] = target
+  function comparator(thisNode: Node, otherNode: Node) {
+    return thisNode.cost - otherNode.cost
+  }
+  const [endX, endY] = end
   const bestPaths: Node[][] = []
+  const visited = new Map<string, number>
 
-  if (current.x === endX && current.y === endY) {
-    if (current.cost <= bestScore) {
-      bestPaths.push(path.slice())
-    } else {
-      console.log(`busted the score: ${current.cost} > ${bestScore}`)
+  const firstNode = { ...startNode, path: [startNode] as Node[] }
+  const queue = new PriorityQueue<PathNode>(comparator)
+  queue.enqueue(firstNode)
+
+  while (!queue.isEmpty()) {
+    const currentNode = queue.dequeue()!
+    const {x,y, cost, path} = currentNode
+    const currentKey = nodeKey(currentNode)
+
+    if (cost > bestScore) continue
+    if (visited.has(currentKey) && visited.get(currentKey)! < cost) continue
+
+    visited.set(currentKey, cost)
+
+    if (endX === x && endY === y && cost === bestScore) {
+      bestPaths.push(path)
+      continue
     }
-    return bestPaths
+
+    const neighbors = findNextPossibleNodes(maze, currentNode)
+    for (const neighbor of neighbors) {
+      const neighborKey = nodeKey(neighbor)
+      if (visited.has(neighborKey)) continue
+      if (neighbor.cost > bestScore) continue
+      queue.enqueue({...neighbor, path: [...path, neighbor] as Node[]})
+    }
   }
 
-  const key = `${current.x},${current.y}`;
-  visited.add(key);
-
-  const nextPossibleNodes = findNextPossibleNodes(maze, current)
-
-  nextPossibleNodes.forEach((nextNode) => {
-    const nextKey = `${nextNode.x},${nextNode.y}`;
-
-    if (!visited.has(nextKey) && nextNode.cost <= bestScore) {
-      path.push(nextNode)
-      const pathsFromNext = findAllBestPaths(maze, nextNode, target, visited, path, bestScore)
-      bestPaths.push(...pathsFromNext)
-      path.pop()
-    }
-  })
-  visited.delete(key)
   return bestPaths
 }
 
 export const part2 = (rawInput: string): number => {
+  const printOutput = false
   const maze = parseInput(rawInput)
-  const visited = new Set<string>();
   const [startX, startY] = findItem(maze, START)
   const startNode = {x: startX, y: startY, cost: 0, direction: EAST}
   const end = findItem(maze, END)
   const bestScore = findBestPath(maze, [startX, startY], end)
-  const bestPaths = findAllBestPaths(maze, startNode, end, visited, [startNode], bestScore)
+  const bestPaths = findAllBestPaths(maze, startNode, end, bestScore)
 
   const tilesOnABestPath = new Set<string>()
   bestPaths.forEach((path) => {
@@ -172,10 +183,12 @@ export const part2 = (rawInput: string): number => {
       tilesOnABestPath.add(`${node.x},${node.y}`)
     })
   })
-  bestPaths.forEach((path) => {
-    printMazePath(maze, path)
-  })
-  printMazeTiles(maze, tilesOnABestPath)
+  if (printOutput) {
+    bestPaths.forEach((path) => {
+      printMazePath(maze, path)
+    })
+    printMazeTiles(maze, tilesOnABestPath)
+  }
   return tilesOnABestPath.size
 }
 
