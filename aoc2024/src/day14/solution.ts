@@ -127,15 +127,69 @@ export const part1 = (rawInput: string): number => {
   }
   robots = next100Seconds(robots, gridWidth, gridHeight)
 
-  // printGrid(initGrid(gridWidth, gridHeight), robots)
   const counts = countRobotsByQuadrants(robots, gridWidth, gridHeight)
   return calculateSafetyFactor(counts)
 }
+function delay(ms: number) {
+  return new Promise( resolve => setTimeout(resolve, ms) );
+}
 
-export const part2 = (rawInput: string): number => {
-  const input = parseInput(rawInput)
+const hasCluster = (robots: Robot[]) => {
+  robots.sort((a, b) => {
+    const [aX, aY] = a.position
+    const [bX, bY] = b.position
+    if (aY === bY) {
+      return aX - bX
+    }
+    return aY - bY
+  })
+  let hasCluster = false
+  for (let i = 0; i < robots.length; i++) {
+    const robotsAtSameY = robots.filter((robot) => robot.position[1] === robots[i].position[1])
+    if (robotsAtSameY.length >= 30) {
+      let nextToEachOther = 0
+      for (let j = 0; j < robotsAtSameY.length - 1; j++) {
+        //check xs to see if the difference is 1
+        if (Math.abs(robotsAtSameY[j].position[0] - robotsAtSameY[j + 1].position[0]) === 1) {
+          nextToEachOther++
+        }
+        if (nextToEachOther >= 30) {
+          hasCluster = true
+          break
+        }
+      }
+    }
+  }
+  return hasCluster
+}
 
+export function nextXSeconds(robots: Robot[], gridWidth: number, gridHeight: number, endSeconds: number) {
+  let newRobots = [...robots]
+  for (let i = 0; i < endSeconds; i++) {
+    newRobots = nextSecond(newRobots, gridWidth, gridHeight)
+    if (hasCluster(newRobots)) {
+      // console.log(`###############${i + 1}###############`)
+      // printGrid(initGrid(gridWidth, gridHeight), newRobots)
+      return i + 1
+    }
+  }
   return -1
+}
+
+export const part2 = (rawInput: string) => {
+  let robots = parseInput(rawInput)
+  const [gridWidth, gridHeight] = robots.reduce((acc, robot) => {
+    const [x, y] = robot.position
+    if (x > acc[0]) {
+      acc[0] = x
+    }
+    if (y > acc[1]) {
+      acc[1] = y
+    }
+    return acc
+  }, [0, 0])
+  return nextXSeconds(robots, gridWidth + 1, gridHeight + 1, 10000)
+
 }
 
 export const exampleInputPart1 = `p=0,4 v=3,-3
@@ -150,5 +204,3 @@ p=9,3 v=2,3
 p=7,3 v=-1,2
 p=2,4 v=2,-3
 p=9,5 v=-3,-3`
-
-export const exampleInputPart2 = exampleInputPart1

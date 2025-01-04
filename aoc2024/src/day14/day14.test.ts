@@ -4,7 +4,6 @@ import {
   part2,
   parseInput,
   exampleInputPart1,
-  exampleInputPart2,
   calculateSafetyFactor,
   moveRobot, Robot, next100Seconds,
 } from "./solution"
@@ -163,14 +162,9 @@ describe("Day14Test tests", () => {
     })
   })
   describe("part2", () => {
-    describe("example input", () => {
-      it.skip("part2 should be...", () => {
-        expect(part2(exampleInputPart2)).toBe(null)
-      })
-    })
     describe("real input", () => {
-      it.skip("part2 should be...", () => {
-        expect(part2(input)).toBe(null)
+      it("part2 should be 6587", () => {
+        expect(part2(input)).toBe(6587)
       })
     })
   })
