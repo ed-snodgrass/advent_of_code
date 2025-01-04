@@ -44,19 +44,33 @@ export type Node = {
   cost: number
   direction: string
 }
+function oppositeDirection(direction: string, direction2: string) {
+  switch (direction) {
+    case EAST:
+      return direction2 === WEST
+    case SOUTH:
+      return direction2 === NORTH
+    case WEST:
+      return direction2 === EAST
+    case NORTH:
+      return direction2 === SOUTH
+  }
+  throw new Error(`Invalid direction: ${direction}`)
+}
 
 function findNextPossibleNodes(grid: string[][], current: Node): Node[] {
   const possibleNodes: Node[] = []
-  Object.keys(DIRECTIONS).forEach((direction) => {
+
+  for (const direction in DIRECTIONS ) {
     const tempCost = direction === current.direction ? current.cost + MOVE_COST : current.cost + TURN_COST + MOVE_COST
     const [directionX, directionY] = DIRECTIONS[direction as keyof typeof DIRECTIONS]
     const [newX, newY] = [current.x + directionX, current.y + directionY]
-    if (newX < 0 || newY < 0 || newX >= grid.length || newY >= grid[0].length) {
-    } else if (grid[newY][newX] === WALL) {
-    } else {
-      possibleNodes.push({ x: newX, y: newY, cost: tempCost, direction: direction as string })
-    }
-  })
+    if (newX < 0 || newY < 0 || newX >= grid.length || newY >= grid[0].length) continue
+    if (grid[newY][newX] === WALL) continue
+    if (oppositeDirection(direction, current.direction)) continue
+
+    possibleNodes.push({ x: newX, y: newY, cost: tempCost, direction: direction as string })
+  }
   return possibleNodes
 }
 
@@ -158,25 +172,43 @@ export const part2 = (rawInput: string): number => {
       tilesOnABestPath.add(`${node.x},${node.y}`)
     })
   })
-  printMaze(maze, tilesOnABestPath)
+  bestPaths.forEach((path) => {
+    printMazePath(maze, path)
+  })
+  printMazeTiles(maze, tilesOnABestPath)
   return tilesOnABestPath.size
 }
 
-export const printMaze = (maze: string[][], tilesOnABestPath: Set<string>) => {
+export const printMazeTiles = (maze: string[][], tilesOnABestPath: Set<string>) => {
   let mazeString = ""
-  for(let y = 0; y < maze.length; y++) {
-    for(let x = 0; x < maze[y].length; x++) {
+  for (let y = 0; y < maze.length; y++) {
+    for (let x = 0; x < maze[y].length; x++) {
       if (tilesOnABestPath.has(`${x},${y}`)) {
         mazeString += "O"
       } else {
         mazeString += maze[y][x]
       }
-
     }
     mazeString += "\n"
   }
   console.log(mazeString)
 }
+export const printMazePath = (maze: string[][], path: Node[]) => {
+  let mazeString = ""
+  for (let y = 0; y < maze.length; y++) {
+    for (let x = 0; x < maze[y].length; x++) {
+      const foundNode = path.find((node) => node.x === x && node.y === y)
+      if (foundNode) {
+        mazeString += foundNode.direction
+      } else {
+        mazeString += maze[y][x]
+      }
+    }
+    mazeString += "\n"
+  }
+  console.log(mazeString)
+}
+
 export const exampleInputPart1 = `###############
 #.......#....E#
 #.#.###.#.###.#
