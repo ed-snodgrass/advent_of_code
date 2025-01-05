@@ -2,7 +2,6 @@ import * as fs from "fs"
 import {
   part1,
   part2,
-  parseInput,
   exampleInputPart1,
   replaceStone,
   performBlinkMany, performBlink,
@@ -34,41 +33,37 @@ describe('Day11Test tests', () => {
       })
     })
   })
-  describe("performBlink", () => {
-    describe("when performing blink of 125 17", () => {
-      it("should return 253000 1 7", () => {
-        expect(performBlink([125,17])).toEqual([253000,1,7])
-      })
-    })
-    describe("when performing blink of 253000,1,7", () => {
-      it("should return 253000 1 7", () => {
-        expect(performBlink([253000,1,7])).toEqual([253, 0, 2024, 14168])
-      })
-    })
-  })
+  // describe("performBlink", () => {
+  //   describe("when performing blink of 125 17", () => {
+  //     it("should return 253000 1 7", () => {
+  //       expect(performBlink([125,17])).toEqual([253000,1,7])
+  //     })
+  //   })
+  //   describe("when performing blink of 253000,1,7", () => {
+  //     it("should return 253000 1 7", () => {
+  //       expect(performBlink([253000,1,7])).toEqual([253, 0, 2024, 14168])
+  //     })
+  //   })
+  // })
   describe("performBlinkMany", () => {
     describe("when performing 1 blink of 125 17", () => {
       it("should return 253000 1 7", () => {
-        expect(performBlinkMany([125,17], 1)).toEqual([253000,1,7])
+        expect(performBlinkMany([125,17], 1).join(',')).toEqual([253000,1,7].join(','))
       })
     })
     describe("when performing 1 blink of 253000,1,7", () => {
       it("should return 253000 1 7", () => {
-        expect(performBlinkMany([253000,1,7], 1)).toEqual([253, 0, 2024, 14168])
+        expect(performBlinkMany([253000,1,7], 1).join(',')).toEqual([253, 0, 2024, 14168].join(','))
       })
     })
     describe("when performing 2 blink of 125 17", () => {
       it("should return 253000 1 7", () => {
-        expect(performBlinkMany([125,17], 2)).toEqual([253, 0, 2024, 14168])
+        expect(performBlinkMany([125,17], 2).join(',')).toEqual([253, 0, 2024, 14168].join(','))
       })
     })
   })
   describe('part1', () => {
     describe('example input', () => {
-      let parsedExampleInput: number[]
-      beforeEach(() => {
-        parsedExampleInput = parseInput(exampleInputPart1)
-      })
       describe("performBlinkMany tests", () => {
         describe("when blinking six times", () => {
           it('should find 22 stones', () => {
@@ -94,8 +89,8 @@ describe('Day11Test tests', () => {
   })
   describe('part2', () => {
     describe('real input', () => {
-      it.skip('part2 should be...', () => {
-        expect(part2(input)).toBe(null)
+      it('part2 should be 216,318,908,621,637', () => {
+        expect(part2(input)).toBe(216318908621637)
       })
     })
   })
