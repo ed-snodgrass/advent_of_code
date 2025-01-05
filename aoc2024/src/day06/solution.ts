@@ -1,5 +1,7 @@
+export type Position = {x: number, y: number}
+
 export const parseInput = (rawInput: string) => {
-  let startingPosition: {x: number, y: number} | undefined
+  let startingPosition: Position | undefined
   const grid = rawInput.split('\n').map(line => line.split(''))
   for (let i = 0; i < grid.length && !startingPosition; i++) {
     for (let j = 0; j < grid[i].length && !startingPosition; j++) {
@@ -9,12 +11,12 @@ export const parseInput = (rawInput: string) => {
   return {startingPosition, grid}
 }
 
-const atEdge = (position: {x: number, y: number}, grid: string[][]) => {
+const atEdge = (position: Position, grid: string[][]) => {
   return position.x === 0 || position.x === grid[0].length - 1 || position.y === 0 || position.y === grid.length - 1
 }
 const MAX_MOVES = 1000000
 
-const getNextPosition = (currentPosition: {x: number, y: number}, heading: '^'|'>'|'v'|'<'): {x: number, y: number} => {
+const getNextPosition = (currentPosition: Position, heading: '^'|'>'|'v'|'<'): Position => {
   switch (heading) {
     case '<':
       return {x: currentPosition.x - 1, y: currentPosition.y}
@@ -29,9 +31,9 @@ const getNextPosition = (currentPosition: {x: number, y: number}, heading: '^'|'
   }
 }
 
-export const markGuardPath = (startingPosition: {x: number, y: number}, grid: string[][]) => {
+export const markGuardPath = (startingPosition: Position, grid: string[][]) => {
   let moves = 0
-  const visitedPositions: {x: number, y: number}[] = []
+  const visitedPositions: Position[] = []
   let currentPosition = startingPosition
   visitedPositions.push(currentPosition)
   let currentHeading: '^'|'>'|'v'|'<' = '^'
@@ -76,4 +78,3 @@ export const exampleInputPart1 =  `....#.....
 #.........
 ......#...`
 
-export const exampleInputPart2 = exampleInputPart1

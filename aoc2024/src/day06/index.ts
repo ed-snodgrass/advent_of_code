@@ -1,6 +1,6 @@
 import run from "aocrunner"
 
-import {part1, part2, exampleInputPart1, exampleInputPart2} from "./solution.js"
+import {part1, part2, exampleInputPart1} from "./solution.js"
 
 run({
   part1: {
@@ -14,10 +14,10 @@ run({
   },
   part2: {
     tests: [
-      // {
-      //   input: exampleInputPart2,
-      //   expected: "",
-      // },
+      {
+        input: exampleInputPart1,
+        expected: 6,
+      },
     ],
     solution: part2,
   },
