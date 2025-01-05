@@ -43,5 +43,3 @@ export const part2 = (rawInput: string): number => {
 }
 
 export const exampleInputPart1 =  `125 17`
-
-export const exampleInputPart2 = exampleInputPart1

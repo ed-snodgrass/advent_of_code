@@ -4,7 +4,6 @@ import {
   part2,
   parseInput,
   exampleInputPart1,
-  exampleInputPart2,
   replaceStone,
   performBlinkMany, performBlink,
 } from "./solution"
@@ -94,11 +93,6 @@ describe('Day11Test tests', () => {
     })
   })
   describe('part2', () => {
-    describe('example input', () => {
-      it.skip('part2 should be ', () => {
-        expect(part2(exampleInputPart2)).toBe(null)
-      })
-    })
     describe('real input', () => {
       it.skip('part2 should be...', () => {
         expect(part2(input)).toBe(null)
