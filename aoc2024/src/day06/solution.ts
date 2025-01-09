@@ -1,12 +1,7 @@
 export interface Point {x: number, y: number}
 export interface Position extends Point {heading: Heading }
 export type Heading = '^'|'>'|'v'|'<'
-export const DIRECTIONS: Map<string, [number, number]> = new Map([
-  ["^", [0, -1]],
-  [">", [1, 0]],
-  ["v", [0, 1]],
-  ["<", [-1, 0]],
-]);
+
 const OBSTACLE = '#'
 
 export const parseInput = (rawInput: string) => {
