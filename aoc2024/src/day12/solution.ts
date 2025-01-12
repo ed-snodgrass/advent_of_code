@@ -1,7 +1,7 @@
-import { createCharacterGrid } from "../utils/grid"
-import { BasicDirections } from "../utils/directions"
-// import { createCharacterGrid } from "../utils/grid.js"
-// import { BasicDirections } from "../utils/directions.js"
+// import { createCharacterGrid } from "../utils/grid"
+// import { BasicDirections } from "../utils/directions"
+import { createCharacterGrid } from "../utils/grid.js"
+import { BasicDirections } from "../utils/directions.js"
 
 export const parseInput = (rawInput: string) => {
   return createCharacterGrid(rawInput)
@@ -125,10 +125,120 @@ export const part1 = (rawInput: string):number => {
   return calculateRegionScore(regions)
 }
 
-export const part2 = (rawInput: string): number => {
-  const input = parseInput(rawInput)
+export const calculateNumberOfSides = (plantsInRegion: string[]) => {
+  if (plantsInRegion.length <= 2) return 4
 
-  return -1
+  const plantPositions = plantsInRegion.map(plant => plant.split(',').map(Number))
+  const xPositions = plantPositions.map(position => position[0])
+  const yPositions = plantPositions.map(position => position[1])
+  const xMin = Math.min(...xPositions)
+  const xMax = Math.max(...xPositions)
+  const yMin = Math.min(...yPositions)
+  const yMax = Math.max(...yPositions)
+  const xRange = xMax - xMin
+  if (xRange === 0) return 4
+  const yRange = yMax - yMin
+  if (yRange === 0) return 4
+
+  const plantsAsString = JSON.stringify(plantPositions)
+
+  let possibleEdgesString = new Set<string>()
+  for (const [x,y] of plantPositions) {
+    if (!plantsAsString.includes(`[${x},${y - 1}]`)) {
+      possibleEdgesString.add(`${x},${y - 1}_top`)
+    }
+    if (!plantsAsString.includes(`[${x},${y + 1}]`)) {
+      possibleEdgesString.add(`${x},${y + 1}_bottom`)
+    }
+    if (!plantsAsString.includes(`[${x - 1},${y}]`)) {
+      possibleEdgesString.add(`${x - 1},${y}_left`)
+    }
+    if (!plantsAsString.includes(`[${x + 1},${y}]`)) {
+      possibleEdgesString.add(`${x + 1},${y}_right`)
+    }
+  }
+  const groupsByDirections = groupsByDirection(possibleEdgesString)
+  return groupsByDirections.length
+}
+
+const groupsByDirection = (possibleEdges: Set<string>) => {
+  const groups: string[][] = []
+  const remaining = new Set<string>()
+  for (const item of Array.from(possibleEdges)) {
+    remaining.add(item);
+  }
+  const parseCoordinate = (item: string): [number, number, string] => {
+    const [coordinate, suffix] = item.split('_');
+    const [x, y] = coordinate.split(',').map(Number);
+    return [x, y, suffix];
+  };
+  const areConnected = (item1: string, item2: string): boolean => {
+    const [x1, y1, dir1] = parseCoordinate(item1);
+    const [x2, y2, dir2] = parseCoordinate(item2);
+
+    return (
+      dir1 === dir2 &&
+      ((x1 === x2 && Math.abs(y1 - y2) === 1) || (y1 === y2 && Math.abs(x1 - x2) === 1))
+    );
+  };
+  const floodFillGroup = (start: string, group: string[]): void => {
+    const stack = [start];
+    while (stack.length > 0) {
+      const current = stack.pop()!;
+      if (!remaining.has(current)) continue;
+
+      group.push(current);
+      remaining.delete(current);
+
+      for (const next of Array.from(remaining)) {
+        if (areConnected(current, next)) {
+          stack.push(next);
+        }
+      }
+    }
+  };
+  for (const item of Array.from(remaining)) {
+    if (remaining.has(item)) {
+      const group: string[] = [];
+      floodFillGroup(item, group);
+      groups.push(group);
+    }
+  }
+  return groups
+
+}
+
+export const createRegionToPlantsMap = (regionIds: number[][]) => {
+  const distinctRegions = findDistinctRegions(regionIds)
+  const regionToPlantsMap = new Map<number, string[]>()
+  distinctRegions.forEach(regionId => {
+    regionToPlantsMap.set(regionId, [])
+  })
+  for (let y = 0; y < regionIds.length; y++) {
+    for (let x = 0; x < regionIds[y].length; x++) {
+      const region = regionIds[y][x]
+      regionToPlantsMap.set(region, [...regionToPlantsMap.get(region)!, `${x},${y}`])
+    }
+  }
+  return regionToPlantsMap
+}
+
+export const calculateBulkDiscount = (regionIds: number[][]) => {
+  const regionToPlantsMap = createRegionToPlantsMap(regionIds)
+  const costs: number[] = []
+  regionToPlantsMap.forEach((plants) => {
+    const numberOfSides = calculateNumberOfSides(plants)
+    const area = plants.length
+    costs.push(numberOfSides * area)
+  })
+  return costs.reduce((acc, cost) => acc + cost, 0)
+}
+
+export const part2 = (rawInput: string): number => {
+  const grid = parseInput(rawInput)
+  const regions = findRegions(grid)
+
+  return calculateBulkDiscount(regions)
 }
 
 export const miniSampleInput = `AAAA
@@ -146,5 +256,3 @@ VVIIICJJEE
 MIIIIIJJEE
 MIIISIJEEE
 MMMISSJEEE`
-
-export const exampleInputPart2 = exampleInputPart1

@@ -4,9 +4,14 @@ import {
   part2,
   parseInput,
   exampleInputPart1,
-  exampleInputPart2,
   miniSampleInput,
-  findRegions, findDistinctPlants, findDistinctRegions, calculateRegionScore, calculatePerimeter,
+  findRegions,
+  findDistinctPlants,
+  findDistinctRegions,
+  calculateRegionScore,
+  calculatePerimeter,
+  calculateBulkDiscount,
+  calculateNumberOfSides, createRegionToPlantsMap,
 } from "./solution"
 
 const input = fs.readFileSync(`${__dirname}/input.txt`, 'utf-8');
@@ -108,14 +113,115 @@ describe('Day12Test tests', () => {
     })
   })
   describe('part2', () => {
+    describe('calculateBulkDiscountForRegions', () => {
+      let regionIds: number[][], grid: string[][], regionToPlantsMap: Map<number, string[]>
+      describe('when using miniSampleInput', () => {
+        beforeEach(() => {
+          grid = parseInput(miniSampleInput)
+          regionIds = findRegions(grid)
+          regionToPlantsMap = createRegionToPlantsMap(regionIds)
+        })
+        describe("Region A", () => {
+          it("should have 4 sides", () => {
+            expect(calculateNumberOfSides(regionToPlantsMap.get(0)!)).toBe(4)
+          })
+        })
+        describe("Region B", () => {
+          it("should have 4 sides", () => {
+            expect(calculateNumberOfSides(regionToPlantsMap.get(1)!)).toBe(4)
+          })
+        })
+        describe("Region C", () => {
+          it("should have 8 sides", () => {
+            expect(calculateNumberOfSides(regionToPlantsMap.get(2)!)).toBe(8)
+          })
+        })
+        describe("Region D", () => {
+          it("should have 4 sides", () => {
+            expect(calculateNumberOfSides(regionToPlantsMap.get(3)!)).toBe(4)
+          })
+        })
+        describe("Region E", () => {
+          it("should have 4 sides", () => {
+            expect(calculateNumberOfSides(regionToPlantsMap.get(4)!)).toBe(4)
+          })
+        })
+      })
+    })
+    describe('calculateBulkDiscount', () => {
+      let regionIds: number[][], grid: string[][]
+      describe('when using miniSampleInput', () => {
+        beforeEach(() => {
+          grid = parseInput(miniSampleInput)
+          regionIds = findRegions(grid)
+        })
+        it("should return 80", () => {
+          expect(calculateBulkDiscount(regionIds)).toBe(80)
+        })
+      })
+
+      describe('when using X and O example', () => {
+        const xAndOExample = `OOOOO
+OXOXO
+OOOOO
+OXOXO
+OOOOO`
+        beforeEach(() => {
+          grid = parseInput(xAndOExample)
+          regionIds = findRegions(grid)
+        })
+        it("should return 436", () => {
+          expect(calculateBulkDiscount(regionIds)).toBe(436)
+        })
+      })
+      describe('when using an E Shaped E Region', () => {
+        const eShapedRegion = `EEEEE
+EXXXX
+EEEEE
+EXXXX
+EEEEE`
+        beforeEach(() => {
+          grid = parseInput(eShapedRegion)
+          regionIds = findRegions(grid)
+        })
+        it("should return 236", () => {
+          expect(calculateBulkDiscount(regionIds)).toBe(236)
+        })
+      })
+      describe('when using an S Shaped A Region', () => {
+        const eShapedRegion = `AAAAAA
+AAABBA
+AAABBA
+ABBAAA
+ABBAAA
+AAAAAA`
+        beforeEach(() => {
+          grid = parseInput(eShapedRegion)
+          regionIds = findRegions(grid)
+        })
+        it("should return 368", () => {
+          expect(calculateBulkDiscount(regionIds)).toBe(368)
+        })
+      })
+
+      describe('when using exampleInputPart1', () => {
+        beforeEach(() => {
+          grid = parseInput(exampleInputPart1)
+          regionIds = findRegions(grid)
+        })
+        it("should return 1206", () => {
+          expect(calculateBulkDiscount(regionIds)).toBe(1206)
+        })
+      })
+    })
     describe('example input', () => {
-      it.skip('part2 should be...', () => {
-        expect(part2(exampleInputPart2)).toBe(null)
+      it('part2 should be 1206', () => {
+        expect(part2(exampleInputPart1)).toBe(1206)
       })
     })
     describe('real input', () => {
-      it.skip('part2 should be...', () => {
-        expect(part2(input)).toBe(null)
+      it('part2 should be 805814', () => {
+        expect(part2(input)).toBe(805814)
       })
     })
   })
