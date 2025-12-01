@@ -70,20 +70,32 @@ describe("Day21Test tests", () => {
   })
   describe("part1", () => {
     describe("example input", () => {
-      it.skip("part1 should be...", () => {
+      it("part1 should be 126384", () => {
         expect(part1(exampleInputPart1)).toBe(126384)
       })
     })
     describe("real input", () => {
-      it.skip("part1 should be 203814", () => {
+      it("part1 should be 203814", () => {
         expect(part1(input)).toBe(203814)
       })
     })
   })
-  describe.skip("part2", () => {
+  describe("part2", () => {
+    describe("example input", () => {
+      it("should be 154115708116294", () => {
+        expect(part2(exampleInputPart1)).toBe(154115708116294)
+      })
+    })
+    // describe("buildSequence", () => {
+    //   it("should be ['v<<A>>^A']", () => {
+    //     let result: string[] = []
+    //     buildSequence('<A', 0, 'A', '', result)
+    //     expect(result).toEqual(['v<<A>>^A'])
+    //   })
+    // })
     describe("real input", () => {
-      it("part2 should be...", () => {
-        expect(part2(input)).toBe(null)
+      it("should be 248566068436630", () => {
+        expect(part2(input)).toBe(248566068436630)
       })
     })
   })
