@@ -1,5 +1,5 @@
 import * as fs from "fs"
-import { part1, part2, parseInput, exampleInputPart1, exampleInputPart2, rotateDial } from './solution'
+import { part1, part2, parseInput, exampleInputPart1, rotateDial } from './solution'
 
 const input = fs.readFileSync(`${__dirname}/input.txt`, 'utf-8');
 const MAX = 99
@@ -108,7 +108,7 @@ describe('Day01 tests', () => {
   describe.skip('part2', () => {
     describe('example input', () => {
       it('part2 should be...', () => {
-        expect(part2(exampleInputPart2)).toBe(6)
+        expect(part2(exampleInputPart1)).toBe(6)
       })
     })
     describe('real input', () => {
