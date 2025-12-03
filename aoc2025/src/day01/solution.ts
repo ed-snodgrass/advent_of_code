@@ -1,7 +1,7 @@
 type Rotation = {direction: string, distance: number}
 
 export const parseInput = (rawInput: string): Rotation[] => {
-  const lines = rawInput.split('\n');
+  const lines = rawInput.trim().split('\n');
 
   return lines.map(line => ({direction: line.charAt(0), distance: parseInt(line.substring(1, line.length))}))
 }
@@ -35,7 +35,31 @@ export const rotateDial = (rotation: Rotation, currentPosition: number)=> {
     }
     return newPosition
   } else if (rotation.direction === 'R') {
-
+    if (currentPosition + rotation.distance > MAX) {
+      let newDistance = rotation.distance
+      let newPosition = currentPosition
+      while (newDistance > 0) {
+        if (newPosition === MAX) {
+          newPosition = 0
+          newDistance = newDistance - 1
+        } else {
+          if (newDistance > newPosition) {
+            if (MAX - newDistance >= newPosition) {
+              newPosition = newDistance + newPosition
+              newDistance = 0
+            } else {
+              newDistance = newDistance - (MAX - newPosition)
+              newPosition = MAX
+            }
+          } else {
+            newDistance = newDistance - (MAX - newPosition)
+            newPosition = MAX
+          }
+        }
+      }
+      return newPosition
+    }
+    return currentPosition + rotation.distance
   }
 }
 
@@ -49,7 +73,7 @@ export const part1 = (rawInput: string):number => {
     console.log(`${rotation.direction}${rotation.distance} -> ${currentPosition}`)
     if (currentPosition === 0) password++
   })
-
+console.log(password)
   return password
 }
 
