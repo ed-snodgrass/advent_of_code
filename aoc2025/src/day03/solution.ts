@@ -6,7 +6,7 @@ export function findTotalOutputJoltage(joltages: number[]) {
   return joltages.reduce((acc, currentValue)=> acc + currentValue, 0)
 }
 
-export function findLargestJoltage (bank: number[]) {
+export function findLargestJoltage (bank: number[], sequenceLength = 2) {
   let largestValue = bank[0]
   let largestValueIndex = 0
   for (let i = 1; i < bank.length - 1; i++) {
@@ -15,22 +15,24 @@ export function findLargestJoltage (bank: number[]) {
       largestValueIndex = i
     }
   }
-  // console.log(`largest number is bank[${largestValueIndex} => ${bank[largestValueIndex]}`)
-  let theRest = bank.slice(largestValueIndex + 1)
-  let theRestLargestValueIndex = 0
-  let theRestLargestValue = theRest[theRestLargestValueIndex]
-  for (let i = 1; i < theRest.length; i++) {
-    if (theRest[i] > theRestLargestValue) {
-      theRestLargestValue = theRest[i]
-      theRestLargestValueIndex = i
+  if (sequenceLength === 2) {
+    // console.log(`largest number is bank[${largestValueIndex} => ${bank[largestValueIndex]}`)
+    let theRest = bank.slice(largestValueIndex + 1)
+    let theRestLargestValueIndex = 0
+    let theRestLargestValue = theRest[theRestLargestValueIndex]
+    for (let i = 1; i < theRest.length; i++) {
+      if (theRest[i] > theRestLargestValue) {
+        theRestLargestValue = theRest[i]
+        theRestLargestValueIndex = i
+      }
     }
+    return parseInt(`${bank[largestValueIndex]}${theRest[theRestLargestValueIndex]}`)
   }
-  return parseInt(`${bank[largestValueIndex]}${theRest[theRestLargestValueIndex]}`)
 }
 
 export const part1 = (rawInput: string):number => {
   const banks = parseInput(rawInput)
-  const joltages = banks.map(findLargestJoltage)
+  const joltages = banks.map((bank) => findLargestJoltage(bank, 2))
   return findTotalOutputJoltage(joltages)
 }
 
