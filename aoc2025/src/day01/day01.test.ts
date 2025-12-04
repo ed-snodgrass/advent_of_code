@@ -1,5 +1,5 @@
 import * as fs from "fs"
-import { part1, part2, parseInput, exampleInputPart1, rotateDial, rotateDialAndCountPassingZero } from './solution'
+import { part1, part2, exampleInputPart1, rotateDial, rotateDialAndCountPassingZero } from './solution'
 
 const input = fs.readFileSync(`${__dirname}/input.txt`, 'utf-8');
 const MAX = 99

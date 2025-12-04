@@ -23,15 +23,45 @@ export function findInvalidScore(idRanges: number[][]) {
     .reduce((acc, currentValue)=> acc + currentValue, 0)
 }
 
+export function findInvalidIds2(rangeStart: number, rangeEnd: number): number[] {
+  const invalidIds = []
+  for (let i = rangeStart; i <= rangeEnd; i++) {
+    if (isInvalid(i)) {
+      invalidIds.push(i)
+    }
+  }
+  return invalidIds
+}
+
+export function findInvalidScore2(idRanges: number[][]) {
+  return idRanges
+    .flatMap(idRange => findInvalidIds2(idRange[0], idRange[1]))
+    .reduce((acc, currentValue)=> acc + currentValue, 0)
+}
+
+export function isInvalid(id: number) {
+  const stringId = id.toString()
+  if (stringId.length === 1) {
+    return false
+  }
+  if (Array.from(new Set(stringId.split(''))).length === 1) {
+    return true
+  }
+  for (let i = 2; i < stringId.length; i++) {
+    const chunks = stringId.match(new RegExp(`.{1,${i}}`, 'g'));
+    if (chunks.length > 1 && Array.from(new Set(chunks)).length === 1) {
+      return true
+    }
+  }
+  return false
+}
+
 export const part1 = (rawInput: string):number => {
-  const input = parseInput(rawInput)
-  return findInvalidScore(input)
+  return findInvalidScore(parseInput(rawInput))
 }
 
 export const part2 = (rawInput: string): number => {
-  const input = parseInput(rawInput)
-
-  return -1
+  return findInvalidScore2(parseInput(rawInput))
 }
 
 export const exampleInputPart1 =  `11-22,95-115,998-1012,1188511880-1188511890,222220-222224,
