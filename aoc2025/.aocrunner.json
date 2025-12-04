@@ -11,13 +11,16 @@
           "67",
           "832"
         ],
-        "time": 1.169125
+        "time": 1.01325
       },
       "part2": {
-        "solved": false,
-        "result": "1036",
-        "attempts": [],
-        "time": 1.121375
+        "solved": true,
+        "result": "6228",
+        "attempts": [
+          "6117",
+          "6332"
+        ],
+        "time": 1.108709
       }
     },
     {

@@ -1,5 +1,5 @@
 import * as fs from "fs"
-import { part1, part2, parseInput, exampleInputPart1, rotateDial } from './solution'
+import { part1, part2, parseInput, exampleInputPart1, rotateDial, rotateDialAndCountPassingZero } from './solution'
 
 const input = fs.readFileSync(`${__dirname}/input.txt`, 'utf-8');
 const MAX = 99
@@ -70,27 +70,62 @@ describe('Day01 tests', () => {
     describe('turning right', () => {
       it('should return', () => {
 
-        expect(rotateDial({direction: 'R', distance: 90}, 10)).toEqual(0)
+        expect(rotateDial({direction: 'R', distance: 90}, 10)).toEqual(0)//1
         expect(rotateDial({direction: 'R', distance: 50}, 0)).toEqual(50)
         expect(rotateDial({direction: 'R', distance: 50}, 49)).toEqual(MAX)
-        expect(rotateDial({direction: 'R', distance: 50}, 50)).toEqual(0)
-        expect(rotateDial({direction: 'R', distance: 50}, 51)).toEqual(1)
-        expect(rotateDial({direction: 'R', distance: 302}, 0)).toEqual(2)
-        expect(rotateDial({direction: 'R', distance: 301}, 99)).toEqual(0)
-        expect(rotateDial({direction: 'R', distance: 201}, 99)).toEqual(0)
-        expect(rotateDial({direction: 'R', distance: 101}, 99)).toEqual(0)
-        expect(rotateDial({direction: 'R', distance: 1}, 99)).toEqual(0)
+        expect(rotateDial({direction: 'R', distance: 50}, 50)).toEqual(0)//1
+        expect(rotateDial({direction: 'R', distance: 50}, 51)).toEqual(1)//1
+        expect(rotateDial({direction: 'R', distance: 302}, 0)).toEqual(2)//3
+        expect(rotateDial({direction: 'R', distance: 301}, 99)).toEqual(0)//3
+        expect(rotateDial({direction: 'R', distance: 201}, 99)).toEqual(0)//2
+        expect(rotateDial({direction: 'R', distance: 101}, 99)).toEqual(0)//1
+        expect(rotateDial({direction: 'R', distance: 1}, 99)).toEqual(0)//1
         expect(rotateDial({direction: 'R', distance: 1}, 0)).toEqual(1)
         expect(rotateDial({direction: 'R', distance: 21}, 50)).toEqual(71)
         expect(rotateDial({direction: 'R', distance: 13}, 22)).toEqual(35)
-        expect(rotateDial({direction: 'R', distance: 48}, 52)).toEqual(0)
-        expect(rotateDial({direction: 'R', distance: 60}, 95)).toEqual(55)
+        expect(rotateDial({direction: 'R', distance: 48}, 52)).toEqual(0)//1
+        expect(rotateDial({direction: 'R', distance: 60}, 95)).toEqual(55)//1
         expect(rotateDial({direction: 'R', distance: 160}, 95)).toEqual(55)
         expect(rotateDial({direction: 'R', distance: 17}, 76)).toEqual(93)
       })
     })
   })
 
+  describe('rotateDialAndCountPassingZero', () => {
+
+    describe('turning left', () => {
+      it('should return', () => {
+        expect(rotateDialAndCountPassingZero({direction: 'L', distance: 150}, 50).crossedOrHitZero).toEqual(2)
+
+        expect(rotateDialAndCountPassingZero({direction: 'L', distance: 151}, 50).crossedOrHitZero).toEqual(2)
+
+        expect(rotateDialAndCountPassingZero({direction: 'L', distance: 0}, 0).crossedOrHitZero).toEqual(0)
+        expect(rotateDialAndCountPassingZero({direction: 'L', distance: 49}, 50).crossedOrHitZero).toEqual(0)
+        expect(rotateDialAndCountPassingZero({direction: 'L', distance: 50}, 50).crossedOrHitZero).toEqual(1)
+
+      })
+    })
+
+    describe('turning right', () => {
+      it('should return', () => {
+        expect(rotateDialAndCountPassingZero({direction: 'R', distance: 95}, 65).crossedOrHitZero).toEqual(1)
+        expect(rotateDialAndCountPassingZero({direction: 'R', distance: 95}, 65).crossedOrHitZero).toEqual(1)
+        expect(rotateDialAndCountPassingZero({direction: 'R', distance: 95}, 60).crossedOrHitZero).toEqual(1)
+        expect(rotateDialAndCountPassingZero({direction: 'R', distance: 60}, 95).crossedOrHitZero).toEqual(1)
+        expect(rotateDialAndCountPassingZero({direction: 'R', distance: 48}, 52).crossedOrHitZero).toEqual(1)
+        expect(rotateDialAndCountPassingZero({direction: 'R', distance: 355}, 7).crossedOrHitZero).toEqual(3)
+
+        expect(rotateDialAndCountPassingZero({direction: 'R', distance: 90}, 10).crossedOrHitZero).toEqual(1)
+        expect(rotateDialAndCountPassingZero({direction: 'R', distance: 50}, 50).crossedOrHitZero).toEqual(1)
+        expect(rotateDialAndCountPassingZero({direction: 'R', distance: 50}, 51).crossedOrHitZero).toEqual(1)
+        expect(rotateDialAndCountPassingZero({direction: 'R', distance: 302}, 0).crossedOrHitZero).toEqual(3)
+        expect(rotateDialAndCountPassingZero({direction: 'R', distance: 301}, 99).crossedOrHitZero).toEqual(4)
+        expect(rotateDialAndCountPassingZero({direction: 'R', distance: 201}, 99).crossedOrHitZero).toEqual(3)
+        expect(rotateDialAndCountPassingZero({direction: 'R', distance: 101}, 99).crossedOrHitZero).toEqual(2)
+        expect(rotateDialAndCountPassingZero({direction: 'R', distance: 1}, 99).crossedOrHitZero).toEqual(1)
+      })
+    })
+  })
 
   describe('part1', () => {
 
@@ -105,7 +140,7 @@ describe('Day01 tests', () => {
       })
     })
   })
-  describe.skip('part2', () => {
+  describe('part2', () => {
     describe('example input', () => {
       it('part2 should be...', () => {
         expect(part2(exampleInputPart1)).toBe(6)
@@ -113,7 +148,9 @@ describe('Day01 tests', () => {
     })
     describe('real input', () => {
       it('part2 should be...', () => {
-        expect(part2(input)).toBe(null)
+        expect(part2(input)).toBeGreaterThan(6117)
+        expect(part2(input)).toBeLessThan(6332)
+        expect(part2(input)).toBe(6228)
       })
     })
   })
