@@ -25,16 +25,16 @@
     },
     {
       "part1": {
-        "solved": false,
-        "result": null,
+        "solved": true,
+        "result": "19219508902",
         "attempts": [],
-        "time": null
+        "time": 74.660833
       },
       "part2": {
         "solved": false,
-        "result": null,
+        "result": "-1",
         "attempts": [],
-        "time": null
+        "time": 0.03075
       }
     },
     {
