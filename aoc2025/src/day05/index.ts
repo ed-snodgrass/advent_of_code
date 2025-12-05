@@ -7,17 +7,17 @@ run({
     tests: [
       {
         input: exampleInputPart1,
-        expected: "",
+        expected: 3,
       },
     ],
     solution: part1,
   },
   part2: {
     tests: [
-      // {
-      //   input: exampleInputPart2,
-      //   expected: "",
-      // },
+      {
+        input: exampleInputPart2,
+        expected: 14,
+      },
     ],
     solution: part2,
   },
