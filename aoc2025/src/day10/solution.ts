@@ -1,5 +1,5 @@
 export const parseInput = (rawInput: string) => {
-  const lines = rawInput.split('\n');
+  const lines = rawInput.trim().split('\n');
 
   return lines
 }
