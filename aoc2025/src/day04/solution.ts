@@ -49,11 +49,28 @@ export const part1 = (rawInput: string):number => {
   }
   return paperRollsCount
 }
-
+type Point = {x: number; y: number}
 export const part2 = (rawInput: string): number => {
   const input = parseInput(rawInput)
-
-  return -1
+  let paperRollsRemoved = 0
+  let initial = true
+  let rollsToRemove: Point[] = []
+  while (initial || rollsToRemove.length > 0) {
+    initial = false
+    rollsToRemove = []
+    for (let yIndex = 0; yIndex < input.length; yIndex++) {
+      for (let xIndex = 0; xIndex < input.length; xIndex++) {
+        if (input[yIndex][xIndex] === ROLL_OF_PAPER && !isBlocked(input, xIndex, yIndex)) {
+          rollsToRemove.push({x: xIndex, y: yIndex})
+        }
+      }
+    }
+    rollsToRemove.forEach(rollToRemove => {
+      input[rollToRemove.y][rollToRemove.x] = 'x'
+      paperRollsRemoved++
+    })
+  }
+  return paperRollsRemoved
 }
 
 export const exampleInputPart1 =  `..@@.@@@@.
