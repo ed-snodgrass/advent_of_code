@@ -1,11 +1,20 @@
 import * as fs from 'fs'
-import { part1, part2, parseInput, exampleInputPart1, exampleInputPart2, performOperation } from './solution'
+import {
+  part1,
+  part2,
+  parseInput,
+  exampleInputPart1,
+  exampleInputPart2,
+  performOperation,
+  performOperationRtl,
+  parseInput2,
+} from './solution'
 
 const input = fs.readFileSync(`${__dirname}/input.txt`, 'utf-8')
 
 describe('Day06Test tests', () => {
   describe('performOperation', () => {
-    let theInput: {theNumbers: number[][], theOperators: string[]}
+    let theInput: { theNumbers: number[][]; theOperators: string[] }
     beforeEach(() => {
       theInput = parseInput(exampleInputPart1)
     })
@@ -34,15 +43,33 @@ describe('Day06Test tests', () => {
       })
     })
   })
+  describe('performOperationRtl', () => {
+    let theInput: { numbers: string[][]; operators: string[]; ranges: number[] }
+    beforeEach(() => {
+      theInput = parseInput2(exampleInputPart1)
+    })
+    it('should get 33210 for first column', () => {
+      expect(performOperationRtl(0, theInput)).toBe(8544)
+    })
+    it('should get 490 for second column', () => {
+      expect(performOperationRtl(1, theInput)).toBe(625)
+    })
+    it('should get 4243455 for third column', () => {
+      expect(performOperationRtl(2, theInput)).toBe(3253600)
+    })
+    it('should get 401 for fourth column', () => {
+      expect(performOperationRtl(3, theInput)).toBe(1058)
+    })
+  })
   describe('part2', () => {
     describe('example input', () => {
-      it.skip('part2 should be...', () => {
-        expect(part2(exampleInputPart2)).toBe(null)
+      it('part2 should be 3263827', () => {
+        expect(part2(exampleInputPart2)).toBe(3263827)
       })
     })
     describe('real input', () => {
-      it.skip('part2 should be...', () => {
-        expect(part2(input)).toBe(null)
+      it('part2 should be 10389131401929', () => {
+        expect(part2(input)).toBe(10389131401929)
       })
     })
   })
