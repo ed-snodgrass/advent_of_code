@@ -2,7 +2,7 @@ export const parseInput = (rawInput: string) => {
   const lines = rawInput.trim().split('\n\n')
   const freshRanges = lines[0].split('\n').map(range => range.split('-').map(rangeItem => parseInt(rangeItem)))
   const availableIngredients = lines[1].split('\n').map(ingredient => parseInt(ingredient))
-
+  freshRanges.sort((a, b) => a[0] - b[0])
   return { freshRanges, availableIngredients }
 }
 
@@ -19,11 +19,44 @@ export const part1 = (rawInput: string):number => {
   return freshCount
 }
 
-export const part2 = (rawInput: string): number => {
-  const { freshRanges, availableIngredients } = parseInput(rawInput)
-  let freshIngredientCount = 0
+export function hasOverlap(targetValue: number, range: [number, number]): boolean {
+  let [start, end] = range
+  return targetValue >= start && targetValue <= end
+}
+export function findNewStart(smallerRange: [number, number]): number {
 
-  return freshIngredientCount
+  return smallerRange[0] + 1
+}
+
+export function countFreshIngredients (freshRanges: [number, number][]): number {
+  let count = 0
+  count = freshRanges[0][1] - freshRanges[0][0] + 1
+
+  for (let i = 1; i < freshRanges.length; i++) {
+    let [start, end] = freshRanges[i]
+    let [prevStart, prevEnd] = freshRanges[i - 1]
+
+    if (hasOverlap(start, [prevStart, prevEnd]) || hasOverlap(end, [prevStart, prevEnd]) || hasOverlap(prevStart, [start, end]) || hasOverlap(prevEnd, [start, end])) {
+      const newStart = prevEnd + 1
+      if (newStart < start) freshRanges[i][0] = newStart
+
+      if (end > newStart) {
+        count += end - newStart + 1
+      } else {
+        // console.log(`start: ${start}, newStart: ${newStart}, end: ${end}, prevStart: ${prevStart}, prevEnd: ${prevEnd}`)
+        freshRanges[i][0] = start > prevStart ? prevStart : start
+        freshRanges[i][1] = end > prevEnd ? end : prevEnd
+      }
+    } else {
+      count += end - start + 1
+    }
+  }
+  return count
+}
+
+export const part2 = (rawInput: string): number => {
+  const { freshRanges} = parseInput(rawInput)
+  return countFreshIngredients(freshRanges as [number, number][])
 }
 
 export const exampleInputPart1 =  `3-5
