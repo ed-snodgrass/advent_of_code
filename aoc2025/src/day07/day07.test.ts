@@ -31,29 +31,29 @@ describe('Day07Test tests', () => {
   })
   describe('part2', () => {
     describe('findAllPossibleBeamLocations', () => {
-      let input: string[][]
+      let grid: string[][]
       describe('when just the starting position', () => {
         beforeEach(() => {
-          input = parseInput(`.S.`)
+          grid = parseInput(`.S.`)
         })
         it('should find a beam at 1,1', () => {
-          expect(findAllPossibleBeamLocations(input)).toStrictEqual([[1,1]])
+          expect(findAllPossibleBeamLocations(grid)).toStrictEqual([[1,1]])
         })
       })
       describe('after one split', () => {
         beforeEach(() => {
-          input = parseInput(`.S.\n...\n.^.`)
+          grid = parseInput(`.S.\n...\n.^.`)
         })
         it('should find beams at [1,1], [0,3], [2,3]', () => {
-          expect(findAllPossibleBeamLocations(input)).toStrictEqual([[1,1], [0,3], [2,3]])
+          expect(findAllPossibleBeamLocations(grid)).toStrictEqual([[1,1], [0,3], [2,3]])
         })
       })
       describe('after second and third split', () => {
         beforeEach(() => {
-          input = parseInput(`..S..\n.....\n..^..\n.....\n.^.^.`)
+          grid = parseInput(`..S..\n.....\n..^..\n.....\n.^.^.`)
         })
-        it('should find beams at [1,1], [0,3], [2,3], [0,5], [2,5], [4,5]', () => {
-          expect(findAllPossibleBeamLocations(input)).toStrictEqual([[2,1], [1,3], [3,3], [0,5], [2,5], [4,5]])
+        it('should find beams at [2,1], [1,3], [3,3], [0,5], [2,5], [4,5]', () => {
+          expect(findAllPossibleBeamLocations(grid)).toStrictEqual([[2,1], [1,3], [3,3], [0,5], [2,5], [4,5]])
         })
       })
     })
