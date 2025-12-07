@@ -47,6 +47,21 @@ export const findAllPossibleBeamLocations = (input: string[][]) => {
   const startPosition = findItem(input, START_CHAR)
   const allPossibleBeamLocations = [[ startPosition[0], startPosition[1] + 1]]
 
+  let previousBeamPaths = [startPosition[0]]
+  for (let i = startPosition[1] + 2; i < input.length; i += 2) {
+    const currentBeamPaths = []
+    const splitPoints = []
+    for (let j = 0; j < previousBeamPaths.length; j++) {
+      if (input[i][previousBeamPaths[j]] === SPLITTER_CHAR) {
+        splitPoints.push(previousBeamPaths[j])
+        allPossibleBeamLocations.push()
+        currentBeamPaths.push(previousBeamPaths[j] - 1)
+        currentBeamPaths.push(previousBeamPaths[j] + 1)
+      }
+    }
+    const uniqueNewBeamPaths = Array.from(new Set(currentBeamPaths.map(beam => [beam, i + 1])))
+    allPossibleBeamLocations.push(...uniqueNewBeamPaths)
+  }
   return allPossibleBeamLocations
 }
 
