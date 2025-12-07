@@ -43,6 +43,13 @@ export const part1 = (rawInput: string):number => {
   return splitCount
 }
 
+export const findAllPossibleBeamLocations = (input: string[][]) => {
+  const startPosition = findItem(input, START_CHAR)
+  const allPossibleBeamLocations = [[ startPosition[0], startPosition[1] + 1]]
+
+  return allPossibleBeamLocations
+}
+
 export const part2 = (rawInput: string): number => {
   const input = parseInput(rawInput)
 

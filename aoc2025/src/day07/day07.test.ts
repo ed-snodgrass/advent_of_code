@@ -1,5 +1,13 @@
 import * as fs from "fs"
-import {part1, part2, parseInput, exampleInputPart1, exampleInputPart2, snippetFromInput } from './solution'
+import {
+  part1,
+  part2,
+  parseInput,
+  exampleInputPart1,
+  exampleInputPart2,
+  snippetFromInput,
+  findAllPossibleBeamLocations,
+} from './solution'
 
 const input = fs.readFileSync(`${__dirname}/input.txt`, 'utf-8');
 
@@ -22,6 +30,14 @@ describe('Day07Test tests', () => {
     })
   })
   describe('part2', () => {
+    describe('findAllPossibleBeamLocations', () => {
+      describe('when just the starting position', () => {
+        it('should find a beam at 1,1', () => {
+          const input = parseInput(`.S.\n...`)
+          expect(findAllPossibleBeamLocations(input)).toStrictEqual([[1,1]])
+        })
+      })
+    })
     describe('example input', () => {
       it('part2 should be...', () => {
         expect(part2(exampleInputPart2)).toBe(40)
