@@ -56,6 +56,14 @@ describe('Day07Test tests', () => {
           expect(findAllPossibleBeamLocations(grid)).toStrictEqual([[2,1], [1,3], [3,3], [0,5], [2,5], [4,5]])
         })
       })
+      describe('when a previous beam does not split', () => {
+        beforeEach(() => {
+          grid = parseInput(`..S..\n.....\n..^..\n.....\n.^...`)
+        })
+        it('should find beams at [2,1], [1,3], [3,3], [3,4], [0,5], [2,5], [3,5]', () => {
+          expect(findAllPossibleBeamLocations(grid)).toStrictEqual([[2,1], [1,3], [3,3], [3,4], [0,5], [2,5], [3,5]])
+        })
+      })
     })
     describe('example input', () => {
       it('part2 should be...', () => {
