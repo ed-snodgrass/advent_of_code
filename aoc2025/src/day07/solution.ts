@@ -59,13 +59,14 @@ export const findAllPossibleBeamLocations = (input: string[][]) => {
         currentBeamPaths.push(previousBeamPaths[j] + 1)
       }
     }
-    const uniqueNewBeamPaths = Array.from(new Set(currentBeamPaths)).map(beam => [beam, i + 1])
-    allPossibleBeamLocations.push(...uniqueNewBeamPaths)
-
     const leftOverBeams = previousBeamPaths.filter(beam => !splitPoints.includes(beam))
+    for (let beam of leftOverBeams) {
+      allPossibleBeamLocations.push([beam, i])
+    }
     previousBeamPaths = Array.from(new Set([...currentBeamPaths, ...leftOverBeams]))
+    allPossibleBeamLocations.push(...previousBeamPaths.map(beam => [beam, i + 1]))
   }
-  return allPossibleBeamLocations
+  return allPossibleBeamLocations.sort((a, b) => a[1] - b[1])
 }
 
 export const part2 = (rawInput: string): number => {
