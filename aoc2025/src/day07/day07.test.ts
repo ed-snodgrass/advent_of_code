@@ -1,18 +1,23 @@
 import * as fs from "fs"
-import {part1, part2, parseInput, exampleInputPart1, exampleInputPart2} from './solution'
+import {part1, part2, parseInput, exampleInputPart1, exampleInputPart2, snippetFromInput } from './solution'
 
 const input = fs.readFileSync(`${__dirname}/input.txt`, 'utf-8');
 
-describe.skip('Day07Test tests', () => {
+describe('Day07Test tests', () => {
+  describe('splitting', () => {
+    it('snippetFromInput', () => {
+      expect(part1(snippetFromInput)).toBe(8)
+    })
+  })
   describe('part1', () => {
     describe('example input', () => {
-      it('part1 should be...', () => {
-        expect(part1(exampleInputPart1)).toBe(null)
+      it('part1 should be 21', () => {
+        expect(part1(exampleInputPart1)).toBe(21)
       })
     })
     describe('real input', () => {
-      it.skip('part1 should be...', () => {
-        expect(part1(input)).toBe(null)
+      it('part1 should be be greater than 1504', () => {
+        expect(part1(input)).toBe(1504)
       })
     })
   })
