@@ -31,10 +31,21 @@ describe('Day07Test tests', () => {
   })
   describe('part2', () => {
     describe('findAllPossibleBeamLocations', () => {
+      let input: string[][]
       describe('when just the starting position', () => {
+        beforeEach(() => {
+          input = parseInput(`.S.`)
+        })
         it('should find a beam at 1,1', () => {
-          const input = parseInput(`.S.\n...`)
           expect(findAllPossibleBeamLocations(input)).toStrictEqual([[1,1]])
+        })
+      })
+      describe('after one split', () => {
+        beforeEach(() => {
+          input = parseInput(`.S.\n...\n.^.`)
+        })
+        it('should find beams at [1,1], [0,3], [2,3]', () => {
+          expect(findAllPossibleBeamLocations(input)).toStrictEqual([[1,1], [0,3], [2,3]])
         })
       })
     })
