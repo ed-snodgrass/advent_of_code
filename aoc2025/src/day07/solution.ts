@@ -59,8 +59,11 @@ export const findAllPossibleBeamLocations = (input: string[][]) => {
         currentBeamPaths.push(previousBeamPaths[j] + 1)
       }
     }
-    const uniqueNewBeamPaths = Array.from(new Set(currentBeamPaths.map(beam => [beam, i + 1])))
+    const uniqueNewBeamPaths = Array.from(new Set(currentBeamPaths)).map(beam => [beam, i + 1])
     allPossibleBeamLocations.push(...uniqueNewBeamPaths)
+
+    const leftOverBeams = previousBeamPaths.filter(beam => !splitPoints.includes(beam))
+    previousBeamPaths = Array.from(new Set([...currentBeamPaths, ...leftOverBeams]))
   }
   return allPossibleBeamLocations
 }
