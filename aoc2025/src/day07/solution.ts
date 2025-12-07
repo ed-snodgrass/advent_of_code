@@ -1,5 +1,9 @@
+import { printGrid } from '../utils/grid'
+
 export const SPLITTER_CHAR = '^'
 export const START_CHAR = 'S'
+export const BEAM_CHAR = '|'
+
 
 export const findItem = (grid: string[][], item: string): [number, number] => {
   for (let y = 0; y < grid.length; y++) {
@@ -46,25 +50,29 @@ export const part1 = (rawInput: string):number => {
 export const findAllPossibleBeamLocations = (input: string[][]) => {
   const startPosition = findItem(input, START_CHAR)
   const allPossibleBeamLocations = [[ startPosition[0], startPosition[1] + 1]]
-
+  input[startPosition[1] + 1][startPosition[0]] = BEAM_CHAR
   let previousBeamPaths = [startPosition[0]]
   for (let i = startPosition[1] + 2; i < input.length; i += 2) {
     const currentBeamPaths = []
     const splitPoints = []
     for (let j = 0; j < previousBeamPaths.length; j++) {
       if (input[i][previousBeamPaths[j]] === SPLITTER_CHAR) {
+        input[i][previousBeamPaths[j] - 1] = BEAM_CHAR
+        input[i][previousBeamPaths[j] + 1] = BEAM_CHAR
         splitPoints.push(previousBeamPaths[j])
-        allPossibleBeamLocations.push()
         currentBeamPaths.push(previousBeamPaths[j] - 1)
         currentBeamPaths.push(previousBeamPaths[j] + 1)
       }
     }
     const leftOverBeams = previousBeamPaths.filter(beam => !splitPoints.includes(beam))
     for (let beam of leftOverBeams) {
+      input[i][beam] = BEAM_CHAR
       allPossibleBeamLocations.push([beam, i])
     }
     previousBeamPaths = Array.from(new Set([...currentBeamPaths, ...leftOverBeams]))
-    allPossibleBeamLocations.push(...previousBeamPaths.map(beam => [beam, i + 1]))
+    const newBeamPaths = previousBeamPaths.map(beam => [beam, i + 1])
+    newBeamPaths.forEach(([beam, y]) => input[y][beam] = BEAM_CHAR)
+    allPossibleBeamLocations.push(...newBeamPaths)
   }
   return allPossibleBeamLocations.sort((a, b) => a[1] - b[1])
 }
