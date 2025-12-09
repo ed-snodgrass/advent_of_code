@@ -7,7 +7,7 @@ run({
     tests: [
       {
         input: exampleInputPart1,
-        expected: "",
+        expected: 40,
       },
     ],
     solution: part1,
