@@ -22,7 +22,17 @@ export function junctionBoxToString(junctionBox: JunctionBox) {
   return `${junctionBox.X}_${junctionBox.Y}_${junctionBox.Z}`
 }
 
-function mergeCircuits(closestJunctionBoxPair: any[], circuits: string[]) {
+export function stringToJunctionBox(junctionBoxString: string): JunctionBox {
+  const numbers = junctionBoxString.split('_')
+  return { X: Number(numbers[0]), Y: Number(numbers[1]), Z: Number(numbers[2]) }
+}
+
+export function mergeCircuits(closestJunctionBoxPair: any[], circuits: string[]) {
+  const circuitA = circuits.find((circuit) => circuit.includes(junctionBoxToString(closestJunctionBoxPair[0])))
+
+  if (circuitA && circuitA.includes(junctionBoxToString(closestJunctionBoxPair[1]))) {
+    return circuits
+  }
   const circuitsToMerge = closestJunctionBoxPair
     .map((junctionBox) => {
       return circuits.findIndex((circuit) => circuit.includes(junctionBoxToString(junctionBox)))
@@ -40,41 +50,58 @@ function mergeCircuits(closestJunctionBoxPair: any[], circuits: string[]) {
   return circuits
 }
 
-export function findClosestJunctionBoxes(junctionBoxes: JunctionBox[], circuits: string[]) {
+export function createJunctionBoxDistanceMap(junctionBoxes: JunctionBox[]) {
+  const circuitCandidateMap = new Map<string, { other: string; distance: number }[]>()
+
+  for (let i = 0; i < junctionBoxes.length; i++) {
+    const junctionBoxA = junctionBoxes[i]
+    const candidates = []
+    for (let j = 0; j < junctionBoxes.length; j++) {
+      if (j !== i) {
+        candidates.push(junctionBoxes[j])
+        // const distance = euclideanDistance(junctionBoxA, junctionBoxB)
+        // circuitCandidateMap.set(`${junctionBoxToString(junctionBoxA)}:${junctionBoxToString(junctionBoxB)}`, distance)
+      }
+    }
+    circuitCandidateMap.set(
+      `${junctionBoxToString(junctionBoxA)}`,
+      candidates
+        .map((candidate) => {
+          return {
+            other: junctionBoxToString(candidate),
+            distance: euclideanDistance(junctionBoxA, candidate),
+          }
+        })
+        .sort((a, b) => a.distance - b.distance),
+    )
+  }
+  return circuitCandidateMap
+}
+
+export function findClosestJunctionBoxes(junctionBoxes: JunctionBox[], lastDistance: number): [JunctionBox, JunctionBox] {
   let closestDistance: number = Infinity
   let closestJunctionBoxPair = []
 
   for (let i = 0; i < junctionBoxes.length; i++) {
     const junctionBoxA = junctionBoxes[i]
-    const circuitA = circuits.find((circuit) => circuit.includes(junctionBoxToString(junctionBoxA)))
     for (let j = 0; j < junctionBoxes.length; j++) {
       if (j !== i) {
         const junctionBoxB = junctionBoxes[j]
-        if (!circuitA || !circuitA.includes(junctionBoxToString(junctionBoxB))) {
-          const current = euclideanDistance(junctionBoxA, junctionBoxB)
-          if (current < closestDistance) {
-            closestDistance = current
-            closestJunctionBoxPair = [junctionBoxA, junctionBoxB]
-          }
+        const current = euclideanDistance(junctionBoxA, junctionBoxB)
+        if (current < closestDistance && current > lastDistance) {
+          closestDistance = current
+          closestJunctionBoxPair = [junctionBoxA, junctionBoxB]
         }
       }
     }
   }
-  return closestJunctionBoxPair
+  return closestJunctionBoxPair as [JunctionBox, JunctionBox]
 }
 
 export const part1 = (rawInput: string): number => {
   const input = parseInput(rawInput)
-  // console.log(input)
-  const escapeHatch = input.length === 20 ? 10 : 1000
-  let circuits: string[] = input.map(junctionBoxToString)
-  let connectionsCount = 1
-  while (connectionsCount < escapeHatch) {
-    const newPair = findClosestJunctionBoxes(input, circuits)
-
-    circuits = mergeCircuits(newPair, circuits).filter((circuit) => !!circuit)
-    connectionsCount++
-  }
+  const connectedJunctionBoxes = connectJunctionBoxesUsingMap(input, true)
+  let circuits: string[] = connectedJunctionBoxes[0]
   circuits.sort((a, b) => b.length - a.length)
   let product = 1
   for (let i = 0; i < 3; i++) {
@@ -83,10 +110,64 @@ export const part1 = (rawInput: string): number => {
   return product
 }
 
+export const findClosestJunctionBoxesUsingMap = (
+  junctionBoxDistanceMap: Map<string, { other: string; distance: number }[]>,
+  lastDistance: number,
+) => {
+  let closestDistance: number = Infinity
+  let closestJunctionBoxPair = []
+
+  const junctionBoxes = Array.from(junctionBoxDistanceMap.keys()).map(stringToJunctionBox)
+
+  for (let i = 0; i < junctionBoxes.length; i++) {
+    const junctionBoxA = junctionBoxes[i]
+    const aKey = junctionBoxToString(junctionBoxA)
+    const otherJunctionBoxes = junctionBoxDistanceMap.get(aKey).filter((jb) => jb.distance > lastDistance)
+        const junctionBoxBKey = otherJunctionBoxes[0].other
+        const junctionBoxB = stringToJunctionBox(junctionBoxBKey)
+        const current = euclideanDistance(junctionBoxA, junctionBoxB)
+        if (current < closestDistance && current > lastDistance) {
+          closestDistance = current
+          closestJunctionBoxPair = [junctionBoxA, junctionBoxB]
+        }
+  }
+  return closestJunctionBoxPair as [JunctionBox, JunctionBox]
+}
+
+
+export const connectJunctionBoxesUsingMap = (input, useEscapeHatch = false): [string[], [JunctionBox, JunctionBox]] => {
+  const junctionBoxDistanceMap = createJunctionBoxDistanceMap(input)
+  let circuits: string[] = input.map(junctionBoxToString)
+  let escapeHatch: number = Infinity
+  if (useEscapeHatch) escapeHatch = input.length === 20 ? 10 : 1000
+
+  let lastDistance = -Infinity
+  let connectionsCount = 0
+  let startTime = Date.now()
+  let lastNewPair: [JunctionBox, JunctionBox]
+  while (connectionsCount < escapeHatch && circuits.length > 1) {
+    const newPair = findClosestJunctionBoxesUsingMap(junctionBoxDistanceMap, lastDistance)
+    if (circuits.length === 2) {
+      lastNewPair = newPair
+    }
+    circuits = mergeCircuits(newPair, circuits).filter((circuit) => !!circuit)
+    lastDistance = euclideanDistance(newPair[0], newPair[1])
+    if (connectionsCount % 10 === 0) {
+      console.log(`${connectionsCount} of ${escapeHatch} took ${Date.now() - startTime}`)
+      startTime = Date.now()
+    }
+    connectionsCount++
+  }
+  return [circuits, lastNewPair]
+}
+
 export const part2 = (rawInput: string): number => {
   const input = parseInput(rawInput)
-
-  return -1
+  const connectedJunctionBoxes = connectJunctionBoxesUsingMap(input)
+  let lastPair: [JunctionBox, JunctionBox] = connectedJunctionBoxes[1]
+  console.log(lastPair)
+  console.log(lastPair[0].X * lastPair[1].X)
+  return lastPair[0].X * lastPair[1].X
 }
 
 export const exampleInputPart1 = `162,817,812

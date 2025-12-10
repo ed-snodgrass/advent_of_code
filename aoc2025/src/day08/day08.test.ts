@@ -5,8 +5,7 @@ import {
   parseInput,
   exampleInputPart1,
   exampleInputPart2,
-  findClosestJunctionBoxes,
-  junctionBoxToString,
+  findClosestJunctionBoxes,euclideanDistance,
 } from './solution'
 
 const input = fs.readFileSync(`${__dirname}/input.txt`, 'utf-8')
@@ -15,23 +14,21 @@ describe('Day08Test tests', () => {
   describe('findClosestJunctionBoxes', () => {
     it('should find 162,817,812 and 425,690,689 as closest in full example', () => {
       const junctionBoxes = parseInput(exampleInputPart1)
-      const circuits = junctionBoxes.map(junctionBoxToString)
       const expected = [
         { X: 162, Y: 817, Z: 812 },
         { X: 425, Y: 690, Z: 689 },
       ]
-      expect(findClosestJunctionBoxes(junctionBoxes, circuits)).toEqual(expect.arrayContaining(expected))
+      expect(findClosestJunctionBoxes(junctionBoxes, -Infinity)).toEqual(expect.arrayContaining(expected))
     })
     it('should find 162,817,812 and 431,825,988 as closest after first circuit established example', () => {
       const junctionBoxes = parseInput(exampleInputPart1)
-      const circuits = [
-        `${junctionBoxToString({ X: 162, Y: 817, Z: 812 })},${junctionBoxToString({ X: 425, Y: 690, Z: 689 })}`,
-      ]
+
+      const lastDistance = euclideanDistance({ X: 162, Y: 817, Z: 812 }, { X: 425, Y: 690, Z: 689 })
       const expected = [
         { X: 162, Y: 817, Z: 812 },
         { X: 431, Y: 825, Z: 988 },
       ]
-      expect(findClosestJunctionBoxes(junctionBoxes, circuits)).toEqual(expect.arrayContaining(expected))
+      expect(findClosestJunctionBoxes(junctionBoxes, lastDistance)).toEqual(expect.arrayContaining(expected))
     })
   })
   describe('part1', () => {
@@ -41,20 +38,20 @@ describe('Day08Test tests', () => {
       })
     })
     describe('real input', () => {
-      it('part1 should be...', () => {
-        expect(part1(input)).toBe(null)
+      it('part1 should be 57970', () => {
+        expect(part1(input)).toBe(57970)
       })
     })
   })
   describe('part2', () => {
     describe('example input', () => {
-      it.skip('part2 should be...', () => {
-        expect(part2(exampleInputPart2)).toBe(null)
+      it('part2 should be...', () => {
+        expect(part2(exampleInputPart2)).toBe(25272)
       })
     })
     describe('real input', () => {
-      it.skip('part2 should be...', () => {
-        expect(part2(input)).toBe(null)
+      it('part2 should be 8520040659', () => {
+        expect(part2(input)).toBe(8520040659)
       })
     })
   })
