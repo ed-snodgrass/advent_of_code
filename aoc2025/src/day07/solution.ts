@@ -1,4 +1,3 @@
-import { printGrid } from '../utils/grid'
 
 export const SPLITTER_CHAR = '^'
 export const START_CHAR = 'S'
@@ -57,8 +56,8 @@ export const findAllPossibleBeamLocations = (input: string[][]) => {
     const splitPoints = []
     for (let j = 0; j < previousBeamPaths.length; j++) {
       if (input[i][previousBeamPaths[j]] === SPLITTER_CHAR) {
-        input[i][previousBeamPaths[j] - 1] = BEAM_CHAR
-        input[i][previousBeamPaths[j] + 1] = BEAM_CHAR
+        // input[i][previousBeamPaths[j] - 1] = BEAM_CHAR
+        // input[i][previousBeamPaths[j] + 1] = BEAM_CHAR
         splitPoints.push(previousBeamPaths[j])
         currentBeamPaths.push(previousBeamPaths[j] - 1)
         currentBeamPaths.push(previousBeamPaths[j] + 1)
@@ -71,14 +70,50 @@ export const findAllPossibleBeamLocations = (input: string[][]) => {
     }
     previousBeamPaths = Array.from(new Set([...currentBeamPaths, ...leftOverBeams]))
     const newBeamPaths = previousBeamPaths.map(beam => [beam, i + 1])
-    newBeamPaths.forEach(([beam, y]) => input[y][beam] = BEAM_CHAR)
+    // newBeamPaths.forEach(([beam, y]) => input[y][beam] = BEAM_CHAR)
+    newBeamPaths.forEach(([beam, y]) => {
+      if (input[y]) input[y][beam] = BEAM_CHAR
+    })
     allPossibleBeamLocations.push(...newBeamPaths)
   }
   return allPossibleBeamLocations.sort((a, b) => a[1] - b[1])
 }
 
+export const buildBeamToParentsMap = (input: string[][]) => {
+  let beamToPathsMap = new Map<string, string[]>
+  for (let rowIndex = 1; rowIndex < input.length; rowIndex += 2) {
+    for (let colIndex = 0; colIndex < input[rowIndex].length; colIndex++) {
+      if (input[rowIndex][colIndex] === BEAM_CHAR) {
+        const beamKey = `${rowIndex}_${colIndex}`
+        const parents = []
+        // let beamCount = 0
+        // if beam above, add 1
+        if (input[rowIndex - 1][colIndex] === BEAM_CHAR && input[rowIndex - 2][colIndex] === BEAM_CHAR) {
+          parents.push(`${rowIndex - 1}_${colIndex}`)
+        }
+        if (colIndex > 0 && input[rowIndex - 1][colIndex - 1] === SPLITTER_CHAR && input[rowIndex - 2][colIndex - 1] === BEAM_CHAR) {
+          parents.push(`${rowIndex - 2}_${colIndex - 1}`)
+        }
+        if (colIndex < input[rowIndex].length - 1 && input[rowIndex - 1][colIndex + 1] === SPLITTER_CHAR && input[rowIndex - 2][colIndex + 1] === BEAM_CHAR) {
+          parents.push(`${rowIndex - 2}_${colIndex + 1}`)
+        }
+        beamToPathsMap.set(beamKey, parents)
+      }
+    }
+
+  }
+  return beamToPathsMap
+}
+
 export const part2 = (rawInput: string): number => {
-  const input = parseInput(rawInput)
+  const grid = parseInput(rawInput)
+  const startPosition = findItem(grid, START_CHAR)
+
+  const allPossibleBeamLocations = findAllPossibleBeamLocations(grid)
+  // printGrid(grid)
+  allPossibleBeamLocations.sort((a, b) => b[1] - a[1])
+
+  const beamToParentsMap = buildBeamToParentsMap(grid)
 
   return -1
 }
