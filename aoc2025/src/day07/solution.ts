@@ -16,7 +16,7 @@ export const findItem = (grid: string[][], item: string): [number, number] => {
 }
 
 export const createCharacterGrid = (rawInput:string): string[][] => {
-  return rawInput.split('\n').map(line => line.split(''))
+  return rawInput.trim().split('\n').map(line => line.split(''))
 }
 
 export const parseInput = (rawInput: string) => {
@@ -89,7 +89,7 @@ export const buildBeamToParentsMap = (input: string[][]) => {
         // let beamCount = 0
         // if beam above, add 1
         if (input[rowIndex - 1][colIndex] === BEAM_CHAR && input[rowIndex - 2][colIndex] === BEAM_CHAR) {
-          parents.push(`${rowIndex - 1}_${colIndex}`)
+          parents.push(`${rowIndex - 2}_${colIndex}`)
         }
         if (colIndex > 0 && input[rowIndex - 1][colIndex - 1] === SPLITTER_CHAR && input[rowIndex - 2][colIndex - 1] === BEAM_CHAR) {
           parents.push(`${rowIndex - 2}_${colIndex - 1}`)
@@ -110,12 +110,44 @@ export const part2 = (rawInput: string): number => {
   const startPosition = findItem(grid, START_CHAR)
 
   const allPossibleBeamLocations = findAllPossibleBeamLocations(grid)
-  // printGrid(grid)
   allPossibleBeamLocations.sort((a, b) => b[1] - a[1])
-
   const beamToParentsMap = buildBeamToParentsMap(grid)
+  const lastBeams = allPossibleBeamLocations.filter(beam => beam[1] === grid.length - 1)
+  let count = 0
 
-  return -1
+  const beamPathCountMap = new Map<string, number>()
+
+  const countLeafs = (beamKey: string, beamToParentsMap: Map<string, string[]>, startPosition: [number, number]) => {
+    if (beamPathCountMap.has(beamKey)) {
+      return beamPathCountMap.get(beamKey)
+    }
+    if (beamKey === `${startPosition[1]}_${startPosition[0]}`) {
+      beamPathCountMap.set(beamKey, 0)
+      return 0
+    }
+    let count = 0
+
+    if (beamToParentsMap.has(beamKey)) {
+      const beamParents = beamToParentsMap.get(beamKey)
+      if (beamParents.length) {
+        count += beamParents.length - 1
+        beamParents.forEach((parentBeam) => {
+          count += countLeafs(parentBeam, beamToParentsMap, startPosition)
+        })
+      }
+    }
+    beamPathCountMap.set(beamKey, count)
+
+    return count
+  }
+
+
+  lastBeams.forEach(beam => {
+    count += 1
+    count += countLeafs(`${beam[1]}_${beam[0]}`, beamToParentsMap, startPosition)
+  })
+
+  return count
 }
 
 export const exampleInputPart1 =  `.......S.......
