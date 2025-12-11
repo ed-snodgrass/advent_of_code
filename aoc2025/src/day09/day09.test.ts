@@ -4,6 +4,18 @@ import {part1, part2, parseInput, exampleInputPart1, exampleInputPart2} from './
 const input = fs.readFileSync(`${__dirname}/input.txt`, 'utf-8');
 
 describe('Day09Test tests', () => {
+  describe('parseInput', () => {
+    describe('exampleInput', () => {
+      it('should find 8 redTileLocations', () => {
+        expect(parseInput(exampleInputPart1)).toHaveLength(8)
+      })
+    })
+    describe('exampleInput', () => {
+      it('should find 8 redTileLocations', () => {
+        expect(parseInput(input)).toHaveLength(496)
+      })
+    })
+  })
   describe('part1', () => {
     describe('example input', () => {
       it('part1 should be 50', () => {

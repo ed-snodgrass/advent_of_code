@@ -1,13 +1,13 @@
 export const parseInput = (rawInput: string) => {
-  const lines = rawInput.trim().split('\n');
+  const redTileLocations = rawInput.trim().split('\n').map(line => line.split(',').map(lineItem => parseInt(lineItem)))
 
-  return lines
+  return redTileLocations
 }
 
 export const part1 = (rawInput: string):number => {
-  const input = parseInput(rawInput)
+  const redTileLocations = parseInput(rawInput)
 
-  return -1
+  return redTileLocations.length
 }
 
 export const part2 = (rawInput: string): number => {
