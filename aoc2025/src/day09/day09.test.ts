@@ -3,11 +3,11 @@ import {part1, part2, parseInput, exampleInputPart1, exampleInputPart2} from './
 
 const input = fs.readFileSync(`${__dirname}/input.txt`, 'utf-8');
 
-describe.skip('Day09Test tests', () => {
+describe('Day09Test tests', () => {
   describe('part1', () => {
     describe('example input', () => {
-      it('part1 should be...', () => {
-        expect(part1(exampleInputPart1)).toBe(null)
+      it('part1 should be 50', () => {
+        expect(part1(exampleInputPart1)).toBe(50)
       })
     })
     describe('real input', () => {
