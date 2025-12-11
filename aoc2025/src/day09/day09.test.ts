@@ -1,17 +1,27 @@
 import * as fs from "fs"
-import {part1, part2, parseInput, exampleInputPart1, exampleInputPart2} from './solution'
+import { part1, part2, parseInput, exampleInputPart1, exampleInputPart2, manhattanDistance } from './solution'
 
 const input = fs.readFileSync(`${__dirname}/input.txt`, 'utf-8');
 
 describe('Day09Test tests', () => {
+  describe('manhattanDistance', () => {
+    it('should return 4 for 7,1 and 11,1', () => {
+      expect(manhattanDistance([7,1], [11,1])).toBe(4)
+    })
+    it('should return 4 for 7,1 and 11,1', () => {
+      expect(manhattanDistance([11, 1], [2, 5])).toBe(13)
+    })
+  })
+
   describe('parseInput', () => {
     describe('exampleInput', () => {
       it('should find 8 redTileLocations', () => {
-        expect(parseInput(exampleInputPart1)).toHaveLength(8)
+        const grid = parseInput(exampleInputPart1)
+        expect(grid).toHaveLength(8)
       })
     })
-    describe('exampleInput', () => {
-      it('should find 8 redTileLocations', () => {
+    describe('input', () => {
+      it('should find 496 redTileLocations', () => {
         expect(parseInput(input)).toHaveLength(496)
       })
     })
