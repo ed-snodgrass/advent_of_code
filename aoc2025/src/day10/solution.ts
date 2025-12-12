@@ -17,7 +17,28 @@ export const parseInput = (rawInput: string) => {
   return machines
 }
 
+export function flipTheBits(start: number[], buttonValues: number[]): number[] {
+  const flipped = [...start]
+  buttonValues.forEach((buttonValue, index) => {
+    if (flipped[index] === 1) {
+      if (buttonValue === 1) {
+        flipped[index] = 0
+      } else {
+        flipped[index] = 1
+      }
+    } else if (flipped[index] === 0) {
+      if (buttonValue === 1) {
+        flipped[index] = 1
+      } else {
+        flipped[index] = 0
+      }
+    }
+  })
+  return flipped
+}
+
 export const configureMachine = (machine: Machine) => {
+  //Array(numbers.length).fill(0)
   console.log(machine)
   return 0
 }

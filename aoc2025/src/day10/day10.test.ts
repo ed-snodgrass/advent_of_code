@@ -1,9 +1,46 @@
-import * as fs from "fs"
-import { part1, part2, parseInput, exampleInputPart1, exampleInputPart2, Machine, configureMachine } from './solution'
+import * as fs from 'fs'
+import {
+  part1,
+  part2,
+  parseInput,
+  exampleInputPart1,
+  exampleInputPart2,
+  Machine,
+  configureMachine,
+  flipTheBits,
+} from './solution'
 
-const input = fs.readFileSync(`${__dirname}/input.txt`, 'utf-8');
+const input = fs.readFileSync(`${__dirname}/input.txt`, 'utf-8')
 
 describe('Day10Test tests', () => {
+  describe('flipTheBits', () => {
+    describe('when [0], [0]', () => {
+      it('should return [0]', () => {
+        expect(flipTheBits([0], [0])).toStrictEqual([0])
+      })
+    })
+    describe('when [0], [1]', () => {
+      it('should return [1]', () => {
+        expect(flipTheBits([0], [1])).toStrictEqual([1])
+      })
+    })
+    describe('when [1], [1]', () => {
+      it('should return [0]', () => {
+        expect(flipTheBits([1], [1])).toStrictEqual([0])
+      })
+    })
+    describe('when [1], [0]', () => {
+      it('should return [1]', () => {
+        expect(flipTheBits([1], [0])).toStrictEqual([1])
+      })
+    })
+    describe('when [1,1,1,1], [1,1,1,1]', () => {
+      it('should return [0, 0, 0, 0]', () => {
+        expect(flipTheBits([1, 1, 1, 1], [1, 1, 1, 1])).toStrictEqual([0, 0, 0, 0])
+      })
+    })
+  })
+
   describe('configureMachine', () => {
     let machines: Machine[]
     beforeEach(() => {
