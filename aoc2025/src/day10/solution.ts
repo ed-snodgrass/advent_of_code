@@ -1,17 +1,30 @@
-export const parseInput = (rawInput: string) => {
-  const lines = rawInput.trim().split('\n');
+type Machine = {
+  indicatorLightDiagram: string[]
+  buttonWiringSchematics: number[][]
+  joltageRequirements: number[]
+}
 
-  return lines
+export const parseInput = (rawInput: string) => {
+  const machines: Machine[] = rawInput.trim().split('\n').map(machineString => machineString.split(' ')).map(machineParts => {
+    const indicatorLightDiagram = machineParts[0].substring(1, machineParts[0].length - 1).split('')
+    const joltageRequirements = machineParts[machineParts.length - 1].substring(1, machineParts[machineParts.length - 1].length - 1).split(',').map(joltageValue => Number(joltageValue))
+    const buttonWiringSchematics = machineParts.slice(1, machineParts.length - 1).map(buttonWiringSchematicString => {
+      return buttonWiringSchematicString.substring(1, buttonWiringSchematicString.length - 1).split(',').map(part => Number(part))
+    })
+    return { indicatorLightDiagram, buttonWiringSchematics, joltageRequirements }
+  })
+
+  return machines
 }
 
 export const part1 = (rawInput: string):number => {
-  const input = parseInput(rawInput)
+  const machines: Machine[] = parseInput(rawInput)
 
   return -1
 }
 
 export const part2 = (rawInput: string): number => {
-  const input = parseInput(rawInput)
+  const machines: Machine[] = parseInput(rawInput)
 
   return -1
 }
