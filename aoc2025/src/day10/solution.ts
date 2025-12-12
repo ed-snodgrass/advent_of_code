@@ -1,4 +1,4 @@
-type Machine = {
+export type Machine = {
   indicatorLightDiagram: string[]
   buttonWiringSchematics: number[][]
   joltageRequirements: number[]
@@ -15,6 +15,11 @@ export const parseInput = (rawInput: string) => {
   })
 
   return machines
+}
+
+export const configureMachine = (machine: Machine) => {
+  console.log(machine)
+  return 0
 }
 
 export const part1 = (rawInput: string):number => {
