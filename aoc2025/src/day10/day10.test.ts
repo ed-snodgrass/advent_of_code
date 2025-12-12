@@ -6,7 +6,7 @@ import {
   exampleInputPart1,
   exampleInputPart2,
   Machine,
-  configureMachine,
+  configureMachineLights,
   flipTheBits,
 } from './solution'
 
@@ -41,7 +41,7 @@ describe('Day10Test tests', () => {
     })
   })
 
-  describe('configureMachine', () => {
+  describe('configureMachineLights', () => {
     let machines: Machine[]
     beforeEach(() => {
       machines = parseInput(exampleInputPart1)
@@ -49,17 +49,17 @@ describe('Day10Test tests', () => {
     describe('exampleInput', () => {
       describe('when configuring the first machine', () => {
         it('should take 2 button presses', () => {
-          expect(configureMachine(machines[0])).toBe(2)
+          expect(configureMachineLights(machines[0])).toBe(2)
         })
       })
       describe('when configuring the second machine', () => {
         it('should take 3 button presses', () => {
-          expect(configureMachine(machines[1])).toBe(3)
+          expect(configureMachineLights(machines[1])).toBe(3)
         })
       })
       describe('when configuring the third machine', () => {
         it('should take 2 button presses', () => {
-          expect(configureMachine(machines[2])).toBe(2)
+          expect(configureMachineLights(machines[2])).toBe(2)
         })
       })
     })
@@ -84,8 +84,8 @@ describe('Day10Test tests', () => {
       })
     })
     describe('real input', () => {
-      it.skip('part1 should be...', () => {
-        expect(part1(input)).toBe(null)
+      it('part1 should be 415', () => {
+        expect(part1(input)).toBe(415)
       })
     })
   })
