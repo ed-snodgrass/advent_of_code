@@ -3,6 +3,10 @@ import {part1, part2, parseInput, exampleInputPart1, exampleInputPart2} from './
 
 const input = fs.readFileSync(`${__dirname}/input.txt`, 'utf-8');
 
+function fitsAllPresents(regionWidth: number, regionHeight: number, shapeCounts: number[], shapes: string[][][]) {
+  return false
+}
+
 describe('Day12Test tests', () => {
   describe('parseInput', () => {
     describe('with exampleInput', () => {
@@ -19,6 +23,49 @@ describe('Day12Test tests', () => {
       })
       it('should find 1000 regions', () => {
         expect(parseInput(input).regions.length).toBe(1000)
+      })
+    })
+  })
+  describe('fitsAllPresents', () => {
+    let shapes: string[][][], regionWidth: number, regionHeight: number, shapeCounts: number[], actual
+    beforeEach(() => {
+      shapes = parseInput(exampleInputPart1).shapes
+      console.log(shapes)
+    })
+    describe('for region 4x4: 0 0 0 0 2 0', () => {
+      beforeEach(() => {
+        regionWidth = 4
+        regionHeight = 4
+        shapeCounts = [0, 0, 0, 0, 2, 0]
+
+        actual = fitsAllPresents(regionWidth, regionHeight, shapeCounts, shapes)
+      })
+      it('should fit all presents', () => {
+        expect(actual).toBe(true)
+      })
+    })
+    describe('for region 12x5: 1 0 1 0 2 2', () => {
+      beforeEach(() => {
+        regionWidth = 12
+        regionHeight = 5
+        shapeCounts = [1, 0, 1, 0, 2, 2]
+
+        actual = fitsAllPresents(regionWidth, regionHeight, shapeCounts, shapes)
+      })
+      it('should fit all presents', () => {
+        expect(actual).toBe(true)
+      })
+    })
+    describe('for region 12x5: 1 0 1 0 3 2', () => {
+      beforeEach(() => {
+        regionWidth = 12
+        regionHeight = 5
+        shapeCounts = [1, 0, 1, 0, 3, 2]
+
+        actual = fitsAllPresents(regionWidth, regionHeight, shapeCounts, shapes)
+      })
+      it('should fit all presents', () => {
+        expect(actual).toBe(false)
       })
     })
   })

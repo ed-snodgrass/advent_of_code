@@ -2,7 +2,7 @@ export const parseInput = (rawInput: string) => {
   const groups = rawInput.trim().split('\n\n')
   const shapes = groups.slice(0, groups.length - 1).map(shapeText => {
     const shapeLines = shapeText.split('\n').slice(1, 4)
-    return shapeLines
+    return shapeLines.map((line) => line.split(''))
   })
   const regions = groups[groups.length - 1].split('\n').map(regionText => {
     const regionParts = regionText.split(':').map(text => text.trim())
