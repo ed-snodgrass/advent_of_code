@@ -1,5 +1,5 @@
 import * as fs from "fs"
-import {part1, part2, parseInput, exampleInputPart1, exampleInputPart2} from './solution'
+import { part1, part2, parseInput, exampleInputPart1, exampleInputPart2, toShape, rotate } from './solution'
 
 const input = fs.readFileSync(`${__dirname}/input.txt`, 'utf-8');
 
@@ -23,6 +23,20 @@ describe('Day12Test tests', () => {
       })
       it('should find 1000 regions', () => {
         expect(parseInput(input).regions.length).toBe(1000)
+      })
+    })
+  })
+  describe('rotate', () => {
+    let actual, expected, shape
+
+    describe('when rotating #..\n...\n...', () => {
+      beforeEach(() => {
+        shape = toShape('0\n#..\n...\n...')
+      })
+      it('should return ..#\n..#\n...', () => {
+        expected = toShape('0\n..#\n...\n...')
+        actual = rotate(shape)
+        expect(actual).toStrictEqual(expected)
       })
     })
   })
