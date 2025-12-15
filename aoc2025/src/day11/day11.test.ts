@@ -46,9 +46,10 @@ describe('Day11Test tests', () => {
         deviceMap.set('bbb', ['out'])
       })
       it('should return 2 paths', () => {
-        expect(findAllPaths(deviceMap, 'you')).toHaveLength(2)
-        expect(findAllPaths(deviceMap, 'you')[0]).toStrictEqual(['you', 'aaa', 'out'])
-        expect(findAllPaths(deviceMap, 'you')[1]).toStrictEqual(['you', 'bbb', 'out'])
+        const allPaths = findAllPaths(deviceMap, 'you')
+        expect(allPaths).toHaveLength(2)
+        expect(allPaths[0]).toStrictEqual(['you', 'aaa', 'out'])
+        expect(allPaths[1]).toStrictEqual(['you', 'bbb', 'out'])
       })
     })
   })
@@ -81,9 +82,10 @@ describe('Day11Test tests', () => {
       })
     })
     describe('real input', () => {
-      it('part2 should be...', () => {
-        expect(part2(input)).toBe(null)
+      it('part2 should be 450854305019580', () => {
+        expect(part2(input)).toBe(450854305019580)
       })
     })
   })
 })
+

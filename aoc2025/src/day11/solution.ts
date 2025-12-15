@@ -1,12 +1,15 @@
 export const parseInput = (rawInput: string) => {
   const deviceMap = new Map<string, string[]>()
 
-  rawInput.trim().split('\n').forEach(line => {
-    const parts = line.split(': ')
-    const key = parts[0]
-    const connections = parts[1].split(' ')
-    deviceMap.set(key, connections)
-  })
+  rawInput
+    .trim()
+    .split('\n')
+    .forEach((line) => {
+      const parts = line.split(': ')
+      const key = parts[0]
+      const connections = parts[1].split(' ')
+      deviceMap.set(key, connections)
+    })
 
   return deviceMap
 }
@@ -39,16 +42,47 @@ export const findAllPaths = (devices: Map<string, string[]>, start: string) => {
   return dfs(devices, start, visited, [start])
 }
 
-export const part1 = (rawInput: string):number => {
+export const part1 = (rawInput: string): number => {
   const deviceMap = parseInput(rawInput)
 
   return findAllPaths(deviceMap, 'you').length
 }
 
+function countPathsWithBothNodes(devices: Map<string, string[]>, start: string): number {
+  const memo = new Map<string, number>()
+
+  function count(node: string, seenA: boolean, seenB: boolean): number {
+    if (node === 'out') {
+      return seenA && seenB ? 1 : 0
+    }
+
+    const key = `${node}|${seenA}|${seenB}`
+    if (memo.has(key)) {
+      return memo.get(key)!
+    }
+
+    const newSeenA = seenA || node === 'fft'
+    const newSeenB = seenB || node === 'dac'
+
+    let totalPaths = 0
+    const neighbors = devices.get(node)
+
+    if (neighbors) {
+      for (const neighbor of neighbors) {
+        totalPaths += count(neighbor, newSeenA, newSeenB)
+      }
+    }
+
+    memo.set(key, totalPaths)
+    return totalPaths
+  }
+
+  return count(start, false, false)
+}
+
 export const part2 = (rawInput: string): number => {
   const deviceMap = parseInput(rawInput)
-
-  return findAllPaths(deviceMap, 'svr').length
+  return countPathsWithBothNodes(deviceMap, 'svr')
 }
 
 export const exampleInputPart1 = `aaa: you hhh
