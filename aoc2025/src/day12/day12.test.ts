@@ -1,7 +1,7 @@
-import * as fs from "fs"
-import { part1, part2, parseInput, exampleInputPart1, exampleInputPart2, toShape, rotate } from './solution'
+import * as fs from 'fs'
+import { part1, parseInput, exampleInputPart1, toShape, rotate } from './solution'
 
-const input = fs.readFileSync(`${__dirname}/input.txt`, 'utf-8');
+const input = fs.readFileSync(`${__dirname}/input.txt`, 'utf-8')
 
 function fitsAllPresents(regionWidth: number, regionHeight: number, shapeCounts: number[], shapes: string[][][]) {
   return false
@@ -35,6 +35,16 @@ describe('Day12Test tests', () => {
       })
       it('should return ..#\n..#\n...', () => {
         expected = toShape('0\n..#\n...\n...')
+        actual = rotate(shape)
+        expect(actual).toStrictEqual(expected)
+      })
+    })
+    describe('when rotating #..\n.#.\n..#', () => {
+      beforeEach(() => {
+        shape = toShape('0\n#..\n.#.\n..#')
+      })
+      it('should return ..#\n.#.\n#..', () => {
+        expected = toShape('0\n..#\n.#.\n#..')
         actual = rotate(shape)
         expect(actual).toStrictEqual(expected)
       })
@@ -90,20 +100,8 @@ describe('Day12Test tests', () => {
       })
     })
     describe('real input', () => {
-      it.skip('part1 should be...', () => {
-        expect(part1(input)).toBe(null)
-      })
-    })
-  })
-  describe('part2', () => {
-    describe('example input', () => {
-      it.skip('part2 should be...', () => {
-        expect(part2(exampleInputPart2)).toBe(null)
-      })
-    })
-    describe('real input', () => {
-      it.skip('part2 should be...', () => {
-        expect(part2(input)).toBe(null)
+      it('part1 should be 524', () => {
+        expect(part1(input)).toBe(524)
       })
     })
   })
